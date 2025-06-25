@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # ============================================================
-# Script Name   : sunat-trustpositif_v2.sh
+# Script Name   : sunat-trustpositif.sh
 # Description   : Validates domain lists against official TLDs.
 #                 Downloads, cleans, and processes domain data.
 # Author        : HARRY DERTIN SUTISNA ALSYUNDAWY

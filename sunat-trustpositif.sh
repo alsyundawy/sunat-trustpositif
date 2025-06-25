@@ -1,14 +1,16 @@
 #!/usr/bin/env bash
 
 # ============================================================
-# Script Name  : sunat-trustpositif.sh
-# Description  : Validates domain lists against official TLDs.
-#                Downloads, cleans, and processes domain data.
-# Author       : HARRY DERTIN SUTISNA ALSYUNDAWY
-# Created Date : 12 OKTOBER 2024
-# Last Updated : 22 JUNI 2025
-# Usage        : bash sunat-trustpositif.sh
+# Script Name   : sunat-trustpositif_v2.sh
+# Description   : Validates domain lists against official TLDs.
+#                 Downloads, cleans, and processes domain data.
+# Author        : HARRY DERTIN SUTISNA ALSYUNDAWY
+# Created Date  : 07 APRIL 2024
+# Last Updated  : 22 JUNI 2025
+# Last Modified : 25 JUNI 2025
+# Usage         : bash sunat-trustpositif.sh
 # ============================================================
+
 
 # Konfigurasi awal shell
 set -euo pipefail
@@ -105,28 +107,18 @@ check_dependencies() {
 # Jalankan pengecekan dependensi
 check_dependencies
 
-# Lanjutkan dengan script asli
 # Configuration
+export LC_COLLATE=C
 PATH=/usr/local/bin:/usr/bin:/bin:${PATH}
 WORKDIR=$(pwd)
-TEMP_DIR=$(mktemp -d)  # mktemp menghasilkan path absolut, misalnya: /tmp/tmp.XXXXXX
-
-# URLs and file names
-TLD_URL="https://data.iana.org/TLD/tlds-alpha-by-domain.txt"
-DOMAINS_URL="https://trustpositif.komdigi.go.id/assets/db/domains_isp"
-TLD_FILE="tlds-alpha-by-domain-lowercase.txt"
-DOMAINS_FILE="domains_isp.txt"
-OUTPUT_FILE="sunat-trustpositif.txt"
-
-# Final output: pastikan direktori tujuan ada
-FINAL_OUTPUT_DIR="/var/www/html/trustpositif"
-FINAL_OUTPUT_FILE="${FINAL_OUTPUT_DIR}/${OUTPUT_FILE}"
-mkdir -p "$FINAL_OUTPUT_DIR"
+IANA_TLD_URL="http://data.iana.org/TLD/tlds-alpha-by-domain.txt"
+DOMAIN_FILE="domains_isp"
+VALID_OUTPUT="/var/www/html/trustpositif/sunat-trustpositif.txt"
+TEMP_DIR=$(mktemp -d)
+KOMINFO_URL="https://trustpositif.komdigi.go.id/assets/db/domains_isp"
 
 # Get number of CPU cores for parallel processing
 NUM_CORES=$(nproc)
-PARALLEL_CORES=$((NUM_CORES * 69 / 100))  # Use 75% of available cores
-[[ $PARALLEL_CORES -lt 1 ]] && PARALLEL_CORES=1  # Ensure at least 1 core
 CHUNK_SIZE=6969  # Number of domains to process per chunk
 
 # List of domains to remove subdomains from
@@ -387,25 +379,6 @@ DOMAINS_TO_CLEAN=(
 "baba189a.info" "baba189.live" "baba189.shop" "baba189.store" "babaeb.xyz" "babawin.io" "babawin-pola.store" "babepornbbbw.com" "babesnetwork.com"
 "babijos.com" "babovemad.xyz" "babovemodern.xyz" "babsis-telefonsex.de" "babulki.net" "babuskini.com" "babymicrotogel88.net" "babysgarden.org" "baca55.com"
 "bacc1688.com" "backblazeb2.com" "backcountrygear.io" "backdoor.casino" "backdoorsmashed.info" "backlink.bz" "backpage.cam" "backpage.com" "badgals.com"
-"badgirlsusa.com" "badmilfs.wiki" "badporno.net" "baffapipinganddraincleaning.com" "bagaspekalongan.site" "bagema.info" "bagi99.cam" "bagi-bagi.live" "bagibokep.one"
-"baginda189.club" "baginda189.live" "baginda189.online" "baginda189.store" "baginda189x.info" "bagiqq.wiki" "bagiqq.work" "bagiwd.shop" "bagus33jp.vip"
-"bagus88.me" "bagus88.vip" "bahagiaviral4dp.com" "bahanamahasiswa.co" "bah-ceriabet.com" "bahisu2.com" "bahnlinz.com" "baidu-55ew.shop" "baidusp.icu"
-"baiduv6.com" "baihu19.sbs" "baihuw-ym.buzz" "baik777.one" "baimkobra.com" "baiqi.monster" "baisemoimaintenant.com" "bakerstalent.in" "bakti-arb.org"
-"baku-music.ru" "balakindo.online" "balakindo.org" "balalaek.net" "balconnr.com" "baliactivitydiscount.com" "baliandtours.com" "baliart.xyz" "baligofood.com"
-"baligroup.site" "ballmicrtg88.net" "ballonfahrten-hessen.de" "ballsanddick.bond" "balon168.com" "balon168.live" "balon168.org" "balon99.live" "bambinomio.com"
-"bamtotoku.xyz" "bananocams.com" "banbanan.top" "bandar126.com" "bandar126.vip" "bandar99.win" "bandar-adu-kiu.com" "bandardarat1.boats" "bandardarat1.digital"
-"bandardarat.blog" "bandarjack.com" "bandarjudipkv.win" "bandarjudi.pro" "bandarkiupkv.cfd" "bandarkiu.tel" "bandarlotre-slot.bond" "bandar-lotre-slot.monster" "bandarlotrey.com"
-"bandarpasti.cfd" "bandarpkr99.com" "bandarpkr.info" "bandarpkv365y.xyz" "bandarpkv.blog" "bandarpkv.de" "bandarpkv.show" "bandarpro.net" "bandarpro.site"
-"bandarqpkv.win" "bandarresmi.com" "bandarsakong.run" "bandarsbobet.me" "bandarterpercaya.net" "bandartop88.com" "bandarvip1.xyz" "bandar.win" "bandarxlslotgacor.com"
-"bandaryuk.com" "bandcamp.com" "bandit78a.site" "bandit78.club" "bandit78.live" "bandit78.store" "banditmanchot.com" "bandito4d-game.click" "bandot-amp.com"
-"bandotkiller.cloud" "bandschleifertest.net" "bandungtotowin.id" "bang8514online.xyz" "bangalorelocal.in" "bangbona.cc" "bangbona.sbs" "bangbros.com" "bangbrosnetwork.com"
-"bangdo.shop" "bangedbyburglar.pro" "bangedinbus.live" "bangedinoffice.wiki" "bangg.me" "bangjay.de" "banglapen.com" "bangogroup.info" "bangsaindolottery88.net"
-"bangsakawkawbet.net" "bangun4d.dev" "bank338assets.info" "banksnudevideos.top" "banlabanlacudacudi.com" "banlacudacudibanla.com" "banlacudacudibhidio.com" "banlacudacudi.com" "banladesi.com"
-"banlaseksabhidio.com" "banlaseksa.com" "banlaseksi.com" "bannedinalabama.bond" "bannerless.net" "bansos.net" "bantai189.live" "bantai189.store" "bantai189vip.info"
-"bantai189vip.live" "banteng123.live" "banteng123.pro" "banteng128a.live" "banteng128a.site" "banteng128.biz" "banteng128.live" "banteng128.shop" "banteng128vip.com"
-"banteng128vip.shop" "banteng128x.live" "banteng168.com" "banteng88stars.cfd" "bantengmerah.asia" "bantengmerah.bet" "bantengmerah.fit" "bantentogel.one" "bantentoto4d.one"
-"bantuan-kita.com" "bantubees.quest" "banyakuang.top" "banyoyedekparcaankara.com" "baonai.mom" "baovmrv.cc" "bapeslot88.vip" "barabet78a.xyz" "barabet78.live"
-"barabet78.store" "barbar365a.com" "barbar365a.live" "barbar365.club" "barbar365.live" "barbar365.store" "barberia.cc" "barber-mourany.fr" "barbicide.com"
 "barcasaja.com" "barcatoto4d.com" "barcatoto4d.top" "barengkayakita.asia" "baris4dblue.shop" "baritoslothoki.store" "baritoslotoke.site" "baritoslot.shop" "baritoslot.site"
 "barkbrief53.shop" "barrilaboutique.it" "barti.hu" "baruipurpolicedistrict.org" "basculasonline.mx" "baseballbible.org" "baseballnextamxclz0.sbs" "baseclassvt.shop" "baserating.dev"
 "base.shop" "bashirzain.com" "baskara89a.online" "baskara89a.site" "baskara89.live" "baskara89.store" "basketballhoopinstallation.com" "bassme.org" "basswatergrill.com"
@@ -822,31 +795,9 @@ DOMAINS_TO_CLEAN=(
 "firstsexvideo.pro" "first-street.ru" "firsttimeauditions-nasty.info" "fishinggearnetwork.net" "fitclubastrea.ru" "fititandfix.com" "fitmommies.club" "fitnell.com" "fitnessart.club"
 "fitnessgeekstore.com" "fitnessmilf.info" "fitshealth.club" "fittaporr.com" "fituber.asia" "fivefingerfrank.co.uk" "fix.ac" "fixbet88.one" "fixpoll.id"
 "fix-toto.com" "fizzdickvideo.quest" "fjgxhb4sm.com" "fkunud.com" "fl138.buzz" "flacktube.asia" "flap.de" "flappie.nl" "flashyfetishporn.pro"
-"flaythemoon.xyz" "flazio.com" "fldh02.top" "fleischerstudios.com" "flenders.io" "fleshbot.com" "fleursdeparis.it" "flexbassador.com" "flg001.xyz"
-"flg118.xyz" "flirt4free.com" "flirtmoi.com" "flku.cc" "flnet.org" "flog.br" "flokiterdepan.com" "flora77a.live" "flora77a.xyz"
-"flora77.info" "flora77.live" "flora77.site" "fluo.net" "flwp.co" "flydance.website" "flyerlotto.com" "flyermachine.co.uk" "flyhost.com"
-"flying-animals.ru" "flyingmidgets.com" "flywheel.wiki" "fmav40.icu" "fmchamberchorale.org" "fmglobal.com" "fmpoabjz.xyz" "fngs.in" "fnpsites.com"
-"foamcast.in" "focalpoint-llc.com" "fol.nl" "fon666.xyz" "fonar.me" "fondationesle.org" "fon-dla-prezentaciy.ru" "fon.skin" "foodcourt.id"
-"foodlog.it" "foodsens.net" "footmaniacs.com" "fop-perks.com" "foradoggystyle.mobi" "foranautograph.quest" "foranffm.bond" "forbetterforless.com" "force9.co.uk"
-"forcedmaturemovies.com" "forcemomfuck.live" "foreverstarts.today" "forexpie.ru" "forez.com" "forfamiliarii3rp0v.shop" "forgottenheading8x14.shop" "forhertube.wiki" "forjerkingoff.mobi"
-"formalkaisartoto88.net" "formatweb.it" "formdaftar.com" "formilfclaudia.wiki" "formulax.top" "fornet.info" "foro.st" "forsocialmedia.mobi" "forsomecash.live"
-"forsomemoney.mobi" "forthgivenvq45pp.cfd" "fortminor.ru" "fortranswomen.wiki" "fortuna189a.xyz" "fortuna189b.store" "fortuna189.live" "fortuna189.online" "fortuna189.site"
-"fortunasports.live" "fortunasports.store" "fortunasportsx.live" "fortunecity.ws" "fortunewheel.site" "foru.de" "forum21.net" "forumangkajitu.sbs" "forumbbfs.blog"
-"forumdiskusi.vip" "forumea.org" "forumer.com" "forumfree.it" "forumid.net" "forumotion.asia" "forumpoolss.online" "forumsid.com" "forwhatitswerth.com"
-"forwin77.in" "forwin77.life" "forza88bro.site" "fo.team" "fotofrum.ru" "fotopornodonne.casa" "fotos-sexo-gratis.org" "fotoweekdc.org" "fotzenblog.com"
-"fotzen.live" "foundersales.io" "fourththroughoutjc6je.cfd" "foxtube.com" "foxwent6ot.shop" "foxybet77.live" "foxybet77.net" "foxybet77.org" "foxybet77.xyz"
 "foxyplay77.live" "foxysalonspanj.com" "foxytube-byd.buzz" "foxytube-fee.buzz" "foxytuben.cyou" "fplay77.net" "fplay77.vip" "fpybay.com" "fqxhot.id"
 "fractallifetulum.com" "frama.io" "framer.ai" "framer.app" "framer.website" "framer.wiki" "framoo.asia" "france-gratuit.net" "francescahilton.com"
 "franciscancanticle.com" "francksbooks.com" "frannielindsay.net" "fraserway.us" "fra.st" "frauennackt.com" "frauenporno.top" "frauenxxx.top" "free0host.com"
-"free1.buzz" "free-25.de" "free2.buzz" "free3dporn.eu" "free3.sbs" "freeadult100.com" "freeadultcamsonline.com" "free-adult-web-cam-girls.com" "freeampsite.xyz"
-"freebet-gratis.net" "freecam-telefonsex.com" "freecam-telefonsex.de" "freecjhost.com" "freecluster.eu" "freecoder.me" "freecomiconline.me" "freecoolhost.com" "freedombetter54.shop"
-"free-ero-movie.info" "freefall.lol" "freefuck.buzz" "freegirls4u.de" "freehdpornxxx.com" "freehdxxxvideos.com" "freehdxxxxmoviesvideo.ru" "freehentaidb.com" "freehentaistream.com"
-"freehomepage.com" "freehosting4u.com" "freehostpage.com" "freejapanpornxxx.com" "free-live-sex-video.com" "freemarket24.ru" "freeoda.com" "freeones.com" "free-online.co.uk"
-"freeonlinepornsites.net" "freepee.de" "free-picture-search.com" "freeporn-art.com.ru" "freeporn.cfd" "freeporngames.xyz" "freepornhosters.com" "free-porn.icu" "freepornmayhem.com"
-"freepornmovies.com" "freepornmoviesonline.com" "freeporno.com.ar" "freeporno.quest" "freeporn-sex-pictures.com" "freepornsitesxxx.com" "free-porn-stop.com" "freeporntrailers.us" "freepornvideos.icu"
-"free-porn-videos.info" "freepornxxxhd.com" "freeporr.top" "freeru.net" "freeserve.co.uk" "freeservers.com" "freesex500.com" "free-sex-porn-galleries.com" "freesexsoftware.com"
-"freesexycomics.com" "freessr.org" "freeteenpornhere.com.ru" "free-telefonsex.de" "free-telefonsexlinks.com" "freetranny.porn" "freetube.top" "freetube.wtf" "freetzi.com"
-"freeuk.com" "freeuse.me" "freevar.com" "freewebcam21.com" "freexnxxvideos.ru" "freexvideos.tv" "freexxxhentaiporn.com" "freexxxhotporn.com" "freexxxpornmovie.com"
 "free-xxx-porn.org" "freexxxpornstar.com" "freexy.net" "freeyellow.com" "free-young-porn.com" "freezporn.ru" "freiepornofilme.com" "french-escort-boy.com" "frenchpornxxx.com"
 "frescocheese.com" "freshatomic4p6qif.shop" "freshphotos.de" "fresh.porn" "freshtext.nl" "fresioherbals.in" "fr.free.fr" "friend2.club" "friendindian.wiki"
 "friendsfortheearth.com" "friesenrentalsandhardware.ca" "friggebox.se" "frigtube.com" "friko.pl" "froghollow.com" "frompo.com" "fromru.com" "frontofcamera.info"
@@ -916,10 +867,6 @@ DOMAINS_TO_CLEAN=(
 "goaloo902.com" "goalootv188.lol" "goalootv188.sbs" "goalootv1.lol" "goalootv1.sbs" "goalootv1.website" "goalootv99.icu" "goalootv99.lol" "goalootv99.mom"
 "goalootv99.online" "goalootv99.sbs" "goalootv.boats" "goalootv.bond" "goalootv.homes" "goalootv.info" "goalootv.monster" "goalpages.com" "go-animeporn.com.ru"
 "goapindulwisata.id" "goban.ru" "gob.ar" "gob.ec" "goberku.lol" "gobetasia889.in" "gobetasiavip88.in" "gobetasiavip.in" "gobetvip5758.com"
-"gob.mx" "goceng.site" "gocoy99.com" "gocuan777pasti.site" "gocuan777.website" "gocunt.com" "god911a.live" "god911.pro" "god911.site"
-"god911.store" "god911x.online" "godaddysites.com" "godado.it" "goddesspornmovies.com" "godinvanlicht.nl" "god.pl" "godwinonlyfans.mobi" "goedbegin.nl"
-"goeqn999.com" "goey.io" "gofree.bet" "gofyp.top" "gogelbetup.cloud" "gogelbetup.cyou" "gogelbetup.one" "gogel.live" "gogetsome.com"
-"gogodana.com" "gogohandyman.ca" "gogotil.com" "goguxgx.cc" "goindobet123.site" "go.ke" "gokhanbartu.com" "golato.io" "goldcasino.nl"
 "goldcaster.net" "golden189.com" "golden189.live" "golden189.me" "golden189.online" "golden189.tech" "goldencams.club" "goldengoosecanada.ca" "goldenluckyslot99.net"
 "golden-ring-of-russia.ru" "goldenrod.xyz" "golden-sites.com" "goldensun-games.com" "goldenvipqq.com" "goldenworldblog.in" "goldgame.io" "go-legend.net" "golezene.net"
 "golkoralive.live" "golrusia.sbs" "goltogel662.life" "goltogel788.life" "gomha.in" "gon138.pro" "gon212.xyz" "gon4d.xyz" "gon88.xyz"
@@ -1010,14 +957,6 @@ DOMAINS_TO_CLEAN=(
 "hostry.com" "hostsall.com" "hot4milfs.ru" "hot985.bet" "hot9910mov.xyz" "hotairads.co.uk" "hotangelz.mobi" "hotaseksa.com" "hotasian.ru"
 "hotasiansex.info" "hotbi.online" "hotblognetwork.com" "hotbola.com" "hotbox.ru" "hotbritishbabes.net" "hotcamerondee.top" "hotdoms.de" "hotdreamsxxx.com.ru"
 "hotelambassador.co.in" "hotel-bremen.ru" "hotelcittadelsole.it" "hotel-coralbeach.com" "hotelhookup.asia" "hotelkiloindia.com" "hotelpharaon.ru" "hotel-rus.net" "hotelstube.top"
-"hoterika.com" "hotfire.net" "hotfuck.buzz" "hotgirlsworld.info" "hothardcoresex.bond" "hothere.com" "hothothot.pro" "hoties.us" "hotliga.click"
-"hot-liga.link" "hot-live-sex-shows.com" "hotmaals.in" "hotmail.ru" "hotmailsigninloginn.com" "hotmobileporn.fun" "hotmomhere.com" "hotmomtubes.com" "hotmovies.com"
-"hotnatalia.com" "hotogel.id" "hotogel.pro" "hotpage.net" "hotpaginas.com" "hotpassion.org" "hot-photos.net" "hotpkr.com" "hotpointenterprise.com"
-"hotpornmodels.info" "hotpornogratuit.com" "hotroyoutube.info" "hotsex2nite.com" "hotsex7.pro" "hotsexlive.org" "hotsofuli-x.buzz" "hotspin69.club" "hotspin7.cc"
-"hotstorm.org" "hot-telefonsex.de" "hot-telefonsex.de.vu" "hoturd.top" "hotusa.org" "hotviber.fr" "hotxxx.club" "hotxxx.mobi" "hotxxxpornpics.com"
-"hotxxxpornsex.com" "hourcycles.club" "housejoker.com" "houseofboysandbeauty.com" "howardarman.com" "howardfacilities.co.uk" "how.pl" "hoxnif.com" "hoyswontonhouse.ca"
-"hozkolpino.ru" "hpage.com" "hpage.de" "hpage.net" "hp.com" "hpg.com.br" "hqafsa.org" "hqbbwporns.info" "hqmilfsex.info"
-"hq-pictures.org" "hqporner.com" "hqpornvideo.ru" "hq-prn.com" "hqsearch.net" "hq-sex-videos.info" "hqsp101.mom" "hqtoplist.com" "hr164.com"
 "hr91hub10.xyz" "hrcgaming.us" "h-relax.com" "hrpking.com" "hr-training.com.cy" "hrvatskiporno.com" "hrvatskiporno.sbs" "hrvatskiporno.top" "hs5.us"
 "hscwang11w3h.icu" "hscwang11w6h.icu" "hscwang6y12w1h.icu" "h-s-fl.xyz" "hsscindia.in" "hssf88.cc" "hssf94.cc" "hstn.me" "hsyh7.buzz"
 "html-5.me" "htmx.it" "httpsa.com" "huabansp6.icu" "huaianyuy.com" "huanggua.me" "huanggua.website" "huangweiran.club" "huaxire.com"
@@ -1119,18 +1058,6 @@ DOMAINS_TO_CLEAN=(
 "japanese-xxx-clips.com" "japanesexxx.site" "japanese-xxx-tube.com" "japanesexxxtube.mobi" "japanesexxxx.info" "japanhanfang.wiki" "japanhub.live" "japanmind.xyz" "japan-now.ru"
 "japanoce.xyz" "japanpoliti.info" "japanporn18.mobi" "japanporn-desire.com.ru" "japansaon.bond" "japansexmedia.online" "japanstyleinfo.com" "japantengsu.bond" "japantimes.quest"
 "japanxnxxmom.ru" "japanxxxhd.online" "japanxxxmovies.mobi" "japanxxxporn.com" "japanxxxporno.com" "japan-xxx-sex.com" "japanxxxxvid.com" "japanynews.fan" "japesexxxmilf.info"
-"japrisultan.site" "japvid18.com" "japvid.xxx" "jarot88a.live" "jarot88.live" "jarot88.store" "jarot88x.store" "jasa2vip.wiki" "jasminemehendi.in"
-"jasmin-telefonsex.de" "jasonandcodi.com" "jasur.ru" "jatengtoto.one" "jatidunialot88.net" "jaune.cc" "jav05.cfd" "jav13.cfd" "jav16.cfd"
-"jav-3.com" "jav-6.com" "jav7mm.com" "jav-8.com" "java189a.store" "java189.live" "java189.online" "java189.tech" "java189vip.info"
-"javabet99.center" "javabet99n.top" "javabet99rtp.my.id" "jav-boing.xyz" "javcensored.ru" "javdock.com" "javfun.me" "javgg.pro" "javhay.cyou"
-"jav-hd-porn.com" "javhdpro.cc" "javhub.me" "javirbrands.pro" "javkhongche.asia" "javkoche.top" "javleak.asia" "javmix.tv" "javmm35.help"
-"javnesia.click" "javnhe.bond" "javnong.cc" "javn.tv" "javporn3.xyz" "javtiful.com" "javtogel.club" "javtogel.vip" "javvideoporn.online"
-"javxnxx.ru" "javxxxhub.com" "javxxx.info" "javxxxjapanese.com" "javxxxonline.com" "javxxxstream.com" "javxxxtubes.com" "jawarapola338.xyz" "jawatoto33.com"
-"jaya2013.com" "jaya-2024.com" "jaya365parlay.space" "jaya4dgood.xyz" "jayabetpaten.com" "jaya-betting.com" "jayabola22.cam" "jayabola22.cyou" "jayabola22.homes"
-"jayabola22.link" "jayabola22.sbs" "jayabola2.in" "jayabola365.art" "jayabola365.boats" "jayabola365.hair" "jayabola88.cam" "jayabola88.icu" "jayabola99.bond"
-"jayabola99.cfd" "jayabolaa.art" "jayabolaa.asia" "jayabolaa.com" "jayabola.day" "jayaboladua.fyi" "jayaboladua.hair" "jayaboladua.monster" "jayaboladua.skin"
-"jayaboladua.xyz" "jayabola.fyi" "jayabola.tel" "jayaclips.com" "jayadunialottery88.com" "jayagaktuh.com" "jayamonas.com" "jayanewyear.com" "jayapasti88.com"
-"jayapkmagic.com" "jayapkrsnow.com" "jayaprima69.top" "jayascore.cfd" "jayaslot.site" "jayasmedia.in" "jayaspace.com" "jayaterusmasbro.one" "jayatg99.com"
 "jayatgbagus2.com" "jayatgbagus3.com" "jayatgbagus6.com" "jayatggacor.com" "jayatg-jitu.com" "jayatglbet99.com" "jayatglounge.com" "jayatgmantap.com" "jayatgnatal.com"
 "jayatgwangi.com" "jaya-togel2021.com" "jayatogel2023.com" "jayatogel2.com" "jayatogel3.com" "jayatogel-88.com" "jayatogelabadi.com" "jayatogel.com" "jayatogelzeus.com"
 "jayavip.com" "jayawinter.com" "jaydenleexxx.com" "jaylee.org" "jazeel.id" "jazznoise.org" "jb62.lol" "jb63.lol" "jb89.lol"
@@ -1401,25 +1328,6 @@ DOMAINS_TO_CLEAN=(
 "military-heat.com" "milkmomporn.info" "millie.id" "milli.link" "millionaire99.com" "milo4dslot.xyz" "milogo.com.mx" "miloterbaru88.xyz" "mimiavclub.click"
 "mimiges3.top" "mimigirl11.shop" "mimigirl8.buzz" "mimiperifans.info" "mimisenlinw.rent" "mimivtuber.wiki" "mimtube.pro" "minded.in" "mindspring.com"
 "mingan.id" "minimalbrisa.com" "miningco.com" "minion178game.info" "minisite.ai" "ministriesofchrist.org" "minitokyo.net" "minkrol.com" "minneapolisrunning.com"
-"minormakerslab.nl" "minprom.biz" "mintad.co" "minucams.com" "minumbeer.pro" "minuporno.com" "minyakcapkapak.com" "minyakluckyst99.com" "miobnipunya.pro"
-"miporno.org" "miportal.es" "mirjkembangan.org" "mir-porno.live" "mirror-communications.com" "mirwellnessa.ru" "misalofindia.com" "misipoker.com" "miso88.beauty"
-"misoler.id" "missav.com" "missav.uno" "mistecko.cz" "misteri8000.top" "misteribet77a.com" "misteribet77a.xyz" "misteribet77.info" "misteribet77.live"
-"misteribet77.online" "misteribet77.store" "misteribet77.vip" "misterilobby.live" "misterjp.click" "mistermaker3d.com" "mistertutorial.com" "mistiktogel.monster" "misto.cz"
-"mitful.com" "mitosbet.xyz" "mitra77.fun" "mitragacor.info" "mitrainfini.website" "mitrakuliah.com" "mitsubishi-serang.id" "mittskattekammer.net" "mitube.bond"
-"mixh.jp" "mixmicrtg88.net" "mix-porn.cc" "mixporn.site" "miyajp.one" "miyoavclub.click" "miyuhot.com" "mizinov.net" "mizy.info"
-"mjavyanna.com" "mjedge.net" "mjmfilms.com" "mkan.today" "mkcl.org" "mkland.id" "mkqiiga.xyz" "m-ku.ru" "mlb.st"
-"mlijo.id" "mls-colombia.com.co" "mm30.mom" "mm4k.live" "mmbosl.buzz" "mmbosl.life" "mmbyt-week.buzz" "mmhd.live" "mmhmm194.xyz"
-"mmm.me" "mmm.page" "mmoviez.com" "mmse.live" "mmsleakvideo.quest" "mmspquhq.cc" "mms-telefonsex.de" "mmsxx.live" "mmwindowsroofingandsiding.com"
-"mmxtoken.io" "mmxxx.xyz" "mncr.ca" "mobaks.org" "mobatogelgacor.com" "mobibanya.ru" "mobie.in" "mobilepornovideo.com" "mobileservices.sbs"
-"mobileservices.tel" "mobil.fetisch-telefonsex.org" "mobiliar.ch" "mobilixnet.dk" "mobilmarkam.com" "mobirisesite.com" "mobsex.top" "mobsite.dev" "mocastore.org"
-"mocosports.se" "modblog.com" "modekini88.com" "modelcentro.com" "modelsex.com" "models-pornstars.com" "modeluv.com" "modenporno.top" "modern-twist.com"
-"modokomfort.ru" "modybb.com" "moesexy.com" "mofosnetwork.com" "mogenporrgratis.com" "mogenporr.org" "moglitroie.org" "mognadamer.net" "moj3.com"
-"mokapog.com" "mokasi25pkr.com" "molitva24.ru" "momandson.quest" "mommysgirl.com" "momo189.live" "momo189.online" "momo189.store" "momo189.tech"
-"momo189x.info" "momo-kun.com" "momoutnumbered.co.za" "moms-love-sex.info" "momxxx.space" "monacannation.com" "monas128.live" "monata189.live" "monata189.shop"
-"monata189.store" "mon-blog.org" "mondocamgirls.com" "moneyanglej4tf7gc.cfd" "moneyflash2.com" "moneyrear.xyz" "monforum.com" "monforum.fr" "mongenie.com"
-"mongoengine.org" "moniablog.ru" "monkeyfoot73gt2s.cfd" "monporno.biz" "monsoon2016.com.tw" "monsterlink.net" "monsterwhitecock.com" "montanatoto.site" "montely.id"
-"montereycountypoa.org" "montrealaubaine.ca" "moonbet303.live" "moonfruit.com" "moonlight-club.ru" "moonll.com" "moonsub123.com" "moonsub88.com" "mooo.com"
-"moph.co" "morcillopallares.com" "morein.hair" "morelivetv.com" "morenthoinstitute.co.za" "more-sex.info" "moretolaw.com" "moreystudio.com" "morphos.io"
 "morre.io" "morrisgames.info" "morrisonhotelgallery.com" "moskva.sex" "moslogistic.ru" "mos-olimpauto.ru" "mospill.ru" "moss6235.one" "moss780.one"
 "moss9753.one" "mossav14.buzz" "mostlymusic.com" "mosytee.com" "motiondriedzlqjp.shop" "motorolaservicecare.in" "motor-panas.live" "motorsinternationals.com" "mottusuchi.in"
 "mountainstream.id" "mountairymd.org" "mouplands.org" "movie1880news.xyz" "movie3x.space" "movie.blog" "movielinks.be" "moviemonster.com" "movienudephotos.mobi"
@@ -1566,32 +1474,6 @@ DOMAINS_TO_CLEAN=(
 "participate.online" "partnerclicks.nl" "partnervermittlung-24.net" "partout.org" "partycasino.com" "partyhitsmusic.com" "partypoker.com" "pas4d.club" "pasangno2.site"
 "pasang-nomor2.bond" "pasang-nomor.world" "pasar123daftar.com" "pasar123game.live" "pasarbaris1.com" "pasarjpcrowd40.icu" "pasarjpcrowd45.xyz" "pascallandau.com" "pascolgemini.com"
 "pascoltaurus.com" "pasien77.store" "pasien77x.live" "pass.as" "passionhd.club" "pastagigi.ws" "pastibet78.live" "pastibet78.online" "pastibet78.shop"
-"pastibet78x.live" "pastidapatbagus.shop" "pastihoki.website" "pastihype.com" "pastijp.pro" "pastivenus.com" "pasukanantidepo.icu" "patatastubes.top" "pategas.ru"
-"pathbot.com" "pathlightgroup.org" "pathvisio.org" "patimura.space" "patriot77a.xyz" "patriot77.live" "patriot77.site" "patriot77.store" "patrz.pl"
-"patternorpractice.com" "pattoincucina.it" "paulapacesetter.com" "pauldrybooks.com" "paulropp.com" "pawangstore.net" "pawankumarkonda.in" "pawar.me" "pay24-callback.com"
-"paydaykbt.org" "payfazzindonesia.com" "paysites.ws" "pb9bra.lol" "pbaliproperty.com" "pbet.pro" "pb.online" "pbull.com" "pbworks.com"
-"pc3lsrgv7.com" "pcadsl.com" "pcadsl.com.tw" "pcc.jp" "pc-gamer.com.ua" "pcm-net.com.mx" "pcxx.live" "pdajerky.com" "pdk3mi.org"
-"pdtspelalawan.com" "peachpuff.xyz" "pearlofrussia.ru" "peatix.com" "pecahlayar.lol" "pedang77b.quest" "pedasmanis.live" "pediamu.com" "pedro4d01.com"
-"pedro4d02.com" "peduli-ceriabet.net" "pedulimikro.com" "peekvids.com" "peel.pl" "pegashaha.cc" "peggygordons.com" "pejuhin.xyz" "pekku.com"
-"pelangi189a.biz" "pelangi189a.com" "pelangi189.live" "pelangi189.online" "pelangi189x.live" "pelangikawkw.net" "pelangisport.net" "pelanpelansajabro.com" "pelatihan-management.com"
-"peletgurih.xyz" "peliculascompletas.cyou" "peliculas.cyou" "peliculaspornosonline.com" "peliculasxxxespanol.com" "peluang77.live" "peluang77.online" "peludasmaduras.top" "pemain88.io"
-"pemainqq.info" "pemburupetir.online" "pemburutogel.biz" "pemburutogel.club" "pemulungreceh.com" "penaslotbig.in" "pencariangka.club" "pencariangka.co" "pencariangka.org"
-"phimsetnhat.top" "phimsex18.top" "phimsex1.top" "phimsex77.com" "phimsexanime.top" "phimsex.casa" "phimsexcotrang.casa" "phimsexcotrang.cyou" "phimsexhanquoc.cyou"
-"phimsexhay.monster" "phimsexhd.cfd" "phimsexhd.cyou" "phimsexhihi.top" "phimsexhocsinh.top" "phim-sex.info" "phimsexkhongche.cfd" "phimsexkhongche.cyou" "phimsexkhongche.top"
-"phimsexkoche.casa" "phimsexlao.top" "phimsexmassage.top" "phimsexmoi.cfd" "phimsexmyden.com" "phimsexnhanh.casa" "phimsexnhatbankhongche.org" "phimsexnhatbankhongche.top" "phimsexnhatbanmoinhat.com"
-"phimsexonline.casa" "phimsexonline.cfd" "phimsexphatrinh.top" "phimsexphu.top" "phimsexthu.casa" "phimsexvietsub.icu" "phimsexvietsub.me" "phimsexvip.cc" "phimsexx.click"
-"phimsexy.casa" "phimsez.net" "phimvideoxxx.casa" "phimvideoxxx.click" "phimvideoxxx.top" "phimxec.click" "phimxech.casa" "phimxech.org" "phimxech.top"
-"phimxec.top" "phimxes.click" "phimxet.cyou" "phimxetnhatban.com" "phimxetnhatban.top" "phimxet.top" "phimxex.cyou" "phimxx.casa" "phimxx.top"
-"phimxxvn.top" "phimxxx.casa" "phimxxx.cyou" "phimxxxhan.click" "phimxxxsex.casa" "phimxxxsex.click" "phimxxxsexvn.top" "phimxxxthu.click" "phimxxxthudam.top"
-"phimxxxvn.cyou" "phimxxxvn.top" "phmetro.top" "pho92co.com" "phoenixapartment.rw" "phonecover.pk" "phonesex-top.net" "phoshouse.ca" "phot0s.com"
-"photo.free.fr" "photohongkong.com" "photohow.com" "photos2x.com" "photosfor.us" "photo-smena.ru" "photosvideosgratuites.com" "phoxao88.com" "phpbbx.de"
-"phpnet.us" "phreehost.com" "phuddi.com" "phxlurkv.com" "phxx.xyz" "phylae.io" "pia.ai" "piagam1.xyz" "piala45.live"
-"pkr3.asia" "pkr3.me" "pkr45.com" "pkr4.com" "pkr5.biz" "pkr69.com" "pkr7.asia" "pkr7.vip" "pkr7.win"
-"pkr855.asia" "pkr88.biz" "pkr88.click" "pkr-88.com" "pkr88.info" "pkr88.live" "pkr88.plus" "pkr-8.com" "pkr8.net"
-"pkr99.biz" "pkr99.win" "pkr-9.asia" "pkr9.asia" "pkralt.com" "pkr.asia" "pkrceme.com" "pkrdomino99.com" "pkrdomino99.site"
-"pkrdomino.com" "pkref.com" "pkrgaming.org" "pkrhok88.com" "pkrid.club" "pkrid.com" "pkrlink.com" "pkrpedia.com" "pkrqq88.asia"
-"pkr-qq.asia" "pkr-qq.biz" "pkrqq.co" "pkr-qq.net" "pkv1.win" "pkv24jam.online" "pkv411.win" "pkv4d-atop.xyz" "pkv88.info"
-"pkvbandarkiu.beauty" "pkvbandarq.link" "pkvclub.net" "pkvdewa.win" "pkvdomino.club" "pkvdoyanqq.hair" "pkvdoyanqq.monster" "pkvgacor.xyz" "pkvgameid.com"
 "pkvgames99.website" "pkvgames.cam" "pkvgames.ml" "pkvgames.org" "pkvgames.poker" "pkvgames.skin" "pkvgaming.com" "pkv.ink" "pkvliga138.icu"
 "pkv.mx" "pkvpendekarqq.click" "pkvpendekarqq.skin" "pkvpkr.club" "pkvpoker.co" "pkvpro.online" "pkvpusatqq.cfd" "pkvpusatqq.wiki" "pkvsakong.click"
 "pkvsakong.sbs" "pkvsakong.tattoo" "pkvsakong.yachts" "pla8000.com" "place.cc" "plaisir-sexy.com" "planespotters.in" "planet12345.com" "planet4d.cc"
@@ -1628,40 +1510,6 @@ DOMAINS_TO_CLEAN=(
 "por4.org" "por4.top" "poranmallusex.live" "porkas4sg.pro" "pormama.com" "pormo.cam" "porn1212.com" "porn18.xxx" "porn1.tv"
 "porn2026.com" "porn2ppl.com" "porn34.com" "porn365.top" "porn4you.xxx" "porn666.net" "porna66.com" "pornaccess.com" "porna.cyou"
 "pornadept.com" "porn-adult-sexy.com" "pornandxxxvideos.com" "pornaphilma.com" "pornapikcara.com" "pornart.club" "pornasiansexvideo.com" "porn-av-xxx.com" "pornbats.com"
-"pornbb.org" "porn.biz" "pornblog.icu" "pornblog.pw" "pornblogreview.com" "pornblogsonline.com" "pornblog.top" "pornbluray.us" "pornblurbs.com"
-"pornbm.com" "pornbox.com" "porncache.net" "porncam.biz" "porncamnude.com" "pornchat18.online" "pornchat.stream" "pornclipsasian.com" "porn.com"
-"porncomicbook.com" "porncomicsex.com" "porncomicssex.com" "porn-comix2.com" "porn-comix.com" "porncomixvideos.com" "porndairy.in" "porndeutsch.top" "porndiq.com"
-"porndoe.com" "porndoepremium.com" "porndude.fun" "porndull.com" "porndx.com" "porneg.com" "porneng.com" "pornez.cam" "pornfh.com"
-"pornfilms.club" "pornfine.ru" "porn-fuzoku.com" "porngash.com" "porngirls.buzz" "porn-girls-videos.com" "porngodes.com" "porn-good.com" "porngpt.pro"
-"porn-gratis.info" "pornhab.fyi" "pornhail.com" "pornhap.vip" "pornhat.com" "pornhat.one" "pornhd18.info" "pornhd8k.net" "pornhd.best"
-"pornhd.pro" "pornhd.sex" "pornhdxxx.mobi" "pornhentai.net" "pornhex.com" "pornhhubb.com" "pornhoarder.tv" "pornhorr.ru" "pornhost.club"
-"pornhub.com" "pornhub.org" "porn-hub.top" "pornicifilmovi.com" "pornicifilmovi.sbs" "pornicifilmovi.top" "pornici.monster" "pornicivideo.com" "pornicivideo.cyou"
-"pornicivideo.sbs" "pornicivideo.top" "pornicom.com" "porn-images-xxx.com" "porn-image-xxx.com" "pornindiaxxx.com" "pornizlevideos.com" "pornjab.com" "pornjournal.eu"
-"pornk.top" "pornktube.fyi" "pornl.com" "pornline.org" "pornline.porn" "pornlivenews.com" "pornlog.co" "pornmaster.fun" "pornmilfvideos.com"
-"pornmobile.top" "pornmot.com" "pornmoviesonline.info" "pornmoviesonline.pro" "porno24na7.net" "porno365.be" "porno365x.top" "porno444.com" "porno-4all.org"
-"pornoantigo.cyou" "pornoa.org" "pornoa.top" "porno-awm.com" "pornoazeri.com" "pornoazeri.cyou" "pornobabi.com" "pornobande.com" "pornobegin.nl"
-"pornobitx.info" "pornobrasileiro.info" "pornobrazzers.biz" "pornocaliente.top" "pornocaseiro.cyou" "pornocaseromaduras.com" "pornochats.ru" "pornoclasic.com" "pornoclips.top"
-"pornocoinx.info" "pornocomcoroas.com" "pornoculotte.com" "pornocuvedete.com" "pornocuvedete.top" "porno.cymru" "pornodigo.com" "pornodome.ru" "pornodom.live"
-"pornodonne.com" "pornodonnemature.com" "pornodonnemature.top" "pornodonne.top" "pornodouche.com" "pornoebun.info" "pornoenespanolgratis.com" "pornoenespanollatino.com" "porno-erotica.com"
-"pornoespanollatino.com" "pornofe.co" "pornofemme.net" "pornofemme.org" "pornofemmes.com" "pornofemmes.org" "pornofemme.top" "pornofilm7.com" "pornofilm7.top"
-"pornofilm.cyou" "pornofilmdomaci.sbs" "pornofilmdomaci.top" "pornofilme.best" "pornofilme.cyou" "pornofilmegratis.org" "pornofilmegratis.top" "pornofilmeket.com" "pornofilmekingyen.click"
-"pornofilmek.org" "pornofilmekostenlos.org" "pornofilmekteljes.com" "pornofilmen.cyou" "pornofilmeonline.org" "pornofilmer.cyou" "pornofilmer.sbs" "pornofilmer.top" "pornofilmi66.com"
-"pornofilmitaliani.com" "pornofilmmom.com" "pornofilmmom.net" "pornofilmmom.top" "pornofilmova.sbs" "pornofilmova.top" "pornofilmovi.biz" "pornofilmovixxx.com" "pornofilm.sbs"
-"pornofilm.top" "pornofrancais.org" "pornofrancais.top" "pornofritze.com" "pornogostoso.cyou" "pornogo.tube" "pornography.bond" "pornogratis.click" "pornogratis.cyou"
-"pornogratuit.info" "pornogratuito.cyou" "pornogratuit.top" "pornogreece.com" "pornohap.quest" "pornohdgratis.net" "pornoheroes.info" "pornohikaye.cfd" "pornohrvatske.com"
-"pornohrvatske.cyou" "pornoingyen.net" "pornoingyen.top" "pornoitunes.info" "pornokaranje.com" "pornokaranje.sbs" "pornokaranje.top" "pornok.click" "pornokk.mobi"
-"porno-klass.info" "pornoklip.org" "pornoklipove.info" "pornoklipove.org" "pornok.org" "pornokrasive.com" "pornokvideok.com" "pornolatinoespanol.net" "pornolatino.info"
-"pornomaduras.net" "pornomaison.net" "pornomaman.top" "pornomame.cyou" "pornomame.top" "pornomamme.com" "pornomanda.net" "pornomatorke.org" "pornomatorke.top"
-"pornomaturegratuit.com" "pornomere.com" "pornomere.org" "pornomoglie.org" "pornomoglie.top" "porno-mp4.online" "pornomulher.cyou" "pornon.asia" "pornonline.pro"
-"pornonline.top" "pornonoculus.pro" "pornononna.com" "pornononne.com" "pornononne.top" "pornonorsk.cyou" "pornonorsk.top" "pornooblako.live" "pornoohd.xyz"
-"pornooldalak.top" "pornopab.ru" "pornoper.info" "pornophotowomans.com" "pornopishki.com" "pornoportugues.cyou" "porno-quotidien.com" "pornoreife.com" "pornoreifefrauen.com"
-"pornoreka.tv" "pornor.info" "pornoroulette.cam" "pornosaiti.com" "pornosbrasileiro.com" "pornosearch.guru" "pornoseksfilmovi.com" "pornoseksfilmovi.sbs" "pornoseksfilmovi.top"
-"pornosestri.com" "porno-sex.cam" "pornosexchat.com" "porno.sexy" "pornosharks.com" "pornoslike.sbs" "pornoslike.top" "pornosme.info" "pornosnimci.top"
-"pornosrbija.cyou" "pornosrbija.sbs" "pornosrbija.top" "pornossexooral.asia" "pornosto.com" "pornoszexvideok.com" "pornotagir.com" "pornotelki.net" "pornoteti.net"
-"pornotetonas.top" "pornotette.com" "pornotop.org" "porno-traha.com" "pornotribune.com" "pornotube.fyi" "pornotube.online" "pornotunes.info" "pornotv.mobi"
-"pornoukrainske.com" "pornoukr.net" "pornoulduz.top" "pornovater.com" "pornovecchie.org" "pornovelhas.com" "porno-video.chat" "pornovideogratuit.net" "pornovideoingyen.com"
-"pornovideok.org" "pornovideok.top" "pornovideos.cloud" "pornovideosekes.com" "porno-video-sexe.com" "pornovideot.org" "pornovideot.top" "pornovideoukr.com" "porno-vidos.icu"
-"pornovieux.com" "pornovieux.net" "pornovieux.org" "pornovieux.top" "pornovionline.com" "pornovkisku.com" "pornovp.info" "pornoxep.net" "pornoxui.net"
 "pornoxxx.cyou" "pornoxxxporn.com" "pornoyukle.sbs" "pornoyukle.top" "pornozafree.pl" "pornozx.com" "pornparadies.com" "pornphotoalbum.com" "pornpic.pro"
 "pornpoppy.com" "porn-porn.vip" "pornpost.in" "pornproxy.app" "pornproxy.art" "pornproxy.cc" "pornproxy.page" "pornproxy.xyz" "pornqt.com"
 "pornrah.com" "pornrancho.ru" "pornrv9.com" "pornsearch.info" "pornsextube.su" "pornsexvideo.quest" "pornsexyporn.com" "pornsitesfree.mobi" "pornsites.icu"
@@ -1763,27 +1611,6 @@ DOMAINS_TO_CLEAN=(
 "rouletapp.com" "rouleur.cc" "rowterm9rky6p.shop" "roxy99.com" "royal189a.live" "royal189.live" "royal189.store" "royal189.vip" "royal189x.live"
 "royal88alt.site" "royal88.fun" "royal99.top" "royalace.wiki" "royalbet928.autos" "royalcams.com" "royaldomino.net" "royaldomino.website" "royaldomino.win"
 "royale168c.life" "royalhoki77.website" "royaljpid.com" "royalpkr99.com" "royalpkr99.net" "royalpkr99.win" "royalqqid.com" "royalstid.com" "royaltgphost.com"
-"royaltogelgacor.com" "royaltogelgacor.net" "royalvegascasino.com" "rp77.pro" "rpatools.io" "rponly.com" "rpp188.net" "rq30.mom" "rqbfu.top"
-"rqrbadyi.com" "rqvrdbu.org" "rr548.de" "rrlbcf.com" "rrqesports.com" "rsdeltasurya.com" "rsjuwita.com" "rspondokindah.buzz" "rss4game.com"
-"rsudkraton.id" "rsudpanglimasebaya.com" "rsudpasarminggu.buzz" "rsumuliahati.com" "rsurachmahusada.com" "rsusiagamedikapemalang.com" "rt138.cyou" "rtepefun.com" "rtl.de"
-"rtp07.com" "rtp118.com" "rtp138wks.online" "rtp289.site" "rtp2waybet.shop" "rtp-333gaming.college" "rtp69.buzz" "rtp69.info" "rtp88.id"
-"rtp919.com" "rtp98ml.pro" "rtpaa.org" "rtpabong.site" "rtp.ac" "rtpacb.cfd" "rtpac.online" "rtpag1.com" "rtpag3.com"
-"rtpag9.org" "rtp-agen126.site" "rtpagengacor.com" "rtpagentop.com" "rtpakira.pro" "rtpaktif4d.mom" "rtpakurat-domtoto.live" "rtp-akurat-rajapanen.xyz" "rtpal5.xyz"
-"rtpaltasku.lat" "rtpamarta99-gcr.lol" "rtpamarta99.xyz" "rtpamperaku.store" "rtpanaslot1.com" "rtpanaslotkita.com" "rtp.app" "rtpaqua88.cam" "rtp-aresgacor.pics"
-"rtparies.cc" "rtp-b0ssw1n88.shop" "rtpbadut.click" "rtpbadut.live" "rtpbadut.online" "rtp-balon99.com" "rtp-bandarbo.com" "rtp.bar" "rtpbatikslot138.shop"
-"rtpbatikslot138.space" "rtp-bayar77.xyz" "rtpbaywin12.help" "rtpbb855.com" "rtpbcn.xyz" "rtpbdslot168.space" "rtpbdslot168.top" "rtpbeluga99.store" "rtp-bening88.com"
-"rtpbetabet77.com" "rtpbetabet77.org" "rtpbet.app" "rtpbet.bet" "rtpbet.live" "rtpbeton138bagus.info" "rtpbet.run" "rtpbet.xyz" "rtp-big77.app"
-"rtpbir88.xyz" "rtpbius303.com" "rtpbius303.xyz" "rtpbobaslot77.help" "rtpbongeslot.org" "rtp-booster.com" "rtpborneo168.com" "rtpbosnagagacor.com" "rtpboya88bet.com"
-"rtpbro55.shop" "rtpbro55.site" "rtpbrojpbest.com" "rtpbs.monster" "rtpcahaya77.site" "rtpcambobet.me" "rtpcambobet.top" "rtpcash.shop" "rtpcemara777.cc"
-"rtpcemarawin.com" "rtpceriaslot.org" "rtpchuan.store" "rtpcitypaman.city" "rtpcmw555.com" "rtpcoloksgp.info" "rtpcoloksgp.pro" "rtpcong.com" "rtpcong.site"
-"rtpcoy99.com" "rtpcuanjiwaku88bosku.xyz" "rtpcuanoso.one" "rtpdagelan4d.pro" "rtpdaily-ceria.bet" "rtpdeluna8.xyz" "rtpdesa4d.online" "rtp-detikslot888.xyz" "rtpdevo88.com"
-"rtpdevo88.org" "rtp-dewamaxwin.site" "rtpdewareceh.shop" "rtpdewataslot888b.top" "rtpdikia.com" "rtpdisini.com" "rtpdisini.site" "rtp-dolarslotmhax.site" "rtpdoremibet.info"
-"rtpdoremibet.online" "rtpdoremi.click" "rtp-dragon4d.com" "rtp-dragon99.com" "rtpduatoto.pro" "rtpduit188boom.wiki" "rtpdwg88.pro" "rtp-dws888c.top" "rtpegp8.com"
-"rtpfi1.com" "rtpfire138.com" "rtpfire.org" "rtpflash303.services" "rtp-flokitoto.info" "rtpfonix3388.net" "rtp-g777.pro" "rtpgacor100.win" "rtp-gacor.app"
-"rtpgacor.de" "rtpgacormalamini.com" "rtp-gacor.net" "rtp-gacor.org" "rtpgacorpaman.one" "rtpgacor-pasjackpot.info" "rtpgacor-rajazeus.com" "rtpgacorratu.info" "rtpgacorsamson.top"
-"rtpgacortoday.click" "rtpgacor.top" "rtpgacorvivo.com" "rtpgacorwarungbet.com" "rtpgacor-w.com" "rtpgacorx500.pro" "rtp-gacor.xyz" "rtpgamabet88.com" "rtpgameshs.com"
-"rtpgameshs.xyz" "rtpgameterpercaya.live" "rtpgaza.fun" "rtpgaza.site" "rtpgemoy123.com" "rtpgercep.com" "rtpghacor.info" "rtpghacor.xyz" "rtpgigatoto.vip"
-"rtpgo.org" "rtpgroup189.com" "rtpgtrtoto.info" "rtpgudang4d.store" "rtphalo138.shop" "rtphalo138.site" "rtphalo88klomang.lat" "rtphalojp.org" "rtpharapan777.info"
 "rtpharbet35.autos" "rtpharta8899.cfd" "rtpharta8899.lol" "rtphbnr88.online" "rtpheika77a.xyz" "rtphk-777.live" "rtphk-777.quest" "rtphk-777.skin" "rtphokidewa.net"
 "rtphore168.live" "rtp-hotliga.pro" "rtphulk138za.online" "rtp-hurahura.store" "rtphw.baby" "rtpidks.com" "rtpidspot.xyz" "rtpikut4d.com" "rtpikut4d.info"
 "rtpikut4d.link" "rtpindobet123.shop" "rtpindobit88.pro" "rtpindobit88.store" "rtpindomax88.cfd" "rtpindopromax.com" "rtpindowede11.click" "rtpini777.org" "rtp-inter.com"
@@ -1842,30 +1669,6 @@ DOMAINS_TO_CLEAN=(
 "scatter78slot.top" "scatter.baby" "scatternagahitam.net" "scattershitam.live" "scatterslot78.com" "scatters.world" "scbd88.life" "scbyhwrl.org" "scer.io"
 "scharffenberger.com" "sch.id" "schlampen-telefonsex.de" "schlepzig.com" "scholaffectus.org" "schoolgirltits.com" "schwaben.ru" "science.blog" "scmhabra.org"
 "scolariattrezzature.it" "scooch.io" "scorchin.com" "score808.cc" "score808cc.com" "score808.online" "score808pro.com" "score808.today" "score808.tv"
-"score808.world" "scorpiodates.net" "scrbl.io" "screens-action.com" "scriptdash.com" "scriptjos.site" "scw.cloud" "sd4f.de" "sdddh606.cc"
-"sdelajsam.ru" "sdf1st.com" "sdfasdfwerwz.site" "sdg.today" "sdnongcun.com" "sdy.lol" "se22.buzz" "seakaya.site" "searchking.com"
-"searchmole.co.uk" "searchpositioning.co.uk" "seatrans.id" "seatsex.wiki" "seattlesnowmass2021.net" "seaturtlehospital.org" "sebagus.cc" "sebeke.biz" "sebogo.us"
-"secaraa.online" "secondwind.org" "secu-ionline.com" "secureholiday.net" "secureserver.net" "sedapmalam.lol" "sedapmalam.pro" "sedaret.com" "sedayu138a.cfd"
-"sedayumaju.cc" "sedohub.xyz" "seesaa.net" "seesexvideos.bond" "seesexvideos.mobi" "seexh.com" "sega4dkita.online" "sega4dku.site" "sega4dkuy.online"
-"serverkorea.lol" "serverluarthai.click" "server-main.vip" "servernaga.com" "servernusa.services" "serverpkv.bid" "serverpkvgacor.xyz" "serverpkv.tk" "serverride.com"
-"serversendok.vip" "server.us" "servetunsal.com" "service-today.ca" "servik.com" "sesebaa2.top" "sesetoto03.com" "sesetv00.vip" "sesetv02.vip"
-"sesetv03.vip" "sesetv06.vip" "sessoaltelefono.xyz" "sessoanale.top" "sessoanalevideo.com" "sessodot.com" "setandanau.com" "sethome.cc" "setiamesinslot.com"
-"settlespiderkrcx5k.shop" "setxpvwa.cc" "seveg.it" "seven88.xyz" "sevenluckyst99.net" "sewaps.com" "sewatenda.id" "sewu2.xyz" "sex3dcomix.com"
-"sex3d.pro" "sex4.tv" "sex4yo.wiki" "sex69.to" "sex8888.icu" "sex8888.me" "sexacartoon.com" "sexamtelefon.org" "sexapps.date"
-"sexarab.top" "sexartnet.com" "sexathome.top" "sexav-001.com" "sexav2nnn222.xyz" "sexav3nnn333.xyz" "sexav5nnn555.xyz" "sex-av.com" "sexbay.quest"
-"sex-bilder.net" "sexblob.com" "sexblog.pw" "sexboomxxx.info" "sexbox.ws" "sexcam-fantasy.com" "sex-camlive.com" "sexcamscafe.com" "sex-cam-show.com"
-"sexcam-shows.com" "sexcams.plus" "sexcams-telefonsex.de" "sexcam-telefonsex.de" "sexcamtelefonsex.de" "sexcam-telefonsex.de.be" "sexcamtelefonsexor.com" "sexcam-telefonsex.xyz" "sexchel.quest"
-"sexcitypics.com" "sexclips.cyou" "sexclubprive.com" "sexcollectors.com" "sex.com" "sexcotrang.biz" "sexcotrang.top" "sexcredo.info" "sexdansk.com"
-"sexdansk.net" "sexdansk.top" "sexdarmowyfilmy.top" "sexdating.bid" "sexdatingtinder.nl" "sexdating.trade" "sex.de.be" "sexdeepfire.info" "sexdevo4ki.com"
-"sex-dirty.com" "sex-dojki.ru" "sexdrpia.quest" "sex-dupy.pl" "sexe1st.com" "sexe3f.com" "sexe-addiction.com" "sexeafricain.com" "sexefilmgratuit.top"
-"sexe-gratuit.st" "sexengines.de" "sexeniche.com" "sexenoire.com" "sexe-photos-fr.com" "sexetag.com" "sexe-torride.com" "sexetube.bond" "sexevideo.org"
-"sexe-xxl.fr" "sexfilm4free.com" "sexfilm.casa" "sexfilm.click" "sexfilme.best" "sexfilmegratis.org" "sexfilmekostenlos.com" "sexfilmekostenlos.org" "sexfilmekostenlos.top"
-"sexfilmereife.com" "sexfilmergratis.cyou" "sexfilmergratis.org" "sexfilmergratis.top" "sexfilmer.monster" "sexfilmer.top" "sexfilmgratiskijken.com" "sexfilmgratiskijken.top" "sexfilmiki.cyou"
-"sexfilmingyen.com" "sexfilmkijken.top" "sexfilmnl.com" "sexfilmnl.cyou" "sexfilmnl.top" "sexfilmpjesgratis7.top" "sexfilmpjesgratis.com" "sexfilmpjesgratis.cyou" "sexfilmpjesgratis.icu"
-"sexfilmpjesgratis.org" "sexfilmpjesgratis.top" "sexfilmsgratis.com" "sexfilmsgratis.cyou" "sexfilmsgratis.top" "sexfilms.monster" "sexfilm.top" "sexfilmvideo.asia" "sexfilmvrouw.top"
-"sexfilmy.monster" "sexfilmy.top" "sex-fotki.pl" "sexfotzen.com" "sexfreevideo.bond" "sexfullmovies.com" "sexgame.men" "sexgeschichten-telefonsex.de" "sexgirl.de"
-"sexgirlyoung.quest" "sexhanquoc.casa" "sexhanquoc.cyou" "sexhayxxx.xyz" "sexhd.club" "sexhindisex.com" "sexhocsinh.info" "sexhocsinh.top" "sex.hu"
-"sexiarab.info" "sexiestamateurs.com" "sexifilm.top" "sexinbook8.cc" "sexindex.info" "sexinhome.quest" "sex-in-world.com" "sexishot.wiki" "sexisten.eu"
 "sexite.pl" "sexjanet.com" "sexjav.cfd" "sexje.nl" "sexkex.com" "sexkhongche5.cyou" "sexkhongche.cfd" "sexkhongche.click" "sexkino-24.de"
 "sexklip.cyou" "sexkomix2.com" "sexkurwy.pl" "sexlaska.pl" "sex-laski.pl" "sex-link.hu" "sexlinks.club" "sexlist.club" "sexlivechatcam.com"
 "sex-magazine.biz" "sexmaman.top" "sexmamuskidarmowe.top" "sexmamuskifilmiki.cyou" "sexmastermueller.de" "sexmithausfrauen.net" "sexmmsscandal.quest" "sexmoi.cyou" "sexmonster.net"
@@ -1976,49 +1779,8 @@ DOMAINS_TO_CLEAN=(
 "squirt-pics.com" "squirtwithme.com" "sqweebs.com" "sqy888.buzz" "sr8fd7j9v.com" "srh.lol" "srikandi189.live" "srikandi189.shop" "srikandi189vip.shop"
 "srikandi189x.live" "srisainrithyalaya.in" "srishtidental.com" "srpskiporno.top" "srrth.com" "srxxx.live" "ssaso.ca" "sslip.io" "sslkn.fans"
 "sslkn.porn" "sslot.info" "ssrq22.top" "ss-rq.com" "sssp2.sbs" "sssuo19.xyz" "sstuku71.xyz" "sswhg.com" "ssxxs009.cc"
-"stackpathcdn.com" "sta.co.id" "stadtstiefel.at" "stakan.club" "star30nailspa.com" "starb.ca" "starbet388.cloud" "star-ceriabet.com" "starfree.jp"
-"starkooora.com" "starmovie.baby" "stars777.vip" "starse.net" "stars-nues-9.com" "stars-of-porn.com" "starsoft.website" "starsuntold.com" "starsze.icu"
-"starsze.net" "starsze.top" "start-2-telefonsex.de" "start4-erocenter.de" "startbeurs.be" "startbeurs.nl" "startbewijs.be" "startbewijs.nl" "startclub.be"
-"startclub.nl" "startdigitaal.be" "startdigitaal.nl" "startertjes.nl" "startgigant.nl" "startgroep.nl" "starthier.be" "startje.be" "startje.com"
-"startkabel.nl" "startkwartier.nl" "startmee.nl" "startpage.com" "startpagina.nl" "startplaza.be" "startplaza.nl" "startplezier.nl" "startspin.be"
-"startspin.nl" "startspot.be" "startspot.nl" "startstek.nl" "starttopper.nl" "startvista.be" "startvista.nl" "startvriend.nl" "startwereld.be"
 "startze.nl" "stasboxing.ru" "stasy.net" "stateadjectivetqfin.shop" "static.net" "statmemory.com" "statusdesign.ru" "stay-olshop.store" "stayphising.online"
 "stb88.com" "stb88.pro" "stck.me" "stcroixbeachmassage.com" "steadyhusbandl3161.shop" "steam-club.ru" "steamrush.com" "stechnosoft.biz" "stepdadsbigcock.quest"
-"stephparker.me" "sterntaler.com" "steroidmuscle.us" "stestyle.it" "stfrancistraining.com" "stikescirebon.com" "stillspirits.com" "sti-trans.ru" "stj666.top"
-"stj99t.cyou" "stlshoot.com" "stockberry.io" "stoelzle-lausitz.com" "stompgrip.com" "stonebet88.xyz" "stonetawne.net" "stoneycreekhydraulics.ca" "stonline.io"
-"stoodavoido2wk0cv.cfd" "stopjudi.com" "stoplight.io" "stopnblock.com" "stopsmokingsupport.com" "storeinfo.jp" "storepkv.site" "storeshoes.net" "stormloader.com"
-"stormybyte.com" "storybookstar.com" "storytooday.com" "story-woods.ru" "stoutetijden.nl" "stoyra.com" "stranger.world" "strapon.in" "straponinluxury.quest"
-"strapononwebcam.bond" "strategy-by-design.com" "strategytofreedom.com" "stream2watch.sx" "streamate.com" "streamen.com" "streameye.com" "streamingradio.pe" "streamray.com"
-"streamsexclips.org" "strikingly.com" "strikingly.fun" "strip2.club" "stripa.net" "stripbabes.com" "strip.chat" "stripchat.com" "stripchat.global"
-"stripmighty13vgw.cfd" "strjapyha.ru" "strocoin.io" "stroi33.ru" "strongceriabet.info" "strongceriabet.xyz" "strongherfitness.ca" "strongmagnetsdiscount.fr" "strongsteelblue.xyz"
-"stroysam40.ru" "structx.com" "struttinginstyle.com" "sttr-i.com" "stubehome.it" "studentanalsex.bond" "studentbiryani.ca" "studentrealsex.quest" "studio54doc.com"
-"studio8lincoln.co.uk" "studiobet78a.com" "studiobet78b.info" "studiobet78.live" "studiobet78.studio" "studiobet78.vip" "studiodalpra.it" "studioelitechicago.com" "studiopulsa.site"
-"studiosegura.com" "studio.site" "studiosjoesjoe.com" "stufftoread.com" "stumbleupon.com" "sty.best" "styleguides.io" "stylehighness.com" "stylove.com"
-"su19.com" "suara89a.live" "suara89a.store" "suara89.live" "suara89.online" "suarabet89.live" "sub4you.de" "subdomain.life" "subefotos.com"
-"subespanol.top" "subito.cc" "subler.fr" "submitworker.com" "subnet.dk" "substack.com" "subst.ch" "subtitulado.cyou" "subuhamp.site"
-"subur88.cc" "subur.info" "subur.me" "subway.com" "successinayearcoaching.com" "suceuses-de-bites.com" "sucheknet.info" "suche-telefonsex.de" "suche-telefonsex.de.vu"
-"suchonok.com" "sucken.de" "suckhernipples.info" "suckingallcocks.quest" "suckingxxx.mobi" "suckscock.bond" "sucks.nl" "suckz.de" "sudutbaca.com"
-"suegras.top" "sugarcock.com" "sugar.xxx" "sugih4dbet.asia" "sugih4dbet.quest" "suhu189a.live" "suhu189.live" "suhu189.online" "suhu189.vip"
-"suhu189vip.com" "suhuangka.buzz" "suhuarwanas.top" "suhupola.xyz" "suhutg.cc" "suhutogel.life" "suhu.vip" "suhux189.info" "suisse.st"
-"sukabet-gacor.space" "sukabet-slot88.shop" "sukaceriabet.info" "sukajago.com" "sukakaisartoto88.com" "sukaporno.com" "sukas.org" "sukasukapik.shop" "sukaxo368.site"
-"sukmabola.xyz" "sukses4dprize.com" "suksesceria.com" "suksesmaxjp.online" "suksespkr.com" "suktube.com" "sulebet.life" "sule-bet-wong.one" "sultan189.live"
-"sultan189.shop" "sultan189vip.shop" "sultan189x.live" "sultan33e.lol" "sultan33f.sbs" "sultan78.co" "sultan78slot.top" "sultankiu.xyz" "sultansulaiman.id"
-"sultradata.com" "sulutsiar.id" "sumateraxpost.com" "sumatra4d.xyz" "sumberfintech.club" "sumbergading.id" "sumbermakmur.site" "summitgoon.com" "summitlakecommunitychurch.org"
-"sumoqq.me" "sumseltoto.buzz" "sumutkota.com" "sumynews.tv" "sunarqq.com" "suncokret-gvozd.hr" "sundaymarket.pro" "sungaicimahitoto.com" "sunhosting.net"
-"sunjoker123.vip" "sunjoker388.me" "sunnyptickets.ca" "sunpor.id" "suntikrtp.club" "suntikrtp.pro" "sun-togel.com" "suntogel.vip" "suo32.ru"
-"suomipornoa.org" "suomipornoa.top" "suomiporno.top" "suomivids.com" "superabbit33.cfd" "superabbit777.shop" "superabbit77.beauty" "superabbit77.bond" "superabbit77.buzz"
-"superabbit77.cfd" "superabbit77.cyou" "superabbit77.digital" "superabbit77.directory" "superabbit77.fun" "superabbit77.lat" "superabbit77.lol" "superabbit77.mom" "superabbit77.online"
-"superabbit77.run" "superabbit77.site" "superabbit77.skin" "superabbit77.today" "superabbit77.top" "superabbit77.website" "superabbit77.wiki" "superabbit77.win" "superabbit77.world"
-"superabbit77.xyz" "superajaib.site" "superargo77.cfd" "superb70.cfd" "superb90.shop" "superbarca77.top" "superbingo77.buzz" "superbingo77.sbs" "superbos.top"
-"superbpaper.io" "superbt777.sbs" "supercell.net" "superchat.live" "superczech.com" "superdanny.link" "supereva.it" "superface.net" "superfun99.fun"
-"superkali.site" "superking777top.fun" "superkingstar.lol" "superku1x.one" "superlembut.site" "superleo77.buzz" "superleo77.cfd" "superleo77.sbs" "superlive77.cfd"
-"superlumer.site" "super-mpo500.com" "super-mpo868.com" "supermpo.bet" "supermpo.mom" "supermpo.monster" "supernagapk.com" "supernailsnpedispa.com" "super-neymar.art"
-"super-neymar.blog" "super-neymar.live" "super-reve.com" "superseks.top" "supersex.pl" "supershoppingspree.com" "superslutthemovie.com" "superstarnoticias.pe" "supertekan.site"
-"supertips.nl" "supertop-100.com" "supertwinks.com" "superzipirar88.cyou" "superzipirar88.monster" "sup.fr" "supplyanddemand.us" "supportivehousingottawa.ca" "su-prime.ru"
-"supr-site.info" "supxxx6.xyz" "surasa.xyz" "sureguidance.com" "sureshow.io" "suretyhealthcare.in" "surfino.info" "surfreportrincao.com" "surfseeker.nz"
-"surf.to" "surganyakita.cfd" "surgawanita.com" "surlaroute.mx" "surplus-schoolsbaltimore.com" "surrender100.com" "surveyscience.co.uk" "survivingseminary.com" "sur-web.com"
-"susanprendina.com" "sushidozotorino.it" "sushimomiji.ca" "sushirestaurantmesquite.com" "sushiyume.it" "susi.cash" "sussexrsoc.co.uk" "suster4dslot.com" "sususehat.xyz"
-"suzukigarut.co.id" "sv-agen126.com" "svenskaporn.com" "svenskaporn.top" "svenskaporrfilmer.org" "svensksexfilmer.com" "svipl.ink" "svol0.asia" "svoyl2.ru"
 "sw1220.top" "sw20250101.click" "sw77.life" "swag.live" "swaincrosscountry.org" "swaminigamananda.org" "swapfullvideos.mobi" "swbwqjq.cc" "sweatylifefitness.com"
 "swedishcasinobonuses.com" "sweetbantonya.quest" "sweetg.ca" "sweetiepie.xyz" "sweetporn.top" "sweetrehab.ca" "sweetsustainability.ca" "swe.org" "swiftbox.in"
 "swiftfest.io" "swingerclub.ru" "swisscasinobonuses.com" "swvt.ca" "sxarts.com" "sxfn25v3.top" "sxkomik.host" "sxnarod.com" "s-x.nl"
@@ -2084,40 +1846,6 @@ DOMAINS_TO_CLEAN=(
 "tigoals02.com" "tigoals03.com" "tigoals04.com" "tigoals05.com" "tigoals06.com" "tigoals07.com" "tigoals08.com" "tigoals09.com" "tigoals100.com"
 "tigoals101.com" "tigoals102.com" "tigoals103.com" "tigoals104.com" "tigoals105.com" "tigoals106.com" "tigoals107.com" "tigoals108.com" "tigoals109.com"
 "tigoals10.com" "tigoals110.com" "tigoals111.com" "tigoals112.com" "tigoals113.com" "tigoals114.com" "tigoals115.com" "tigoals116.com" "tigoals117.com"
-"tigoals994.com" "tigoals995.com" "tigoals996.com" "tigoals997.com" "tigoals998.com" "tigoals999.com" "tigoals99.com" "tigoals9.com" "tiiny.site"
-"tiket365a.xyz" "tiket365.live" "tiket365.store" "tikislot1.site" "tiktokcomics.com" "tilda.ws" "tillamookoregonsolutions.com" "tilley.com" "timeindolot88.net"
-"timemicrotogel88.com" "timemicrtg88.com" "times.lv" "timesquare.co.in" "timestoplay.lat" "timeunique.com" "timi22.co" "timornet.id" "tinas-telefonsex.de"
-"tina-telefonsex.de" "tinfick.de" "tinju189a.xyz" "tinju189b.live" "tinju189.live" "tinju189.online" "tinju189x.live" "tinju189.xyz" "tinklepad.club"
-"tinnituscontrol.xyz" "tinusi.com" "tinyblogging.com" "tipcogmbh.com" "tipjes.nl" "tip.nu" "tipsagenolx.info" "tipsydeveloper.io" "tiraipolatepat.com"
-"tiscali.fr" "tiscali.it" "tistory.com" "titangaming303.live" "titanhousing.com" "titanjoker123.net" "titan-man.info" "titan-man.me" "titanwhite.xyz"
-"titfap.com" "titipbli.com" "tito.waw.pl" "titsamateur.com" "tittenfick.top" "titten-telefonsex1.com" "titten-telefonsex.de" "titze.biz" "tivolipaintstore.com"
-"tizam.pw" "tizam.ru" "tizonatech.com" "tjgy.com" "tjm-indonesia.com" "tjp.quest" "tjzrtwt.com" "tk686.info" "tkp.ink"
-"tkrejeki99.net" "tkrejeki99.org" "tkrgb6kb.top" "tle-id.com" "tltcn.ru" "tm187.top" "tm57f6m9s.com" "tmbet88zeus.space" "tmfweb.nl"
-"tmgreenbull.com.ua" "tml.ink" "tnaflix.com" "tnamedia.co.za" "tnlxincluding2yi70whale.shop" "tnxt7n85.top" "to10.de" "to2.info" "tobrut4d.vip"
-"tobrut.xyz" "tobsan.se" "tochterporn.com" "todayiwrote.co.uk" "todeyboy.fan" "todoorganiko.mx" "todorunt.com" "todosobrebebes.com" "toffporn.bond"
-"togel188amp.com" "togel288amp1.xyz" "togel69amp1.com" "togelakurat.org" "togel.cam" "togel.cc" "togelcc3.com" "togelcc777.com" "togelccku77.com"
-"togelcczeus.com" "togel.com" "togel.hair" "togelhk6d.net" "togelhongkongpools.org" "togel.icu" "togelinplay.store" "togelmaster.app" "togelmaster.group"
-"togelmaster.guru" "togelmaster.sbs" "togelmaster.work" "togelmbah.live" "togelon788.life" "togel-online711.cc" "togelsg.top" "togelshio.icu" "togelshio.info"
-"togelshio.org" "togel.skin" "togelspace.com" "togels.top" "togelup788.life" "togelweb.info" "toh.info" "tohsgaming.com" "tokek88a.info"
-"tokek88.live" "tokek88.pics" "tokek88.tech" "tokek88.vip" "tokek88vip.online" "tokekx88.live" "toko8t.com" "tokoalatsekolah.online" "tokobet238web.fun"
-"tokobisquid.xyz" "tokoflokitoto.com" "tokogame.live" "tokogame.xyz" "tokogayabaru.biz" "tokogc8800.hair" "tokojelly.lol" "tokok.io" "tokokisarantoto.com"
-"tokortptinggi.com" "tokototo.cc" "tokyo99.ink" "tokyoasmr.ca" "tokyoxxxclips.com" "toltontimes.com" "to-mainspin.com" "tomanbesar.com" "tomandhome.ru"
-"tomanku.id" "tomasp.net" "tomato333.com" "tomcatfurniture.ca" "tomgalls.com" "tommygunarts-rpg.de" "tomorrowporn.com" "tompel69.co" "tomsing.my"
-"tomwardle.net" "tonalan.info" "tongueroadjyxetf9.cfd" "tongxldh090.buzz" "t-online.de" "tonsite.biz" "toocartoons.com" "toolcirclef6mua.cfd" "top100.casino"
-"top100italia.org" "top100.org" "top100pages.net" "top-100.pl" "top1toto199.com" "top1toto988.com" "top1xnxx.autos" "top1xnxx.lat" "topactress.info"
-"top-affiliation.net" "topanasex.com" "topbloghub.com" "topcities.com" "top.com" "topdewa-rtp.shop" "topdoglincoln.co.uk" "topdosex.mobi" "topescortbabes.com"
-"topexabet88.xyz" "topijerami.xyz" "topjugando.com" "topka.pl" "topkarir.com" "toplist-24.de" "toplista.pl" "toplistcreator.eu" "toplivedraw.com"
-"top.ms" "toppkr.com" "toprtp2.com" "toprtp3.com" "toprtp4.com" "toprtp.com" "topsex.club" "topsexe-fr.com" "top-sexe-porno.com"
-"topsiteworld.com" "top.tc" "top-telefonsex.club" "top-telefonsex.de" "top-telefonsex.xyz" "toptube.pro" "topuiqq.com" "top-videos.info" "topwdplay.com"
-"topxxx69.com" "topxxxvideos.wiki" "topz.mobi" "toraiqq.com" "torajamarathon.id" "tornadecoiffure.club" "tornadecoiffure.com" "torojitu.me" "toroporn.com"
-"torremocha.cc" "tosaweb.com" "toshibacarrierklima.com" "tos.homes" "tostripnude.wiki" "totalh.net" "totallyboning.us" "totallymusikz.com" "totalnude.net"
-"totalrewords.com" "toto12amp.pro" "toto168.design" "toto88slotbot.com" "toto919rtp.com" "totoberkahk.top" "totoberkahl.top" "totobet69.bond" "totobet69.buzz"
-"totobet69.charity" "totobet69.fun" "totobet69good.sbs" "totobet69idn.xyz" "totobet69jp.cam" "totobet69jp.sbs" "totobet69maju.sbs" "totobet69.quest" "totobet69.skin"
-"totobet69.website" "totobet69.world" "totogacor3d.cfd" "totogacorfree.fun" "totogacorjitu.site" "totohub.store" "totojitu3.com" "totojitu4.com" "totojitu88.com"
-"totojituabadi1.com" "totojitubetting.com" "totojitugacor.com" "totojitu-games.com" "totojitulottery.com" "totolotre110.com" "totomalika.com" "toto.nl" "totoplay189.pro"
-"totortp.net" "tototerpercaya.cfd" "tototogelwd.com" "totouber.me" "totouberr.info" "totouberr.me" "totouberr.one" "totouberr.online" "totouberr.xyz"
-"totoxl-slot.co" "totoxx.xyz" "toughmalerod.info" "tourcrimea.biz" "tousatu.fun" "tout-sur-la-fellation.com" "towncenteratavalonpark.com" "townofcrestone.org" "toyar.id"
-"toyar.io" "toyotalgx.homes" "tp11mud4.store" "tpc77.net" "tpc77.org" "tpkdiamond.com" "tpklight.com" "tpkmentos.com" "tpknewyear.com"
 "tpksaja.com" "tpkshine.com" "tpkstock.com" "tporn.info" "tpwfkefl.cc" "tq66.cc" "tqjiaz12.top" "trackoz.com" "tradee.ru"
 "tradeex.in" "tradersantiques.co.uk" "traders-journal.ru" "tradvids.com" "trafa.net" "trafficmanager.net" "traffictakeaway.com" "trafl.org" "trahat.top"
 "trahkino.club" "trahkino.pro" "trahkino.tube" "trahtv.club" "trajesdebano.quest" "traku.org" "traku.top" "tram.co.id" "trangphimxxx.click"
@@ -2248,27 +1976,6 @@ DOMAINS_TO_CLEAN=(
 "websites.co.in" "websiteshome.com" "websolutionwinner.com" "webspace4free.biz" "webspacemania.com" "webstarbilling.ru" "webstarts.com" "webteksites.com" "webvi.io"
 "webware.io" "webzdarma.cz" "weddingelectrics.com" "weddingsandeventsbysarah.com" "weddynova.ru" "wede777slot.com" "wedebolaku.skin" "wedoo.com" "wedustogel.com"
 "wee.bet" "weeblysite.com" "weeking.id" "wefaqpress.net" "welcomeart.net" "welcomeout.org" "welcometohongkongpools.info" "welcometohongkongpools.org" "welcometojkb.com"
-"weldingmachineindia.co.in" "wellbeinghealth.ca" "wellworldofficial.com" "wellxxx.com" "welovepantyhose.com" "weloveprints.com" "wen4fmy2.top" "wen9.com" "wendy.ai"
-"wenera.pl" "wengtoto.games" "wen.ru" "wen.su" "weprinciples.org" "wer.boats" "wereyoungerporn.mobi" "werite.net" "westbigtits.quest"
-"wetall2.com" "weteuros.com" "wethio.me" "wetogelsip.xyz" "wet-panties.net" "wetpussytumblr.live" "wetyyd.xyz" "wezone.io" "wfgbhhxm.xyz"
-"wfglobal.org" "wftp.org" "wfxdseku.top" "wg77.gratis" "wgmjuliet.com" "wgnetwork.cc" "wgtmu12a.cyou" "wgtoods.cyou" "wgz.cz"
-"wgz.ro" "whackfactor.com" "whatkatiedid.com" "whatnatural.net" "whatsupwithdoc.org" "wheelspin.pro" "whentai.com" "wheon.com" "wheregather0qtaa3o.shop"
-"where-you.net" "whileoncamera.wiki" "whisperingwillowgrove.store" "whiteslotbro.baby" "whiteslotjago.site" "whiteslotpro.click" "whiteslotpro.xyz" "whiteslots.art" "whiteslotsbro.site"
-"whiteslotsbro.xyz" "whiteslots.cfd" "whiteslotseru.cyou" "whiteslotseru.mom" "whiteslotshebat.click" "whiteslotshebat.lol" "whiteslots.ink" "whiteslotsjago.online" "whiteslotsjuara.com"
-"whiteslotsjuara.lol" "whiteslots.life" "whiteslots.mom" "whiteslots.one" "whiteslotspp.cfd" "whiteslotspp.click" "whiteslotspp.mom" "whiteslotspp.top" "whiteslotspro.click"
-"whiteslotspro.lol" "whiteslotsuka.lol" "whiteslots.world" "whiteslots.wtf" "whoeatcum.wiki" "who.int" "whsfb.com" "wi7rif.life" "wibu189.live"
-"wickforce.com" "widblog.com" "wider-challenge.org" "widezone.net" "wifecheating.mobi" "wifeo.com" "wifepornx.com" "wifesuckingcock.mobi" "wifeswapstories.mobi"
-"wifewantsbbc.info" "wif.homes" "wifikencang.com" "wigobet.com" "wigobetjackpot.com" "wigobetmaxwin.com" "wihuri.ee" "wiki3prize.cc" "wikiartis.cc"
-"wikibarca.cc" "wikibet6d.cc" "wikibuah.cc" "wikibudaya4d.cc" "wikibudaya.cc" "wikicareer.in" "wikidot.com" "wikifamily.cc" "wikiindo6d.cc"
-"wikiindowla.cc" "wikimcity.cc" "wikiperak.cc" "wikiprize.cc" "wikisbo.cc" "wikiscatter.cc" "wikiseleb.cc" "wikishop1.cc" "wikishop.cc"
-"xcm-dh1.top" "xcul.com" "xd03.net" "xd1.mom" "xdir.fr" "xdomain.jp" "xemsexvietsub.net" "xenium.nl" "xes.pl"
-"xexe.me" "xexnhat.top" "x-fetish.org" "xfilm.pro" "xflooow11t5r.icu" "xflooow6y12t1r.icu" "xfotze.com" "x.free.fr" "x-fr.org"
-"xfucksvideos.com" "xg2233.com" "xgo.jp" "xgrannytube.info" "xgroovy.com" "xh1.mom" "xhaccess.com" "xhadult2.com" "xhadult3.com"
-"xhadult4.com" "xhadult.com" "xhall.world" "xhamister.fun" "xham.live" "xhamster13.com" "xhamster18.desi" "xhamster19.com" "xhamster1.desi"
-"xhamster20.desi" "xhamster2.com" "xhamster3.com" "xhamster.best" "xhamster.com" "xhamster.desi" "xhamster.gg" "xhamsterlive.com" "xhamsterlive.space"
-"xhamster.one" "xhamsterporno.mx" "xhamsterwatch.com" "xha.name" "xhbe.world" "xhbranch5.com" "xhc10.top" "xhcd.life" "xhcrowd.world"
-"xhdate.world" "xhday1.com" "xhday.com" "xhentai.tv" "xhere.de" "xheve1.com" "xheve2.com" "xheve3.com" "xheve.com"
-"xhexperience.xyz" "xhido.mx" "xhit.pl" "xhmt.world" "xhnumber.xyz" "xhofficial2.com" "xhofficial6.com" "xhofficial.com" "xhopen.com"
 "xhost.ro" "xhshine.world" "xhs.mom" "xhsoftware.site" "xhspot.com" "xhtotal.com" "xhvictory.com" "xhvid1.com" "xhvid2.com"
 "xhvid3.com" "xhvid.com" "xhvoqx.id" "xhwebsite2.com" "xhwide1.com" "xhwide2.com" "xhwide3.com" "xhwide4.com" "xhwiki.life"
 "xianggua77.com" "xianggua88.com" "xiangjiao2.sbs" "xiangjiao3.sbs" "xiangjiao4.buzz" "xianyu1.buzz" "xianyubb.top" "xianzhu21.space" "xiaocaoav.store"
@@ -2327,15 +2034,6 @@ DOMAINS_TO_CLEAN=(
 "yahzi.be" "yakin303.cyou" "yakin.pro" "yakoila.com" "yakuza77.live" "yakuza77.online" "yakuza77.store" "yakuza77.tech" "yakuza77.vip"
 "yakuza77x.info" "yallae-shoot.com" "yallakoora-24.com" "yalla-koralive.com" "yallakora-live.com" "yallakorastar.com" "yalla-live.cc" "yalla-live.live" "yalla--live.net"
 "yallalive.one" "yalla-live.show" "yalla-lives.live" "yalla-live-tv.live" "yallamax.online" "yalla-shooot.online" "yalla-shoot24.com" "yallashoota.com" "yalla-shoot.ai"
-"yalla-shoot-as.com" "yalla-shootc.com" "yallashootextra.com" "yalla--shoot.live" "yallashoot-live.co" "yalla-shoot-live.com" "yallashoot-live.today" "yallashoot.one" "yalla-shootplus.com"
-"yalla-shootr.com" "yalla-shoot-sa.com" "yalla-shoot.show" "yalla-shoots.net" "yalla-shoots.plus" "yallashoott.com" "yallashoot.tv" "yalla-shoot-tv.live" "yallashootv.com"
-"yalla-shootw.com" "yalla-shooty.com" "yall-shoot.io" "yamahabismamandiri.com" "yaml.io" "yamon.xyz" "yanaga.me" "yangpentingjp.space" "yangyangtv12.top"
-"yangyangtv13.top" "yan.pics" "yapornomoll.info" "yard-design.ru" "yaroslavl.ru" "yarshpon.ru" "yase999.me" "yasexdi.wiki" "yasucha.com"
-"yattaman.com" "yayasankorpribali.org" "yaz2zap.xyz" "yazhouse8.xyz" "yazsb7.buzz" "yb6-dxc.net" "ybhz13.buzz" "ydns.eu" "ydsusa.org"
-"yeahh.com" "yeahlinks.com" "yeah.net" "yeaiba.com" "year2100.eu" "yebuhei.cyou" "yeelantube.live" "yemaung.com" "yemen-24.net"
-"yerelmagazam.com" "yerkopalma.me" "yer.monster" "yeseshuge.sbs" "yesjogja.com" "yesnaga.vip" "yesporn.cam" "yespornpleasex.com" "yesporn.space"
-"yeswegays.com" "yetkinporno.com" "yeyelu168.cc" "yhnnd9wcv.com" "yiersanlaosiji5nnn555.xyz" "yifeisp.fun" "yinsex.com" "yiujizz.quest" "yiyprqr.com"
-"yiz3zip.xyz" "yjllsq-hfsj3332ta.com" "yjs37.cfd" "yjs38.cfd" "yjs39.cfd" "ylfk4.buzz" "ylovecams.com" "ylqq.xyz" "ylwx68.xyz"
 "ymdh.club" "ymxx.live" "yn3k-with.buzz" "ynofboeo.com" "ynps001.top" "ynyoyo001.sbs" "ynyoyoo001.top" "yo24.pl" "yoasobi.vip"
 "yoda4dking.com" "yogarootsmindfulness.ca" "yoko-banka.ru" "yokohama-kamome.com" "yokototo788.life" "yoktogel788.life" "yolanda77.info" "yolanda77.live" "yolanda77.online"
 "yolanda77.store" "yolasite.com" "yolili.top" "yomoblog.com" "yonoallgames.top" "yonu11uiui.buzz" "yooco.org" "yopoint.in" "yorktownjewishcenter.org"
@@ -2353,131 +2051,84 @@ DOMAINS_TO_CLEAN=(
 "zxxyn1.sbs" "zxzx.live" "zya.me" "zybinska.io" "zyrosite.com" "zyrvc.com" "zza5top11j7h.icu" "zza5top7y1m1.xyz" "zzbfwoke.com"
 "zzgays.com" "zzgo818.top" "zzn.com" "zzw.pl"
 )
-# Cleanup
+# Cleanup function
 cleanup() {
-    rm -rf "$TEMP_DIR"
-    echo "Temporary files cleaned."
+    echo "[INFO] Cleaning up temporary files..."
+    rm -rf "${TEMP_DIR}"
+    rm -f "${DOMAIN_FILE}" "${TEMP_DIR}/iana_tlds.txt"
+    rm -f "${TEMP_DIR}"/*.chunk
+    rm -f "${TEMP_DIR}"/*.processed
 }
+
+# Set error trap
 trap cleanup EXIT
 
-# Fungsi download dengan aria2c
-download_file() {
-    local url="$1"
-    local output="$2"
-    local dir file
-    dir=$(dirname "$output")
-    file=$(basename "$output")
-    echo "Downloading $url ..."
-    aria2c -d "$dir" -o "$file" -x 16 -s 16 -k 1M --file-allocation=none --check-certificate=false --retry-wait=5 --max-tries=5 "$url" || {
-        echo "Failed to download $url" >&2
-        return 1
-    }
-}
-
-# Proses TLD
-process_tlds() {
-    local start_time=$(date +%s)
-    download_file "$TLD_URL" "$TEMP_DIR/$TLD_FILE"
-    LC_ALL=C mawk 'NR>1 {print tolower($0)}' "$TEMP_DIR/$TLD_FILE" > "$TEMP_DIR/tlds_clean.txt"
-    local end_time=$(date +%s)
-    echo "TLD processing completed in $((end_time - start_time)) seconds."
-}
-
-# Proses domain
-process_domains() {
-    local start_time=$(date +%s)
-    download_file "$DOMAINS_URL" "$TEMP_DIR/$DOMAINS_FILE"
-    LC_ALL=C mawk '{
-        gsub(/[^a-zA-Z0-9.-]/, "")
-        if ($0 ~ /^[a-z0-9.-]+$/) print tolower($0)
-    }' "$TEMP_DIR/$DOMAINS_FILE" | LC_ALL=C sort -u > "$TEMP_DIR/domains_clean.txt"
-    local end_time=$(date +%s)
-    echo "Domain processing completed in $((end_time - start_time)) seconds."
-}
-
-validate_domains() {
-    local start_time=$(date +%s)
-    export TLD_FILE_PATH="$TEMP_DIR/tlds_clean.txt"
-    
-    cat "$TEMP_DIR/domains_clean.txt" | parallel --pipe -N"$CHUNK_SIZE" -j"$PARALLEL_CORES" --halt now,fail=1 '
-        awk "NR==FNR {tlds[\$0]; next} {
-            n = split(\$0, parts, \".\")
-            if (n >= 2 && parts[n] in tlds) print
-        }" "$TLD_FILE_PATH" -
-    ' > "$TEMP_DIR/$OUTPUT_FILE"
-    
-    [[ ! -s "$TEMP_DIR/$OUTPUT_FILE" ]] && {
-        echo "Error: validation produced empty output" >&2
-        touch "$TEMP_DIR/$OUTPUT_FILE"
-    }
-    
-    local end_time=$(date +%s)
-    echo "Domain validation completed in $((end_time - start_time)) seconds."
-}
-
-clean_domains() {
-    local start_time=$(date +%s)
-    local domain_count=$(wc -l < "$TEMP_DIR/$OUTPUT_FILE")
-    echo "Processing $domain_count domains for cleaning..."
-    
-    printf "%s\n" "${DOMAINS_TO_CLEAN[@]}" | sed 's/\./\\./g; s/^/.*\\./' > "$TEMP_DIR/exclude_patterns.txt"
-    
-    local optimal_chunk=$((domain_count / PARALLEL_CORES + 1))
-    [[ $optimal_chunk -gt $CHUNK_SIZE ]] && optimal_chunk=$CHUNK_SIZE
-    
-    cat "$TEMP_DIR/$OUTPUT_FILE" | parallel --pipe -N"$optimal_chunk" -j"$PARALLEL_CORES" --halt now,fail=1 "
-        LC_ALL=C grep -vEf \"$TEMP_DIR/exclude_patterns.txt\" || true
-    " > "$TEMP_DIR/${OUTPUT_FILE}.tmp"
-    
-    [[ ! -s "$TEMP_DIR/${OUTPUT_FILE}.tmp" ]] && {
-        echo "Warning: cleaning produced empty output, preserving original" >&2
-        cp "$TEMP_DIR/$OUTPUT_FILE" "$TEMP_DIR/${OUTPUT_FILE}.tmp"
-    }
-    
-    mv "$TEMP_DIR/${OUTPUT_FILE}.tmp" "$TEMP_DIR/$OUTPUT_FILE"
-    
-    local end_time=$(date +%s)
-    echo "Domain cleaning completed in $((end_time - start_time)) seconds."
-}
-
-finalize_output() {
-    [[ ! -s "$TEMP_DIR/$OUTPUT_FILE" ]] && {
-        echo "Warning: Output file is empty. Attempting to recover..." >&2
-        cp "$TEMP_DIR/domains_clean.txt" "$TEMP_DIR/$OUTPUT_FILE"
-    }
-    
-    mv -f "$TEMP_DIR/$OUTPUT_FILE" "$FINAL_OUTPUT_FILE"
-    chmod 644 "$FINAL_OUTPUT_FILE"
-    
-    local final_count=$(wc -l < "$FINAL_OUTPUT_FILE")
-    echo "Final output contains $final_count domains."
-    echo "Output saved to: $FINAL_OUTPUT_FILE"
-}
-
-main() {
-    local total_start_time=$SECONDS
-    
-    LOCK_FILE="/tmp/tlds_validator.lock"
-    mkdir "$LOCK_FILE" 2>/dev/null || {
-        echo "Script is already running. Exiting." >&2
+# Function to check if file is empty
+check_file() {
+    local file="$1"
+    if [[ ! -s "${file}" ]]; then
+        echo "[ERROR] File ${file} is empty or does not exist"
         exit 1
-    }
-    trap 'rm -rf "$LOCK_FILE"; cleanup' EXIT
-    
-    echo "Starting TLD validation with $PARALLEL_CORES parallel processes (75% of $NUM_CORES cores)"
-    
-    process_tlds
-    process_domains
-    validate_domains
-    clean_domains
-    finalize_output
-    
-    echo "[INFO] Memory usage statistics:"
-    free -h
-    echo "[INFO] CPU usage during processing:"
-    mpstat 1 1 | tail -n 1
-    echo "Total lines in output file: $(wc -l < "${FINAL_OUTPUT_FILE}")"
-    echo "Validation completed in $((SECONDS - total_start_time)) seconds."
+    fi
 }
 
-main
+# Function to process a chunk of domains
+process_chunk() {
+    local chunk_file="$1"
+    local output_file="${chunk_file}.processed"
+    local valid_tlds_file="$2"
+    mawk -F '.' -v tlds_file="${valid_tlds_file}" '
+        BEGIN { while (getline < tlds_file) valid_tlds[$1] = 1 }
+        {
+            tld = tolower($NF)
+            # Filter karakter ilegal atau aturan domain
+            if (tld in valid_tlds && $0 !~ /[_:,\?]/ && $0 !~ /^\-/ && $0 !~ /\-$/) print $0
+        }
+    ' "${chunk_file}" > "${output_file}"
+}
+export -f process_chunk
+
+echo "[INFO] Downloading and preparing TLD lists..."
+
+# Download IANA TLD list bypassing SSL
+curl -s --insecure "${IANA_TLD_URL}" | grep -v '^#' | tr '[:upper:]' '[:lower:]' > "${TEMP_DIR}/iana_tlds.txt"
+check_file "${TEMP_DIR}/iana_tlds.txt"
+
+# Download domains_isp file bypassing SSL
+curl -s --insecure -o "${DOMAIN_FILE}" "${KOMINFO_URL}"
+check_file "${DOMAIN_FILE}"
+
+echo "[INFO] Processing domain list in parallel..."
+
+# Split input file into chunks for parallel processing
+split -l ${CHUNK_SIZE} "${DOMAIN_FILE}" "${TEMP_DIR}/chunk_"
+
+# Process chunks in parallel
+find "${TEMP_DIR}" -name 'chunk_*' | parallel -j${NUM_CORES} process_chunk {} "${TEMP_DIR}/iana_tlds.txt"
+
+# Combine processed chunks
+cat "${TEMP_DIR}"/*.processed > "${VALID_OUTPUT}.tmp"
+
+echo "[INFO] Removing subdomains for specified domains..."
+
+# Process domain cleaning in parallel using process substitution
+{
+    # Create a regex pattern file for faster matching
+    printf '%s\n' "${DOMAINS_TO_CLEAN[@]}" | sed 's/\./\\./g' | sed 's/^/\\./' > "${TEMP_DIR}/domains_pattern.txt"
+    
+    # Use grep with parallel processing for domain filtering
+    grep -v -f "${TEMP_DIR}/domains_pattern.txt" "${VALID_OUTPUT}.tmp" > "${VALID_OUTPUT}"
+}
+
+rm -rf "${VALID_OUTPUT}.tmp"
+rm -rf domains_*
+rm -rf /var/www/html/trustpositif/*.bak
+
+echo "[INFO] Process completed successfully"
+echo "Total lines in output file: $(wc -l < "${VALID_OUTPUT}")"
+
+# Optional: Add memory usage statistics
+echo "[INFO] Memory usage statistics:"
+free -h
+echo "[INFO] CPU usage during processing:"
+mpstat 1 1 | tail -n 1

@@ -1,6 +1,9 @@
 # SUNAT TRUSTPOSITIF
 Validates domain lists against official TLDs.  Downloads, cleans, and processes domain data trustpositif. 
 
+<img width="836" alt="image" src="https://github.com/user-attachments/assets/cd4b27e5-2a38-4c33-b38b-776e97342ab8" />
+
+
 
 Selama ini saya membuat dns filter trustpositif berdasarkan dengan list domain dari kominfo / komdigi yang sudah disunat. agar ketika list tersebut dibuat rpz hasilnya kecil dan optimal, karena versi bind9 sampai dengan maks versi 9.18.xx boros resourse untuk penggunaan rpz.  Beberapa list buah karya saya antara lain sudah saya upload ke https://github.com/alsyundawy/TrustPositif
 

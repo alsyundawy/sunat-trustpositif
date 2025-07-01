@@ -1,4 +1,20 @@
 # SUNAT TRUSTPOSITIF
+
+
+[![Latest Version](https://img.shields.io/github/v/release/alsyundawy/mikrotik-sunat-trustpositif)](https://github.com/alsyundawy/mikrotik-sunat-trustpositif/releases)
+[![Maintenance Status](https://img.shields.io/maintenance/yes/9999)](https://github.com/alsyundawy/mikrotik-sunat-trustpositif/)
+[![License](https://img.shields.io/github/license/alsyundawy/mikrotik-sunat-trustpositif)](https://github.com/alsyundawy/mikrotik-sunat-trustpositif/blob/master/LICENSE)
+[![GitHub Issues](https://img.shields.io/github/issues/alsyundawy/mikrotik-sunat-trustpositif)](https://github.com/alsyundawy/mikrotik-sunat-trustpositif/issues)
+[![GitHub Pull Requests](https://img.shields.io/github/issues-pr/alsyundawy/mikrotik-sunat-trustpositif)](https://github.com/alsyundawy/mikrotik-sunat-trustpositif/pulls)
+[![Donate with PayPal](https://img.shields.io/badge/PayPal-donate-orange)](https://www.paypal.me/alsyundawy)
+[![Sponsor with GitHub](https://img.shields.io/badge/GitHub-sponsor-orange)](https://github.com/sponsors/alsyundawy)
+[![GitHub Stars](https://img.shields.io/github/stars/alsyundawy/mikrotik-sunat-trustpositif?style=social)](https://github.com/alsyundawy/mikrotik-sunat-trustpositif/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/alsyundawy/mikrotik-sunat-trustpositif?style=social)](https://github.com/alsyundawy/mikrotik-sunat-trustpositif/network/members)
+[![GitHub Contributors](https://img.shields.io/github/contributors/alsyundawy/mikrotik-sunat-trustpositif?style=social)](https://github.com/alsyundawy/mikrotik-sunat-trustpositif/graphs/contributors)
+
+## Stargazers over time
+[![Stargazers over time](https://starchart.cc/alsyundawy/mikrotik-sunat-trustpositif.svg?variant=adaptive)](https://starchart.cc/alsyundawy/mikrotik-sunat-trustpositif)
+
 Validates domain lists against official TLDs.  Downloads, cleans, and processes domain data trustpositif. 
 
 <img width="836" alt="image" src="https://github.com/user-attachments/assets/cd4b27e5-2a38-4c33-b38b-776e97342ab8" />

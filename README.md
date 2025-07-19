@@ -35,4 +35,7 @@ Terima Kasih masukan dan inspirasinya kepada semua yang tak bisa saya sebut satu
 Jangan semangat tetap putus asa, tetap mengeluh dan rebahan. Ketika orang lain bisa kenapa harus saya.
 
 
+Perhatian, domain list hanya bisa digunakan untuk wilcard saja
+
+
 

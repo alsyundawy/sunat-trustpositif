@@ -17,10 +17,15 @@
 
 Validates domain lists against official TLDs.  Downloads, cleans, and processes domain data trustpositif. 
 
-<img width="1250" height="902" alt="image" src="https://github.com/user-attachments/assets/e7c1f8f0-813c-4f51-a74e-493f0c111b82" />
+-
 
+*Waktu Eksekusi*
+*[INFO] Waktu Selesai: 19 July 2025 - 15:58:05*
+*[INFO] Durasi Total: 25 detik*
 
+<img width="653" height="526" alt="image" src="https://github.com/user-attachments/assets/a61d2750-be83-4d48-a335-fdcc95c79119" />
 
+-
 
 Selama ini saya membuat dns filter trustpositif berdasarkan dengan list domain dari kominfo / komdigi yang sudah disunat. agar ketika list tersebut dibuat rpz hasilnya kecil dan optimal, karena versi bind9 sampai dengan maks versi 9.18.xx boros resourse untuk penggunaan rpz.  Beberapa list buah karya saya antara lain sudah saya upload ke https://github.com/alsyundawy/TrustPositif
 
@@ -35,8 +40,9 @@ Setelah hampir setahun, sudah waktunya saya share source code dan bersifat opens
 Terima Kasih masukan dan inspirasinya kepada semua yang tak bisa saya sebut satu persatu. 
 Jangan semangat tetap putus asa, tetap mengeluh dan rebahan. Ketika orang lain bisa kenapa harus saya.
 
+-
 
-**Perhatian, domain list hanya bisa digunakan untuk wilcard saja**
+*Perhatian, domain list hanya bisa digunakan untuk wilcard saja*
 
 
 

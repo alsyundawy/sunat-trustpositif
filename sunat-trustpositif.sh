@@ -7,7 +7,7 @@
 # Author        : HARRY DERTIN SUTISNA ALSYUNDAWY
 # Created Date  : 07 APRIL 2024
 # Last Updated  : 22 JUNI 2025
-# Last Modified : 25 JUNI 2025
+# Last Modified : 20 JULY 2025 
 # Usage         : bash sunat-trustpositif.sh
 # ============================================================
 
@@ -89,7 +89,7 @@ show_banner() {
     print_colored "YELLOW" "║ Pembuat           : HARRY DERTIN SUTISNA ALSYUNDAWY                          ║" "BG_BLUE"
     print_colored "YELLOW" "║ Dibuat            : 07 APRIL 2024                                            ║" "BG_BLUE"
     print_colored "YELLOW" "║ Update Terakhir   : 22 JUNI 2025                                             ║" "BG_BLUE"
-    print_colored "YELLOW" "║ Modifikasi        : 25 JUNI 2025                                             ║" "BG_BLUE"
+    print_colored "YELLOW" "║ Modifikasi        : 20 JULY 2025                                             ║" "BG_BLUE"
     print_colored "YELLOW" "║ Penggunaan        : bash sunat-trustpositif.sh                               ║" "BG_BLUE"
     print_colored "CYAN"  "╚══════════════════════════════════════════════════════════════════════════════╝" "BG_BLUE"
 }

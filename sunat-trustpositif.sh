@@ -4205,8 +4205,9 @@ log_progress "Mengunduh daftar domain Kominfo..."
 if curl -s --insecure -o "${DOMAIN_FILE}" "${KOMINFO_URL}"; then
     check_file "${DOMAIN_FILE}"
     domain_count=$(wc -l < "${DOMAIN_FILE}")
+    domain_file_size=$(du -h "${DOMAIN_FILE}" | cut -f1)
     log_success "Berhasil mengunduh ${COLORS[CYAN]}$domain_count${COLORS[NC]} domain dari Kominfo"
-    print_colored "DIM" "  [STAT] Total line domain awal: ${COLORS[YELLOW]}$domain_count${COLORS[NC]}"
+    print_colored "DIM" "  [STAT] Total line domain awal: ${COLORS[YELLOW]}$domain_count${COLORS[NC]} (${COLORS[CYAN]}$domain_file_size${COLORS[NC]})"
 else
     log_error "Gagal mengunduh daftar domain Kominfo"
     exit 1
@@ -4235,12 +4236,13 @@ log_progress "Menggabungkan chunk yang telah diproses..."
 # Combine processed chunks
 cat "${TEMP_DIR}"/*.processed > "${VALID_OUTPUT}.tmp"
 
-# Count processed domains
+# Count processed domains and get file size
 processed_count=$(wc -l < "${VALID_OUTPUT}.tmp")
+processed_file_size=$(du -h "${VALID_OUTPUT}.tmp" | cut -f1)
 filtered_count=$((domain_count - processed_count))
 log_success "Berhasil menggabungkan ${COLORS[CYAN]}$processed_count${COLORS[NC]} domain yang telah divalidasi"
-print_colored "DIM" "  [STAT] Domain awal: ${COLORS[YELLOW]}$domain_count${COLORS[NC]}"
-print_colored "DIM" "  [STAT] Domain valid (setelah filter TLD): ${COLORS[GREEN]}$processed_count${COLORS[NC]}"
+print_colored "DIM" "  [STAT] Domain awal: ${COLORS[YELLOW]}$domain_count${COLORS[NC]} (${COLORS[CYAN]}$domain_file_size${COLORS[NC]})"
+print_colored "DIM" "  [STAT] Domain valid (setelah filter TLD): ${COLORS[GREEN]}$processed_count${COLORS[NC]} (${COLORS[CYAN]}$processed_file_size${COLORS[NC]})"
 print_colored "DIM" "  [STAT] Domain ditolak (TLD tidak valid): ${COLORS[RED]}$filtered_count${COLORS[NC]}"
 
 print_colored "YELLOW" "\n[CLEAN] Fase Pembersihan" "BG_BLUE"
@@ -4258,12 +4260,25 @@ log_progress "Menghapus subdomain untuk ${COLORS[CYAN]}${#DOMAINS_TO_CLEAN[@]}${
 
 # Count final domains
 final_count=$(wc -l < "${VALID_OUTPUT}")
+final_file_size=$(du -h "${VALID_OUTPUT}" | cut -f1)
 removed_count=$((processed_count - final_count))
 
+# Calculate removed data size (simple approximation)
+removed_size_bytes=$(($(stat -c%s "${VALID_OUTPUT}.tmp") - $(stat -c%s "${VALID_OUTPUT}")))
+if [ $removed_size_bytes -gt 1073741824 ]; then
+    removed_file_size=$((removed_size_bytes / 1073741824))G
+elif [ $removed_size_bytes -gt 1048576 ]; then
+    removed_file_size=$((removed_size_bytes / 1048576))M
+elif [ $removed_size_bytes -gt 1024 ]; then
+    removed_file_size=$((removed_size_bytes / 1024))K
+else
+    removed_file_size="${removed_size_bytes}B"
+fi
+
 log_success "Berhasil menghapus ${COLORS[CYAN]}$removed_count${COLORS[NC]} entri subdomain"
-print_colored "DIM" "  [STAT] Domain sebelum pembersihan subdomain: ${COLORS[YELLOW]}$processed_count${COLORS[NC]}"
-print_colored "DIM" "  [STAT] Subdomain yang dihapus: ${COLORS[RED]}$removed_count${COLORS[NC]}"
-print_colored "DIM" "  [STAT] Domain akhir (bersih): ${COLORS[GREEN]}$final_count${COLORS[NC]}"
+print_colored "DIM" "  [STAT] Domain sebelum pembersihan subdomain: ${COLORS[YELLOW]}$processed_count${COLORS[NC]} (${COLORS[CYAN]}$processed_file_size${COLORS[NC]})"
+print_colored "DIM" "  [STAT] Subdomain yang dihapus: ${COLORS[RED]}$removed_count${COLORS[NC]} (~${COLORS[CYAN]}$removed_file_size${COLORS[NC]})"
+print_colored "DIM" "  [STAT] Domain akhir (bersih): ${COLORS[GREEN]}$final_count${COLORS[NC]} (${COLORS[CYAN]}$final_file_size${COLORS[NC]})"
 
 # Cleanup temporary files
 rm -rf "${VALID_OUTPUT}.tmp"
@@ -4280,11 +4295,16 @@ removed_percentage=$((removed_count * 100 / processed_count))
 final_percentage=$((final_count * 100 / domain_count))
 
 print_colored "BOLD" "[REPORT] Statistik Akhir:"
-print_colored "DIM" "  * Total domain diproses: ${COLORS[YELLOW]}$domain_count${COLORS[NC]} (100%)"
-print_colored "DIM" "  * Domain valid setelah pengecekan TLD: ${COLORS[YELLOW]}$processed_count${COLORS[NC]} (${COLORS[CYAN]}$valid_percentage%${COLORS[NC]})"
-print_colored "DIM" "  * Subdomain dihapus: ${COLORS[YELLOW]}$removed_count${COLORS[NC]} (${COLORS[CYAN]}$removed_percentage%${COLORS[NC]} dari valid)"
-print_colored "DIM" "  * Domain bersih akhir: ${COLORS[GREEN]}$final_count${COLORS[NC]} (${COLORS[CYAN]}$final_percentage%${COLORS[NC]} dari total)"
+print_colored "DIM" "  * Total domain diproses: ${COLORS[YELLOW]}$domain_count${COLORS[NC]} (100%) - ${COLORS[CYAN]}$domain_file_size${COLORS[NC]}"
+print_colored "DIM" "  * Domain valid setelah pengecekan TLD: ${COLORS[YELLOW]}$processed_count${COLORS[NC]} (${COLORS[CYAN]}$valid_percentage%${COLORS[NC]}) - ${COLORS[CYAN]}$processed_file_size${COLORS[NC]}"
+print_colored "DIM" "  * Subdomain dihapus: ${COLORS[YELLOW]}$removed_count${COLORS[NC]} (${COLORS[CYAN]}$removed_percentage%${COLORS[NC]} dari valid) - ~${COLORS[CYAN]}$removed_file_size${COLORS[NC]}"
+print_colored "DIM" "  * Domain bersih akhir: ${COLORS[GREEN]}$final_count${COLORS[NC]} (${COLORS[CYAN]}$final_percentage%${COLORS[NC]} dari total) - ${COLORS[CYAN]}$final_file_size${COLORS[NC]}"
 print_colored "DIM" "  * File keluaran: ${COLORS[CYAN]}$VALID_OUTPUT${COLORS[NC]}"
+
+print_colored "BOLD" "\n[SIZE] Perbandingan Ukuran File:"
+print_colored "DIM" "  * File input (awal): ${COLORS[YELLOW]}$domain_file_size${COLORS[NC]}"
+print_colored "DIM" "  * File output (akhir): ${COLORS[GREEN]}$final_file_size${COLORS[NC]}"
+print_colored "DIM" "  * Data yang dikurangi: ~${COLORS[RED]}$removed_file_size${COLORS[NC]}"
 
 # Show final system resources
 show_system_resources "Setelah Proses"

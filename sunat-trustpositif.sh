@@ -11,30 +11,181 @@
 # Usage         : bash sunat-trustpositif.sh
 # ============================================================
 
+# Color definitions
+declare -A COLORS=(
+    [RED]='\033[0;31m'
+    [GREEN]='\033[0;32m'
+    [YELLOW]='\033[1;33m'
+    [BLUE]='\033[0;34m'
+    [PURPLE]='\033[0;35m'
+    [CYAN]='\033[0;36m'
+    [WHITE]='\033[1;37m'
+    [BOLD]='\033[1m'
+    [DIM]='\033[2m'
+    [UNDERLINE]='\033[4m'
+    [BLINK]='\033[5m'
+    [REVERSE]='\033[7m'
+    [NC]='\033[0m'  # No Color
+)
+
+# Background colors
+declare -A BG_COLORS=(
+    [BG_RED]='\033[41m'
+    [BG_GREEN]='\033[42m'
+    [BG_YELLOW]='\033[43m'
+    [BG_BLUE]='\033[44m'
+    [BG_PURPLE]='\033[45m'
+    [BG_CYAN]='\033[46m'
+    [BG_WHITE]='\033[47m'
+)
+
+# Function to print colored messages
+print_colored() {
+    local color="$1"
+    local message="$2"
+    local bg_color="${3:-}"
+    
+    if [[ -n "$bg_color" ]]; then
+        echo -e "${BG_COLORS[$bg_color]}${COLORS[$color]}${message}${COLORS[NC]}"
+    else
+        echo -e "${COLORS[$color]}${message}${COLORS[NC]}"
+    fi
+}
+
+# Enhanced logging functions
+log_info() {
+    print_colored "CYAN" "[i] [INFO] $1"
+}
+
+log_success() {
+    print_colored "GREEN" "[OK] [BERHASIL] $1"
+}
+
+log_warning() {
+    print_colored "YELLOW" "[!] [PERINGATAN] $1"
+}
+
+log_error() {
+    print_colored "RED" "[X] [ERROR] $1"
+}
+
+log_debug() {
+    print_colored "PURPLE" "[?] [DEBUG] $1"
+}
+
+log_progress() {
+    print_colored "BLUE" "[>] [PROSES] $1"
+}
+
+# Function to display banner
+show_banner() {
+    print_colored "BOLD" ""
+    print_colored "CYAN" "╔══════════════════════════════════════════════════════════════════════════════╗" "BG_BLUE"
+    print_colored "WHITE" "║                           SUNAT TRUST POSITIF                               ║" "BG_BLUE"
+    print_colored "WHITE" "║                    Validasi Domain TLD & Pemrosesan Data                    ║" "BG_BLUE"
+    print_colored "CYAN" "╠══════════════════════════════════════════════════════════════════════════════╣" "BG_BLUE"
+    print_colored "YELLOW" "║ Script Name       : sunat-trustpositif.sh                                   ║" "BG_BLUE"
+    print_colored "YELLOW" "║ Deskripsi         : Memvalidasi daftar domain terhadap TLD resmi           ║" "BG_BLUE"
+    print_colored "YELLOW" "║                     Mengunduh, membersihkan, dan memproses data domain      ║" "BG_BLUE"
+    print_colored "YELLOW" "║ Pembuat           : HARRY DERTIN SUTISNA ALSYUNDAWY                        ║" "BG_BLUE"
+    print_colored "YELLOW" "║ Dibuat            : 07 APRIL 2024                                           ║" "BG_BLUE"
+    print_colored "YELLOW" "║ Update Terakhir   : 22 JUNI 2025                                           ║" "BG_BLUE"
+    print_colored "YELLOW" "║ Modifikasi        : 19 JULI 2025                                           ║" "BG_BLUE"
+    print_colored "YELLOW" "║ Penggunaan        : bash sunat-trustpositif.sh                             ║" "BG_BLUE"
+    print_colored "CYAN" "╚══════════════════════════════════════════════════════════════════════════════╝" "BG_BLUE"
+    print_colored "BOLD" ""
+}
+
+# Function to show progress bar
+show_progress() {
+    local current=$1
+    local total=$2
+    local width=50
+    local percentage=$((current * 100 / total))
+    local completed=$((current * width / total))
+    local remaining=$((width - completed))
+    
+    printf "\r${COLORS[CYAN]}Kemajuan: ${COLORS[GREEN]}["
+    printf "%${completed}s" | tr ' ' '█'
+    printf "%${remaining}s" | tr ' ' '░'
+    printf "]${COLORS[YELLOW]} %d%%${COLORS[NC]}" "$percentage"
+}
+
+# Function to show system resources
+show_system_resources() {
+    local phase="$1"
+    print_colored "YELLOW" "\n[SYS] Status Sistem - $phase" "BG_PURPLE"
+    
+    # Memory information
+    log_info "Informasi Memori:"
+    local mem_info=$(free -h | grep "Mem:")
+    local mem_total=$(echo $mem_info | awk '{print $2}')
+    local mem_used=$(echo $mem_info | awk '{print $3}')
+    local mem_free=$(echo $mem_info | awk '{print $4}')
+    local mem_available=$(echo $mem_info | awk '{print $7}')
+    
+    print_colored "DIM" "  * Total: ${COLORS[CYAN]}$mem_total${COLORS[NC]}"
+    print_colored "DIM" "  * Digunakan: ${COLORS[YELLOW]}$mem_used${COLORS[NC]}"
+    print_colored "DIM" "  * Bebas: ${COLORS[GREEN]}$mem_free${COLORS[NC]}"
+    print_colored "DIM" "  * Tersedia: ${COLORS[GREEN]}$mem_available${COLORS[NC]}"
+    
+    # CPU information
+    log_info "Informasi CPU:"
+    local cpu_count=$(nproc)
+    local load_avg=$(uptime | awk -F'load average:' '{print $2}')
+    
+    print_colored "DIM" "  * Jumlah Core: ${COLORS[CYAN]}$cpu_count${COLORS[NC]}"
+    print_colored "DIM" "  * Load Average:${COLORS[YELLOW]}$load_avg${COLORS[NC]}"
+    
+    # Disk space for output directory
+    if [[ -d "/var/www/html/trustpositif" ]]; then
+        log_info "Ruang Disk (direktori output):"
+        local disk_info=$(df -h /var/www/html/trustpositif | tail -1)
+        local disk_used=$(echo $disk_info | awk '{print $3}')
+        local disk_available=$(echo $disk_info | awk '{print $4}')
+        local disk_percent=$(echo $disk_info | awk '{print $5}')
+        
+        print_colored "DIM" "  * Digunakan: ${COLORS[YELLOW]}$disk_used${COLORS[NC]}"
+        print_colored "DIM" "  * Tersedia: ${COLORS[GREEN]}$disk_available${COLORS[NC]}"
+        print_colored "DIM" "  * Persentase: ${COLORS[CYAN]}$disk_percent${COLORS[NC]}"
+    fi
+}
 
 # Konfigurasi awal shell
 set -euo pipefail
 IFS=$'\n\t'
 export LC_ALL=C  # Optimasi kecepatan pemrosesan teks
 
+# Show banner
+show_banner
+
+# Record start time
+START_TIME=$(date +%s)
+START_TIME_READABLE=$(date '+%d %B %Y - %H:%M:%S')
+log_info "Waktu Mulai: ${COLORS[CYAN]}$START_TIME_READABLE${COLORS[NC]}"
+
 # Detect package manager and define install commands
 detect_pkg_manager() {
+    log_progress "Mendeteksi pengelola paket..."
     if command -v apt-get >/dev/null; then
         PKG_MANAGER="apt-get"
         PKG_INSTALL="sudo apt-get install -y"
         PKG_UPDATE="sudo apt-get update"
+        log_success "Terdeteksi: ${COLORS[BOLD]}APT${COLORS[NC]} (Debian/Ubuntu)"
     elif command -v yum >/dev/null; then
         PKG_MANAGER="yum"
         PKG_INSTALL="sudo yum install -y"
         PKG_UPDATE="sudo yum check-update"
         EPEL_INSTALL="sudo yum install -y epel-release"
+        log_success "Terdeteksi: ${COLORS[BOLD]}YUM${COLORS[NC]} (RHEL/CentOS)"
     elif command -v dnf >/dev/null; then
         PKG_MANAGER="dnf"
         PKG_INSTALL="sudo dnf install -y"
         PKG_UPDATE="sudo dnf check-update"
         EPEL_INSTALL="sudo dnf install -y epel-release"
+        log_success "Terdeteksi: ${COLORS[BOLD]}DNF${COLORS[NC]} (Fedora)"
     else
-        echo "Error: No supported package manager found (apt-get, yum, dnf)."
+        log_error "Tidak ada pengelola paket yang didukung (apt-get, yum, dnf)."
         exit 1
     fi
 }
@@ -42,70 +193,88 @@ detect_pkg_manager() {
 # Fungsi untuk memeriksa dan menyarankan instalasi perintah
 check_command() {
     local cmd="$1"
-    command -v "$cmd" >/dev/null 2>&1 && return 0
+    
+    if command -v "$cmd" >/dev/null 2>&1; then
+        log_success "${COLORS[BOLD]}$cmd${COLORS[NC]} sudah terinstal"
+        return 0
+    fi
 
-    echo "Error: $cmd is not installed."
+    log_warning "${COLORS[BOLD]}$cmd${COLORS[NC]} belum terinstal. Menginstal..."
     case "$cmd" in
         aria2c)
             if [[ "$PKG_MANAGER" == "yum" || "$PKG_MANAGER" == "dnf" ]]; then
-                echo "Installing epel-release and aria2..."
+                log_info "Menginstal epel-release dan aria2..."
                 $EPEL_INSTALL
                 $PKG_INSTALL aria2
             else
-                echo "Installing aria2..."
+                log_info "Menginstal aria2..."
                 $PKG_UPDATE
                 $PKG_INSTALL aria2
             fi
             ;;
         mawk)
             if [[ "$PKG_MANAGER" == "apt-get" ]]; then
-                echo "Installing mawk..."
+                log_info "Menginstal mawk..."
                 $PKG_UPDATE
                 $PKG_INSTALL mawk
             else
-                echo "mawk is not available in $PKG_MANAGER repositories. Using gawk instead."
+                log_warning "mawk tidak tersedia di repositori $PKG_MANAGER. Menggunakan gawk sebagai gantinya."
                 $PKG_INSTALL gawk
             fi
             ;;
         parallel)
             if [[ "$PKG_MANAGER" == "yum" || "$PKG_MANAGER" == "dnf" ]]; then
-                echo "Installing epel-release and parallel..."
+                log_info "Menginstal epel-release dan parallel..."
                 $EPEL_INSTALL
                 $PKG_INSTALL parallel
             else
-                echo "Installing parallel..."
+                log_info "Menginstal parallel..."
                 $PKG_UPDATE
                 $PKG_INSTALL parallel
             fi
             ;;
         mpstat)
-            echo "Installing sysstat for mpstat..."
+            log_info "Menginstal sysstat untuk mpstat..."
             $PKG_UPDATE
             $PKG_INSTALL sysstat
             ;;
     esac
 
     # Verifikasi ulang setelah instalasi
-    command -v "$cmd" >/dev/null 2>&1 || {
-        echo "Error: Failed to install $cmd. Please install it manually."
+    if command -v "$cmd" >/dev/null 2>&1; then
+        log_success "${COLORS[BOLD]}$cmd${COLORS[NC]} berhasil diinstal!"
+    else
+        log_error "Gagal menginstal ${COLORS[BOLD]}$cmd${COLORS[NC]}. Silakan instal secara manual."
         exit 1
-    }
+    fi
 }
 
 # Main dependency check function
 check_dependencies() {
+    print_colored "YELLOW" "\n[*] Memeriksa Dependensi..." "BG_BLUE"
     detect_pkg_manager
-    echo "Detected package manager: $PKG_MANAGER ($PKG_INSTALL)"
-
-    for cmd in aria2c mawk parallel mpstat; do
+    
+    local deps=("aria2c" "mawk" "parallel" "mpstat")
+    local total=${#deps[@]}
+    local current=0
+    
+    for cmd in "${deps[@]}"; do
+        current=$((current + 1))
+        show_progress $current $total
         check_command "$cmd"
+        sleep 0.5  # Small delay for visual effect
     done
-
-    echo "All dependencies are available, proceeding with script execution..."
+    
+    printf "\n"
+    log_success "Semua dependensi tersedia!"
+    print_colored "GREEN" "[>>] Melanjutkan eksekusi script...\n"
 }
 
 # Jalankan pengecekan dependensi
 check_dependencies
+
+# Show initial system resources
+show_system_resources "Sebelum Proses"
 
 # Configuration
 export LC_COLLATE=C
@@ -120,6 +289,12 @@ KOMINFO_URL="https://trustpositif.komdigi.go.id/assets/db/domains_isp"
 # Get number of CPU cores for parallel processing
 NUM_CORES=$(nproc)
 CHUNK_SIZE=6969  # Number of domains to process per chunk
+
+log_info "Konfigurasi dimuat:"
+print_colored "DIM" "  * Direktori Kerja: ${COLORS[CYAN]}$WORKDIR${COLORS[NC]}"
+print_colored "DIM" "  * Core CPU: ${COLORS[CYAN]}$NUM_CORES${COLORS[NC]}"
+print_colored "DIM" "  * Ukuran Chunk: ${COLORS[CYAN]}$CHUNK_SIZE${COLORS[NC]}"
+print_colored "DIM" "  * Direktori Sementara: ${COLORS[CYAN]}$TEMP_DIR${COLORS[NC]}"
 
 # List of domains to remove subdomains from
 DOMAINS_TO_CLEAN=(
@@ -3970,13 +4145,15 @@ DOMAINS_TO_CLEAN=(
 "zxzx.live" "zya.me" "zybinska.io" "zyns.com" "zyrosite.com" "zyrvc.com" "zza5top11j7h.icu" "zza5top7y1m1.xyz" "zzbfwoke.com"
 "zzgays.com" "zzgo818.top" "zzn.com" "zzone.world" "zzux.com" "zzw.pl"
 )
+
 # Cleanup function
 cleanup() {
-    echo "[INFO] Cleaning up temporary files..."
+    log_info "Membersihkan file sementara..."
     rm -rf "${TEMP_DIR}"
     rm -f "${DOMAIN_FILE}" "${TEMP_DIR}/iana_tlds.txt"
     rm -f "${TEMP_DIR}"/*.chunk
     rm -f "${TEMP_DIR}"/*.processed
+    log_success "Pembersihan selesai!"
 }
 
 # Set error trap
@@ -3986,8 +4163,11 @@ trap cleanup EXIT
 check_file() {
     local file="$1"
     if [[ ! -s "${file}" ]]; then
-        echo "[ERROR] File ${file} is empty or does not exist"
+        log_error "File ${COLORS[BOLD]}${file}${COLORS[NC]} kosong atau tidak ada"
         exit 1
+    else
+        local size=$(du -h "$file" | cut -f1)
+        log_success "File ${COLORS[BOLD]}${file}${COLORS[NC]} terverifikasi (${COLORS[CYAN]}$size${COLORS[NC]})"
     fi
 }
 
@@ -4007,28 +4187,65 @@ process_chunk() {
 }
 export -f process_chunk
 
-echo "[INFO] Downloading and preparing TLD lists..."
+print_colored "YELLOW" "\n[DL] Fase Unduhan" "BG_BLUE"
 
+log_progress "Mengunduh daftar TLD IANA..."
 # Download IANA TLD list bypassing SSL
-curl -s --insecure "${IANA_TLD_URL}" | grep -v '^#' | tr '[:upper:]' '[:lower:]' > "${TEMP_DIR}/iana_tlds.txt"
-check_file "${TEMP_DIR}/iana_tlds.txt"
+if curl -s --insecure "${IANA_TLD_URL}" | grep -v '^#' | tr '[:upper:]' '[:lower:]' > "${TEMP_DIR}/iana_tlds.txt"; then
+    check_file "${TEMP_DIR}/iana_tlds.txt"
+    tld_count=$(wc -l < "${TEMP_DIR}/iana_tlds.txt")
+    log_success "Berhasil mengunduh ${COLORS[CYAN]}$tld_count${COLORS[NC]} TLD dari IANA"
+else
+    log_error "Gagal mengunduh daftar TLD IANA"
+    exit 1
+fi
 
+log_progress "Mengunduh daftar domain Kominfo..."
 # Download domains_isp file bypassing SSL
-curl -s --insecure -o "${DOMAIN_FILE}" "${KOMINFO_URL}"
-check_file "${DOMAIN_FILE}"
+if curl -s --insecure -o "${DOMAIN_FILE}" "${KOMINFO_URL}"; then
+    check_file "${DOMAIN_FILE}"
+    domain_count=$(wc -l < "${DOMAIN_FILE}")
+    log_success "Berhasil mengunduh ${COLORS[CYAN]}$domain_count${COLORS[NC]} domain dari Kominfo"
+    print_colored "DIM" "  [STAT] Total line domain awal: ${COLORS[YELLOW]}$domain_count${COLORS[NC]}"
+else
+    log_error "Gagal mengunduh daftar domain Kominfo"
+    exit 1
+fi
 
-echo "[INFO] Processing domain list in parallel..."
+print_colored "YELLOW" "\n[PROC] Fase Pemrosesan" "BG_BLUE"
+
+log_progress "Membagi daftar domain menjadi chunk untuk pemrosesan paralel..."
 
 # Split input file into chunks for parallel processing
 split -l ${CHUNK_SIZE} "${DOMAIN_FILE}" "${TEMP_DIR}/chunk_"
 
+# Count chunks
+chunk_count=$(find "${TEMP_DIR}" -name 'chunk_*' | wc -l)
+log_success "Berhasil membuat ${COLORS[CYAN]}$chunk_count${COLORS[NC]} chunk untuk diproses"
+print_colored "DIM" "  [STAT] Ukuran setiap chunk: ${COLORS[YELLOW]}$CHUNK_SIZE${COLORS[NC]} domain"
+
+log_progress "Memproses chunk secara paralel menggunakan ${COLORS[CYAN]}$NUM_CORES${COLORS[NC]} core CPU..."
+
 # Process chunks in parallel
 find "${TEMP_DIR}" -name 'chunk_*' | parallel -j${NUM_CORES} process_chunk {} "${TEMP_DIR}/iana_tlds.txt"
 
+log_success "Pemrosesan paralel selesai!"
+
+log_progress "Menggabungkan chunk yang telah diproses..."
 # Combine processed chunks
 cat "${TEMP_DIR}"/*.processed > "${VALID_OUTPUT}.tmp"
 
-echo "[INFO] Removing subdomains for specified domains..."
+# Count processed domains
+processed_count=$(wc -l < "${VALID_OUTPUT}.tmp")
+filtered_count=$((domain_count - processed_count))
+log_success "Berhasil menggabungkan ${COLORS[CYAN]}$processed_count${COLORS[NC]} domain yang telah divalidasi"
+print_colored "DIM" "  [STAT] Domain awal: ${COLORS[YELLOW]}$domain_count${COLORS[NC]}"
+print_colored "DIM" "  [STAT] Domain valid (setelah filter TLD): ${COLORS[GREEN]}$processed_count${COLORS[NC]}"
+print_colored "DIM" "  [STAT] Domain ditolak (TLD tidak valid): ${COLORS[RED]}$filtered_count${COLORS[NC]}"
+
+print_colored "YELLOW" "\n[CLEAN] Fase Pembersihan" "BG_BLUE"
+
+log_progress "Menghapus subdomain untuk ${COLORS[CYAN]}${#DOMAINS_TO_CLEAN[@]}${COLORS[NC]} domain yang ditentukan..."
 
 # Process domain cleaning in parallel using process substitution
 {
@@ -4039,15 +4256,52 @@ echo "[INFO] Removing subdomains for specified domains..."
     grep -v -f "${TEMP_DIR}/domains_pattern.txt" "${VALID_OUTPUT}.tmp" > "${VALID_OUTPUT}"
 }
 
+# Count final domains
+final_count=$(wc -l < "${VALID_OUTPUT}")
+removed_count=$((processed_count - final_count))
+
+log_success "Berhasil menghapus ${COLORS[CYAN]}$removed_count${COLORS[NC]} entri subdomain"
+print_colored "DIM" "  [STAT] Domain sebelum pembersihan subdomain: ${COLORS[YELLOW]}$processed_count${COLORS[NC]}"
+print_colored "DIM" "  [STAT] Subdomain yang dihapus: ${COLORS[RED]}$removed_count${COLORS[NC]}"
+print_colored "DIM" "  [STAT] Domain akhir (bersih): ${COLORS[GREEN]}$final_count${COLORS[NC]}"
+
+# Cleanup temporary files
 rm -rf "${VALID_OUTPUT}.tmp"
 rm -rf domains_*
 rm -rf /var/www/html/trustpositif/*.bak
 
-echo "[INFO] Process completed successfully"
-echo "Total lines in output file: $(wc -l < "${VALID_OUTPUT}")"
+print_colored "YELLOW" "\n[STAT] Statistik" "BG_GREEN"
 
-# Optional: Add memory usage statistics
-echo "[INFO] Memory usage statistics:"
-free -h
-echo "[INFO] CPU usage during processing:"
-mpstat 1 1 | tail -n 1
+log_success "Proses berhasil diselesaikan!"
+
+# Calculate percentages
+valid_percentage=$((processed_count * 100 / domain_count))
+removed_percentage=$((removed_count * 100 / processed_count))
+final_percentage=$((final_count * 100 / domain_count))
+
+print_colored "BOLD" "[REPORT] Statistik Akhir:"
+print_colored "DIM" "  * Total domain diproses: ${COLORS[YELLOW]}$domain_count${COLORS[NC]} (100%)"
+print_colored "DIM" "  * Domain valid setelah pengecekan TLD: ${COLORS[YELLOW]}$processed_count${COLORS[NC]} (${COLORS[CYAN]}$valid_percentage%${COLORS[NC]})"
+print_colored "DIM" "  * Subdomain dihapus: ${COLORS[YELLOW]}$removed_count${COLORS[NC]} (${COLORS[CYAN]}$removed_percentage%${COLORS[NC]} dari valid)"
+print_colored "DIM" "  * Domain bersih akhir: ${COLORS[GREEN]}$final_count${COLORS[NC]} (${COLORS[CYAN]}$final_percentage%${COLORS[NC]} dari total)"
+print_colored "DIM" "  * File keluaran: ${COLORS[CYAN]}$VALID_OUTPUT${COLORS[NC]}"
+
+# Show final system resources
+show_system_resources "Setelah Proses"
+
+# Calculate execution time
+END_TIME=$(date +%s)
+END_TIME_READABLE=$(date '+%d %B %Y - %H:%M:%S')
+DURATION=$((END_TIME - START_TIME))
+DURATION_MIN=$((DURATION / 60))
+DURATION_SEC=$((DURATION % 60))
+
+print_colored "YELLOW" "\n[TIME] Waktu Eksekusi" "BG_PURPLE"
+log_info "Waktu Selesai: ${COLORS[CYAN]}$END_TIME_READABLE${COLORS[NC]}"
+if [ $DURATION_MIN -gt 0 ]; then
+    log_info "Durasi Total: ${COLORS[GREEN]}${DURATION_MIN} menit ${DURATION_SEC} detik${COLORS[NC]}"
+else
+    log_info "Durasi Total: ${COLORS[GREEN]}${DURATION_SEC} detik${COLORS[NC]}"
+fi
+
+print_colored "GREEN" "\n[DONE] Eksekusi script berhasil diselesaikan! [DONE]" "BG_GREEN"

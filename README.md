@@ -17,7 +17,8 @@
 
 Validates domain lists against official TLDs.  Downloads, cleans, and processes domain data trustpositif. 
 
-<img width="836" alt="image" src="https://github.com/user-attachments/assets/cd4b27e5-2a38-4c33-b38b-776e97342ab8" />
+<img width="1250" height="902" alt="image" src="https://github.com/user-attachments/assets/e7c1f8f0-813c-4f51-a74e-493f0c111b82" />
+
 
 
 
@@ -35,7 +36,7 @@ Terima Kasih masukan dan inspirasinya kepada semua yang tak bisa saya sebut satu
 Jangan semangat tetap putus asa, tetap mengeluh dan rebahan. Ketika orang lain bisa kenapa harus saya.
 
 
-Perhatian, domain list hanya bisa digunakan untuk wilcard saja
+**Perhatian, domain list hanya bisa digunakan untuk wilcard saja**
 
 
 

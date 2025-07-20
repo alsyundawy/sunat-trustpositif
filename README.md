@@ -13,7 +13,6 @@
 [![GitHub Contributors](https://img.shields.io/github/contributors/alsyundawy/sunat-trustpositif?style=social)](https://github.com/alsyundawy/sunat-trustpositif/graphs/contributors)
 
 ## Stargazers over time
-## Star History
 
 <a href="https://www.star-history.com/#alsyundawy/File-Directory-Browser&Date">
  <picture>

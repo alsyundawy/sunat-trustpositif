@@ -13,7 +13,7 @@
 [![GitHub Contributors](https://img.shields.io/github/contributors/alsyundawy/sunat-trustpositif?style=social)](https://github.com/alsyundawy/sunat-trustpositif/graphs/contributors)
 
 ## Stargazers over time
-[![Stargazers over time](https://starchart.cc/alsyundawy/sunat-trustpositif.svg?variant=adaptive)](https://starchart.cc/alsyundawy/sunat-trustpositif)
+[![Star History Chart](https://api.star-history.com/svg?repos=alsyundawy/File-Directory-Browser&type=Date)](https://www.star-history.com/#alsyundawy/File-Directory-Browser&Date)
 
 Validates domain lists against official TLDs.  Downloads, cleans, and processes domain data trustpositif. 
 

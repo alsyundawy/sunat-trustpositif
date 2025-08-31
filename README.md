@@ -38,46 +38,46 @@ Validates domain lists against official TLDs.  Downloads, cleans, and processes 
 # =============================================
 #  DOKUMENTASI LENGKAP DAN PANDUAN PENGGUNAAN
 # =============================================
-##  RINGKASAN PERBAIKAN DAN OPTIMASI SCRIPT
+## 📌 RINGKASAN PERBAIKAN DAN OPTIMASI SCRIPT
 
 Script ini telah mengalami perbaikan dan optimasi menyeluruh untuk meningkatkan performa, keamanan, dan maintainability.
 
-###  OPTIMASI PERFORMA
+### 🚀 OPTIMASI PERFORMA
 - **Chunk Size Dinamis**: Ukuran chunk dihitung berdasarkan memori tersedia  
 - **Pemrosesan AWK Dioptimalkan**: Pre-compiled regex dan hash table O(1)  
 - **Resource Management**: Pemanfaatan optimal semua core CPU dan memori  
 - **Parallel Processing**: GNU parallel dengan progress monitoring  
 - **Memory Optimization**: Adaptive resource allocation berdasarkan sistem  
 
-###  PENINGKATAN KEAMANAN & RELIABILITAS
+### 🔒 PENINGKATAN KEAMANAN & RELIABILITAS
 - **Dependency Checking**: Validasi otomatis semua tool yang diperlukan  
 - **Error Recovery**: Sistem retry dengan exponential backoff  
 - **Input Validation**: Validasi ketat untuk semua input dan file  
 - **Safe File Handling**: Penanganan file aman dengan proper locking  
 - **Process Management**: Deteksi dan cleanup process zombie/orphan  
 
-###  PEMBERSIHAN & MANAJEMEN RESOURCE
+### 🧹 PEMBERSIHAN & MANAJEMEN RESOURCE
 - **Auto Cleanup**: Pembersihan otomatis semua file temporary  
 - **Trap Handlers**: Signal handling untuk cleanup saat interrupt  
 - **Memory Monitoring**: Monitor penggunaan memori real-time  
 - **Zero Trace**: Tidak meninggalkan jejak file setelah selesai  
 - **PID Management**: Deteksi dan cleanup PID file lama otomatis  
 
-###  PENINGKATAN MONITORING & LOGGING
+### 📊 PENINGKATAN MONITORING & LOGGING
 - **Timestamped Logging**: Log dengan timestamp dan level yang jelas  
 - **System Resource Monitoring**: Monitor CPU, memory, dan disk usage  
 - **Progress Tracking**: Progress bar untuk operasi parallel  
 - **Performance Metrics**: Throughput dan statistik performa  
 - **Debug Mode**: Mode troubleshooting dengan logging detail  
 
-###  DOKUMENTASI & MAINTAINABILITY
+### 📝 DOKUMENTASI & MAINTAINABILITY
 - **Comprehensive Comments**: Dokumentasi lengkap dalam Bahasa Indonesia  
 - **Modular Functions**: Fungsi terorganisir dengan separation of concerns  
 - **Error Messages**: Pesan error jelas dan actionable  
 - **Usage Examples**: Contoh penggunaan dan troubleshooting  
 - **Version Control**: Sistem versioning untuk tracking changes  
 
-###  FITUR TAMBAHAN
+### ➕ FITUR TAMBAHAN
 - **Command Line Options**: Berbagai opsi untuk maintenance dan debug  
 - **Configuration Management**: Konfigurasi terpusat mudah diubah  
 - **Concurrent Safety**: Thread-safe operations untuk parallel processing  
@@ -86,14 +86,14 @@ Script ini telah mengalami perbaikan dan optimasi menyeluruh untuk meningkatkan 
 
 ---
 
-##  CARA PENGGUNAAN SCRIPT
+##  ⚡ CARA PENGGUNAAN SCRIPT
 
-###  Penggunaan Dasar
+### 🔧 Penggunaan Dasar
 ```bash
 bash sunat-trustpositif.sh
 ```
 
-###  Opsi Command Line
+###  📌 Opsi Command Line
 ```bash
 bash sunat-trustpositif.sh --help           # Tampilkan bantuan lengkap
 bash sunat-trustpositif.sh --version        # Tampilkan versi script
@@ -131,7 +131,7 @@ bash sunat-trustpositif.sh --debug          # Mode debug untuk troubleshooting
 
 ---
 
-##  INFORMASI SISTEM REQUIREMENTS
+##  🖥️ INFORMASI SISTEM REQUIREMENTS
 
 ### Minimum System Requirements
 - OS: Linux (Ubuntu/Debian/CentOS/RHEL)  
@@ -161,7 +161,7 @@ sudo yum install -y curl gawk parallel coreutils
 
 ---
 
-##  KONFIGURASI PERFORMA DAN TUNING
+##  ⚙️ KONFIGURASI PERFORMA DAN TUNING
 
 ### Automatic Performance Tuning
 Script otomatis menyesuaikan konfigurasi berdasarkan:  
@@ -185,7 +185,7 @@ readonly OUTPUT_DIR="/path/to/dir"
 
 ---
 
-##  STRUKTUR OUTPUT DAN FILE HASIL
+##  📂 STRUKTUR OUTPUT DAN FILE HASIL
 
 ### Output Utama
 ```
@@ -209,7 +209,7 @@ readonly OUTPUT_DIR="/path/to/dir"
 
 ---
 
-##  KEAMANAN DAN BEST PRACTICES
+##  🔐 KEAMANAN DAN BEST PRACTICES
 
 ### Security Measures
 - Input sanitization  
@@ -234,7 +234,7 @@ chown user:group /var/www/html/trustpositif/
 
 ---
 
-##  MONITORING DAN MAINTENANCE
+##  📡 MONITORING DAN MAINTENANCE
 
 ### Monitoring Real-time
 - CPU usage & load average  
@@ -280,27 +280,39 @@ A: Tidak disarankan (single instance protection).
 
 ---
 
-## CATATAN PERUBAHAN DAN RIWAYAT VERSI
+# 📌 Catatan Perubahan dan Riwayat Versi
 
-### Versi 2.1 (31 Agustus 2025)
-- [BARU] Opsi baris perintah (--help, --status, dll.)  
-- [BARU] Manajemen dan pembersihan PID otomatis  
-- [BARU] Penanganan galat lebih baik  
-- [BARU] Pemantauan kinerja  
-- [BARU] Validasi TLD berdasarkan IANA & RFC  
-- [PENINGKATAN] Penyaringan 35 ribu domain  
-- [PENINGKATAN] Efisiensi pemrosesan paralel  
-- [PENINGKATAN] Optimalisasi penggunaan memori  
-- [PERBAIKAN] Masalah pembersihan berkas PID  
-- [PERBAIKAN] Deteksi proses zombie  
-- [DOKUMENTASI] Dokumentasi lengkap  
+## Versi 2.1 (31 Agustus 2025) — Penulisan Ulang Lengkap
+- **[BARU]** Opsi baris perintah (`--help`, `--force-cleanup`, `--version`)  
+- **[BARU]** Penanganan kesalahan yang ditingkatkan dan mekanisme pemulihan  
+- **[BARU]** Pemantauan performa dan statistik terperinci  
+- **[BARU]** Pemantauan sumber daya sistem secara komprehensif  
+- **[BARU]** Validasi TLD berdasarkan standar **IANA** & **RFC**  
+- **[DITINGKATKAN]** Penyaringan hingga **35.000 domain**  
+- **[DITINGKATKAN]** Efisiensi pemrosesan paralel menggunakan **GNU Parallel**  
+- **[DITINGKATKAN]** Optimasi penggunaan memori dengan metode *chunking* cerdas  
+- **[DITINGKATKAN]** Penanganan sinyal dan penghentian (*shutdown*) yang anggun  
+- **[DITINGKATKAN]** Validasi domain canggih dengan optimasi **AWK**  
+- **[DOCS]** Dokumentasi ekstensif dan panduan pemecahan masalah  
 
-### Versi 1.0 (07 April 2024)
-- Rilis awal  
-- Validasi domain dasar  
-- Pemeriksaan TLD berdasarkan IANA  
-- Pemrosesan paralel sederhana  
-- Pembersihan dasar  
+---
+
+## Versi 1.8 (05 Juni 2025)
+- Perapihan kode agar lebih mudah dipelihara (*maintainable*)  
+- Penyaringan hingga **2.000 domain**  
+- Tampilan konsol berwarna dan lebih informatif  
+- Perbaikan berbagai kesalahan kode  
+
+---
+
+## Versi 1.0 (07 April 2024) — Rilis Awal
+- Fungsionalitas validasi domain dasar  
+- Pengecekan TLD terhadap daftar resmi **IANA**  
+- Implementasi pemrosesan paralel sederhana  
+- Mekanisme pembersihan dasar dan manajemen file sementara  
+- Penyaringan serta deduplikasi domain inti  
+- Tampilan konsol sederhana dengan indikasi progres dasar  
+
 
 
 ---

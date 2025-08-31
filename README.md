@@ -280,27 +280,28 @@ A: Tidak disarankan (single instance protection).
 
 ---
 
-##  CHANGELOG DAN VERSION HISTORY
+## CATATAN PERUBAHAN DAN RIWAYAT VERSI
 
-### Version 2.0 (31 Agustus 2025)
-- [NEW] Command line options (--help, --status, dll.)  
-- [NEW] Automatic PID management & cleanup  
-- [NEW] Enhanced error handling  
-- [NEW] Performance monitoring  
-- [NEW] Validasi TLD IANA & RFC  
-- [IMPROVED] Filter 35k domain  
-- [IMPROVED] Parallel processing efficiency  
-- [IMPROVED] Memory optimization  
-- [FIXED] PID file cleanup issues  
-- [FIXED] Zombie process detection  
-- [DOCS] Dokumentasi lengkap  
+### Versi 2.1 (31 Agustus 2025)
+- [BARU] Opsi baris perintah (--help, --status, dll.)  
+- [BARU] Manajemen dan pembersihan PID otomatis  
+- [BARU] Penanganan galat lebih baik  
+- [BARU] Pemantauan kinerja  
+- [BARU] Validasi TLD berdasarkan IANA & RFC  
+- [PENINGKATAN] Penyaringan 35 ribu domain  
+- [PENINGKATAN] Efisiensi pemrosesan paralel  
+- [PENINGKATAN] Optimalisasi penggunaan memori  
+- [PERBAIKAN] Masalah pembersihan berkas PID  
+- [PERBAIKAN] Deteksi proses zombie  
+- [DOKUMENTASI] Dokumentasi lengkap  
 
-### Version 1.0 (07 April 2024)
-- Initial release  
-- Basic domain validation  
-- TLD checking IANA  
-- Simple parallel processing  
-- Basic cleanup  
+### Versi 1.0 (07 April 2024)
+- Rilis awal  
+- Validasi domain dasar  
+- Pemeriksaan TLD berdasarkan IANA  
+- Pemrosesan paralel sederhana  
+- Pembersihan dasar  
+
 
 ---
 

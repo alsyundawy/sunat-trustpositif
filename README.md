@@ -308,8 +308,8 @@ A: Tidak disarankan (single instance protection).
 ##  KONTRIBUSI DAN SUPPORT
 
 **Author**: Harry Dertin Sutisna Alsyundawy  
-**Email**: _(isi sesuai kebutuhan)_  
-**GitHub**: _(link repository)_  
+**Email**: harry@alsyundawy.com  
+**GitHub**: [_(link repository)_ ](https://github.com/alsyundawy)https://github.com/alsyundawy 
 
 ### Kontribusi
 - Bug reports & feature requests welcome  

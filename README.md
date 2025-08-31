@@ -35,9 +35,9 @@ Validates domain lists against official TLDs.  Downloads, cleans, and processes 
 
 -
 
-## =============================================
+### =========================================================
 #  DOKUMENTASI LENGKAP DAN PANDUAN PENGGUNAAN
-## =============================================
+### =========================================================
 ## 📌 RINGKASAN PERBAIKAN DAN OPTIMASI SCRIPT
 
 Script ini telah mengalami perbaikan dan optimasi menyeluruh untuk meningkatkan performa, keamanan, dan maintainability.

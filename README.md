@@ -308,7 +308,7 @@ A: Tidak disarankan (single instance protection).
 
 **Author**: Harry Dertin Sutisna Alsyundawy  
 **Email**: harry@alsyundawy.com  
-**GitHub**: [_(link repository)_ ](https://github.com/alsyundawy)https://github.com/alsyundawy 
+**GitHub**: https://github.com/alsyundawy 
 
 ### Kontribusi
 - Bug reports & feature requests welcome  

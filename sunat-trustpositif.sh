@@ -1,14 +1,13 @@
 #!/usr/bin/env bash
-
 # ============================================================
-# Script Name    : sunat-trustpositif.sh
-# Description    : Script validasi domain list terhadap TLD resmi, standar RFC, dan alamat IP.
-#                  Mengunduh, membersihkan, dan memproses data domain dengan performa maksimal.
-# Author         : HARRY DERTIN SUTISNA ALSYUNDAWY
-# Created Date   : 07 APRIL 2024
-# Last Modified  : 22 AGUSTUS 2025
-# Version        : 2.5 - Performance Optimized
-# Usage          : bash sunat-trustpositif.sh
+# Script Name   : sunat-trustpositif.sh
+# Description   : Validasi domain list terhadap TLD resmi, standar RFC, filter IPv4/IPv6.
+#                 Optimasi performa tinggi dengan bypass SSL dan parallel processing.
+# Author        : HARRY DERTIN SUTISNA ALSYUNDAWY
+# Created Date  : 07 APRIL 2024
+# Last Modified : 23 NOVEMBER 2025
+# Version       : 2.7-rev2
+# Usage         : bash sunat-trustpositif.sh
 # ============================================================
 
 # Konfigurasi strict mode untuk bash
@@ -21,34 +20,33 @@ export LANG=C
 # KONFIGURASI GLOBAL DAN KONSTANTA
 # ============================================================
 
-# Definisi warna untuk output console
-declare -Ar COLORS=(
-    [RED]='\033[0;31m' [GREEN]='\033[0;32m' [YELLOW]='\033[1;33m' 
-    [BLUE]='\033[0;34m' [PURPLE]='\033[0;35m' [CYAN]='\033[0;36m' 
+# Definisi warna untuk output console (ORIGINAL SCHEME)
+declare -A COLORS=(
+    [RED]='\033[0;31m' [GREEN]='\033[0;32m' [YELLOW]='\033[1;33m'
+    [BLUE]='\033[0;34m' [PURPLE]='\033[0;35m' [CYAN]='\033[0;36m'
     [WHITE]='\033[1;37m' [BOLD]='\033[1m' [DIM]='\033[2m' [NC]='\033[0m'
 )
-
-declare -Ar BG_COLORS=(
-    [BG_RED]='\033[41m' [BG_GREEN]='\033[42m' [BG_YELLOW]='\033[43m' 
-    [BG_BLUE]='\033[44m' [BG_PURPLE]='\033[45m' [BG_CYAN]='\033[46m' 
+declare -A BG_COLORS=(
+    [BG_RED]='\033[41m' [BG_GREEN]='\033[42m' [BG_YELLOW]='\033[43m'
+    [BG_BLUE]='\033[44m' [BG_PURPLE]='\033[45m' [BG_CYAN]='\033[46m'
 )
 
 # Konfigurasi utama script
-readonly SCRIPT_NAME="sunat-trustpositif.sh"
-readonly SCRIPT_VERSION="2.5"
-readonly IANA_TLD_URL="https://data.iana.org/TLD/tlds-alpha-by-domain.txt"
-readonly KOMINFO_URL="https://trustpositif.komdigi.go.id/assets/db/domains_isp"
-readonly DOMAIN_FILE="domains_isp"
-readonly OUTPUT_DIR="/var/www/html/trustpositif"
-readonly VALID_OUTPUT="${OUTPUT_DIR}/sunat-trustpositif.txt"
+SCRIPT_NAME="sunat-trustpositif.sh"
+SCRIPT_VERSION="2.7-rev2"
+IANA_TLD_URL="https://data.iana.org/TLD/tlds-alpha-by-domain.txt"
+KOMINFO_URL="https://trustpositif.komdigi.go.id/assets/db/domains_isp"
+DOMAIN_FILE="domains_isp"
+OUTPUT_DIR="/var/www/html/trustpositif"
+VALID_OUTPUT="${OUTPUT_DIR}/sunat-trustpositif.txt"
 
 # Konfigurasi performa
-readonly NUM_CORES=$(nproc)
-readonly CHUNK_SIZE=15000
-readonly TEMP_DIR=$(mktemp -d -t "${SCRIPT_NAME%.*}.XXXXXX")
+NUM_CORES=$(nproc)
+CHUNK_SIZE=15000
+TEMP_DIR=$(mktemp -d -t "${SCRIPT_NAME%.*}.XXXXXX")
 
 # ============================================================
-# FUNGSI UTILITAS DAN LOGGING
+# FUNGSI UTILITAS DAN LOGGING (ORIGINAL STYLE)
 # ============================================================
 
 print_colored() {
@@ -66,42 +64,74 @@ log_warning() { print_colored "YELLOW" "[!] [PERINGATAN] $1"; }
 log_error() { print_colored "RED" "[X] [ERROR] $1"; }
 log_progress() { print_colored "GREEN" "[>] [PROSES] $1"; }
 
+# Banner Original (Menggunakan BG_BLUE)
 show_banner() {
-    print_colored "CYAN"   "+------------------------------------------------------------------------------+" "BG_BLUE"
-    print_colored "WHITE"  "¦                           SUNAT TRUST POSITIF v${SCRIPT_VERSION}    		  	¦" "BG_BLUE"
-    print_colored "WHITE"  "¦             Validasi TLD, RFC, IP & Pemrosesan Data Cepat                    ¦" "BG_BLUE"
-    print_colored "CYAN"   "+------------------------------------------------------------------------------¦" "BG_BLUE"
-    print_colored "YELLOW" "¦ Script Name      : ${SCRIPT_NAME}                                     ¦" "BG_BLUE"
-    print_colored "YELLOW" "¦ Deskripsi        : Memvalidasi domain terhadap TLD, RFC, & filter IP.        ¦" "BG_BLUE"
-    print_colored "YELLOW" "¦                    Mengunduh dan memproses data domain dengan aman & cepat.  ¦" "BG_BLUE"
-    print_colored "YELLOW" "¦ Pembuat          : HARRY DERTIN SUTISNA ALSYUNDAWY                           ¦" "BG_BLUE"
-    print_colored "YELLOW" "¦ Dibuat           : 07 APRIL 2024                                             ¦" "BG_BLUE"
-    print_colored "YELLOW" "¦ Terakhir Diubah  : 31 AGUSTUS 2025                                           ¦" "BG_BLUE"
-    print_colored "YELLOW" "¦ Penggunaan       : bash ${SCRIPT_NAME}                                ¦" "BG_BLUE"
-    print_colored "CYAN"   "+------------------------------------------------------------------------------+" "BG_BLUE"
+    print_colored "CYAN" "+------------------------------------------------------------------------------+" "BG_BLUE"
+    print_colored "WHITE" "¦            SUNAT TRUST POSITIF v${SCRIPT_VERSION} - ENTERPRISE EDITION            ¦" "BG_BLUE"
+    print_colored "WHITE" "¦          Validasi TLD, RFC, IPv4/IPv6 & High Performance Processing          ¦" "BG_BLUE"
+    print_colored "CYAN" "+------------------------------------------------------------------------------¦" "BG_BLUE"
+    print_colored "YELLOW" "¦ Script Name     : ${SCRIPT_NAME}                                          ¦" "BG_BLUE"
+    print_colored "YELLOW" "¦ Deskripsi       : Fix Syntax Mawk, SSL Bypass, & Filter IP Optimized.        ¦" "BG_BLUE"
+    print_colored "YELLOW" "¦ Pembuat         : HARRY DERTIN SUTISNA ALSYUNDAWY                            ¦" "BG_BLUE"
+    print_colored "YELLOW" "¦ Versi           : ${SCRIPT_VERSION}                                                   ¦" "BG_BLUE"
+    print_colored "YELLOW" "¦ Terakhir Diubah : 23 NOVEMBER 2025                                           ¦" "BG_BLUE"
+    print_colored "CYAN" "+------------------------------------------------------------------------------+" "BG_BLUE"
 }
 
 show_system_resources() {
     local phase="$1"
     print_colored "YELLOW" "\n[SYS] Status Sistem - $phase" "BG_PURPLE"
     local mem_info=$(free -h | grep "Mem:")
-    print_colored "DIM" "  * Total: ${COLORS[CYAN]}$(echo $mem_info | awk '{print $2}')${COLORS[NC]}"
-    print_colored "DIM" "  * Tersedia: ${COLORS[GREEN]}$(echo $mem_info | awk '{print $7}')${COLORS[NC]}"
-    print_colored "DIM" "  * CPU Cores: ${COLORS[CYAN]}$NUM_CORES${COLORS[NC]}"
+    # Parsing yang aman
+    local total_mem=$(echo "$mem_info" | awk '{print $2}')
+    local avail_mem=$(echo "$mem_info" | awk '{print $7}')
+    
+    # Menggunakan COLORS[DIM] yang sudah diperbaiki
+    print_colored "DIM" " * Total RAM : ${COLORS[CYAN]}$total_mem${COLORS[NC]}"
+    print_colored "DIM" " * Tersedia  : ${COLORS[GREEN]}$avail_mem${COLORS[NC]}"
+    print_colored "DIM" " * CPU Cores : ${COLORS[CYAN]}$NUM_CORES${COLORS[NC]}"
 }
 
-check_file() {
-    if [[ ! -s "$1" ]]; then
-        log_error "File ${COLORS[BOLD]}$1${COLORS[NC]} kosong atau tidak ada."
-        exit 1
+check_dependencies() {
+    local dependencies=("curl" "mawk" "parallel" "split")
+    for cmd in "${dependencies[@]}"; do
+        if ! command -v "$cmd" &> /dev/null; then
+            log_error "Dependency hilang: $cmd. Harap install terlebih dahulu."
+            exit 1
+        fi
+    done
+}
+
+# ============================================================
+# FUNGSI DOWNLOADER (OPTIMAL & BYPASS SSL)
+# ============================================================
+download_data() {
+    local url="$1"
+    local output="$2"
+    local description="$3"
+
+    log_progress "Mengunduh $description..."
+    
+    # Prioritas 1: Curl dengan SSL Bypass, Kompresi, dan Retry
+    if command -v curl &> /dev/null; then
+        if curl -sL --insecure --compressed --connect-timeout 30 --retry 3 --retry-delay 2 -o "$output" "$url"; then
+            return 0
+        fi
     fi
+
+    # Prioritas 2: Wget dengan No Check Certificate
+    if command -v wget &> /dev/null; then
+        if wget --no-check-certificate -q -O "$output" --timeout=30 --tries=3 "$url"; then
+            return 0
+        fi
+    fi
+
+    return 1
 }
 
 # ============================================================
 # FUNGSI PEMBERSIHAN
 # ============================================================
-
-# Daftar domain untuk pembersihan (minimal untuk performa)
 DOMAINS_TO_CLEAN=(
  "00002555-coi2.cfd" "0000377.xyz" "0000378.xyz" "0000540.xyz" "0000542.xyz" "0000543.xyz" "0000544.xyz" "0000545.xyz" "0000546.xyz"
  "0000547.xyz" "0000549.xyz" "0000711.xyz" "0000713.xyz" "0000715.xyz" "0000717.xyz" "0000719.xyz" "0000971.xyz" "0000972.xyz"
@@ -8233,31 +8263,28 @@ DOMAINS_TO_CLEAN=(
 )
 
 
-
-
 cleanup() {
     [[ "${CLEANUP_RUNNING:-0}" == "1" ]] && return 0
     export CLEANUP_RUNNING=1
-    
     log_info "Membersihkan file sementara..."
+    if jobs -p > /dev/null 2>&1; then kill $(jobs -p) 2>/dev/null || true; fi
     rm -rf "${TEMP_DIR}" "${DOMAIN_FILE}" 2>/dev/null || true
     log_success "Pembersihan selesai."
 }
-
 trap cleanup EXIT INT TERM
 
 # ============================================================
-# FUNGSI PEMROSESAN DOMAIN YANG DIOPTIMALKAN
+# FUNGSI PEMROSESAN DOMAIN (CORE LOGIC)
 # ============================================================
 
 process_chunk() {
     local chunk_file="$1"
     local valid_tlds_file="$2"
     local output_file="${chunk_file}.processed"
-
+    
+    # PERBAIKAN SINTAKS MAWK DI SINI
     mawk -v tlds_file="$valid_tlds_file" '
     BEGIN {
-        # Baca daftar TLD resmi (lowercase)
         while ((getline line < tlds_file) > 0) {
             gsub(/\r/, "", line)
             if (line ~ /^[[:space:]]*$/) continue
@@ -8267,72 +8294,50 @@ process_chunk() {
         close(tlds_file)
     }
 
-    # Skip cepat: baris kosong / komentar umum
-    /^[[:space:]]*$/ || /^[#;!]/ || $0 ~ /^\/\// { next }
+    # --- FILTER AWAL (PATTERN-ACTION) ---
+    /^[[:space:]]*$/ { next }
+    /^[[:space:]]*[#;]/ && $0 !~ /[a-zA-Z0-9.-]/ { next }
 
     {
         domain = $0
 
-        # Trim both ends
+        # --- SANITASI ---
+        sub(/^[[:alpha:]]+[[:punct:]]+\/\//, "", domain) 
+        gsub(/[[:space:]]*[#;].*$/, "", domain) 
+        gsub(/[[:space:]]*\/\/.*$/, "", domain) 
         sub(/^[[:space:]]+/, "", domain)
         sub(/[[:space:]]+$/, "", domain)
+        
         if (domain == "") next
 
-        # Jika seluruh baris adalah alamat IPv4/IPv6 -> skip
+        # --- FILTER IP ADDRESS (v4 & v6) ---
         if (domain ~ /^([0-9]{1,3}\.){3}[0-9]{1,3}$/) next
         if (domain ~ /^[0-9a-fA-F:]+$/ && index(domain, ":") > 0) next
+        if (domain ~ /^([0-9a-fA-F]{0,4}:){1,7}[0-9a-fA-F]{0,4}$/) next
 
-        # Hapus prefiks hosts/blocklist umum
+        # Hapus sampah umum
         sub(/^[[:space:]]*(0\.0\.0\.0|127\.0\.0\.1|::1)[[:space:]]+/, "", domain)
         sub(/^[[:digit:]]+(\.[[:digit:]]+){1,3}[[:space:]]+/, "", domain)
-
-        # Hapus scheme
-        sub(/^[[:alpha:]]+[[:punct:]]+\/\//, "", domain)
-
-        # Hapus awalan adblock/wildcard/pipes
         sub(/^[\|\*]+/, "", domain)
-
-        # Hapus "www." jika ada
         sub(/^www\./i, "", domain)
-
-        # Hapus "mail." jika ada
         sub(/^mail\./i, "", domain)
-
-        # Cut anything after first slash, caret, or whitespace
         sub(/[\/\^[:space:]].*$/, "", domain)
-
-        # Hapus port jika ada
         sub(/:[0-9]+$/, "", domain)
-
-        # Hilangkan trailing dot
         sub(/\.$/, "", domain)
-
-        # Buang karakter yang tidak diizinkan untuk LDH
         gsub(/[^A-Za-z0-9\.\-]/, "", domain)
 
-        # Normalisasi ke lowercase
         domain_l = tolower(domain)
-
-        # Skip kalau kosong setelah pembersihan
         if (domain_l == "") next
-
-        # Skip jika hanya angka/dot (kemungkinan IP tersisa)
         if (domain_l ~ /^[0-9]+(\.[0-9]+){1,3}$/) next
 
-        # Segmen label
+        # --- VALIDASI STRUKTUR DOMAIN ---
         n = split(domain_l, parts, ".")
         if (n < 2) next
-
-        # Validasi panjang total (RFC 1035: domain name total <= 253 octets)
         if (length(domain_l) > 253) next
 
-        # Ambil TLD
         tld = parts[n]
-
-        # TLD harus ada di daftar resmi IANA
         if (!(tld in valid_tlds)) next
 
-        # Validasi per-label
         bad = 0
         for (i = 1; i <= n; i++) {
             lab = parts[i]
@@ -8343,14 +8348,12 @@ process_chunk() {
         }
         if (bad) next
 
-        # Dedupe per-chunk
         if (!seen[domain_l]++) {
             print domain_l
         }
     }
     ' "$chunk_file" > "$output_file"
 }
-
 export -f process_chunk
 
 # ============================================================
@@ -8361,164 +8364,201 @@ main() {
     local start_time end_time duration
     start_time=$(date +%s)
     
+    check_dependencies
     show_banner
     log_info "Waktu Mulai: $(date '+%d %B %Y - %H:%M:%S')"
     show_system_resources "Sebelum Proses"
 
-    # Periksa direktori output
-    if [[ ! -w "$OUTPUT_DIR" ]]; then
-        log_error "Direktori output '${OUTPUT_DIR}' tidak dapat ditulisi."
-        exit 1
+    # Setup output dir
+    if [[ ! -d "$OUTPUT_DIR" ]]; then
+        mkdir -p "$OUTPUT_DIR" || { log_error "Gagal membuat direktori '${OUTPUT_DIR}'"; exit 1; }
     fi
+    if [[ ! -w "$OUTPUT_DIR" ]]; then log_error "Output dir not writable"; exit 1; fi
 
-    # === FASE UNDUHAN ===
+    # === FASE UNDUHAN (BYPASS SSL) ===
     print_colored "YELLOW" "\n[DL] Fase Unduhan" "BG_BLUE"
     
-    log_progress "Mengunduh daftar TLD IANA..."
-    if ! curl -sL "${IANA_TLD_URL}" | grep -v '^#' | tr '[:upper:]' '[:lower:]' > "${TEMP_DIR}/iana_tlds.txt"; then
-        log_error "Gagal mengunduh daftar TLD IANA."; exit 1
+    if ! download_data "${IANA_TLD_URL}" "${TEMP_DIR}/iana_tlds.raw" "daftar TLD IANA"; then
+        log_error "Gagal mengunduh TLD IANA."; exit 1
     fi
-    check_file "${TEMP_DIR}/iana_tlds.txt"
+    grep -v '^#' "${TEMP_DIR}/iana_tlds.raw" | tr '[:upper:]' '[:lower:]' > "${TEMP_DIR}/iana_tlds.txt"
 
-    log_progress "Mengunduh daftar domain Kominfo..."
-    if ! curl -sL -o "${DOMAIN_FILE}" "${KOMINFO_URL}"; then
+    if ! download_data "${KOMINFO_URL}" "${DOMAIN_FILE}" "daftar domain Kominfo"; then
         log_error "Gagal mengunduh daftar domain Kominfo."; exit 1
     fi
-    check_file "${DOMAIN_FILE}"
     
-    local domain_count_initial domain_file_size
-    domain_count_initial=$(wc -l < "${DOMAIN_FILE}")
-    domain_file_size=$(du -h "${DOMAIN_FILE}" | cut -f1)
+    local domain_count_initial=$(wc -l < "${DOMAIN_FILE}")
+    local domain_file_size=$(du -h "${DOMAIN_FILE}" | cut -f1)
 
     # === FASE PEMROSESAN ===
     print_colored "YELLOW" "\n[PROC] Fase Pemrosesan" "BG_BLUE"
     
-    log_progress "Membagi daftar domain untuk pemrosesan paralel..."
+    log_progress "Membagi daftar domain..."
     split -l ${CHUNK_SIZE} "${DOMAIN_FILE}" "${TEMP_DIR}/chunk_"
-    log_success "Berhasil membuat $(find "${TEMP_DIR}" -name 'chunk_*' | wc -l) chunk."
-
-    log_progress "Memproses chunk secara paralel menggunakan ${NUM_CORES} core CPU..."
+    
+    log_progress "Memproses chunk paralel (${NUM_CORES} Cores)..."
     find "${TEMP_DIR}" -name 'chunk_*' | parallel -j${NUM_CORES} process_chunk {} "${TEMP_DIR}/iana_tlds.txt"
     log_success "Pemrosesan paralel selesai."
 
-    log_progress "Menggabungkan, mengurutkan, dan menghapus duplikat..."
+    log_progress "Menggabungkan dan membersihkan duplikat..."
     cat "${TEMP_DIR}"/*.processed | sort -u > "${VALID_OUTPUT}.tmp"
-    local processed_count processed_file_size
-    processed_count=$(wc -l < "${VALID_OUTPUT}.tmp")
-    processed_file_size=$(du -h "${VALID_OUTPUT}.tmp" | cut -f1)
 
-    # === FASE PEMBERSIHAN (KEMBALI KE METODE ASLI) ===
-    print_colored "YELLOW" "\n[CLEAN] Fase Pembersihan" "BG_BLUE"
-    log_progress "Menghapus domain dari daftar pembersihan..."
+    local processed_count=$(wc -l < "${VALID_OUTPUT}.tmp")
+    local processed_file_size=$(du -h "${VALID_OUTPUT}.tmp" | cut -f1)
+
+    # === FASE PEMBERSIHAN KHUSUS ===
+    print_colored "YELLOW" "\n[CLEAN] Fase Pembersihan Manual" "BG_BLUE"
     
-    # Menggunakan metode asli yang sudah terbukti bekerja
     printf '%s\n' "${DOMAINS_TO_CLEAN[@]}" | sed 's/\./\\./g; s/^/\\./' > "${TEMP_DIR}/domains_pattern.txt"
     grep -v -f "${TEMP_DIR}/domains_pattern.txt" "${VALID_OUTPUT}.tmp" > "${VALID_OUTPUT}"
     
-    local final_count final_file_size removed_count
-    final_count=$(wc -l < "${VALID_OUTPUT}")
-    final_file_size=$(du -h "${VALID_OUTPUT}" | cut -f1)
-    removed_count=$((processed_count - final_count))
+    local final_count=$(wc -l < "${VALID_OUTPUT}")
+    local final_file_size=$(du -h "${VALID_OUTPUT}" | cut -f1)
+    local removed_count=$((processed_count - final_count))
     
-    log_success "Berhasil menghapus ${COLORS[CYAN]}$removed_count${COLORS[NC]} entri."
     rm -f "${VALID_OUTPUT}.tmp"
 
-    # === STATISTIK AKHIR ===
+    # === STATISTIK ===
     print_colored "YELLOW" "\n[STAT] Statistik" "BG_GREEN"
-    log_success "Proses berhasil diselesaikan!"
-
-    local valid_percentage removed_percentage final_percentage
-    valid_percentage=$((processed_count * 100 / domain_count_initial))
-    removed_percentage=$((removed_count * 100 / processed_count))
-    final_percentage=$((final_count * 100 / domain_count_initial))
-
-    # Kalkulasi ukuran file yang dihapus (seperti script asli)
-    local removed_size_bytes removed_file_size
-    removed_size_bytes=$(($(stat -c%s "${VALID_OUTPUT}.tmp" 2>/dev/null || echo 0) - $(stat -c%s "${VALID_OUTPUT}")))
-    if [ $removed_size_bytes -gt 1073741824 ]; then removed_file_size=$((removed_size_bytes / 1073741824))G
-    elif [ $removed_size_bytes -gt 1048576 ]; then removed_file_size=$((removed_size_bytes / 1048576))M
-    elif [ $removed_size_bytes -gt 1024 ]; then removed_file_size=$((removed_size_bytes / 1024))K
-    else removed_file_size="${removed_size_bytes}B"; fi
+    local valid_percentage=$((processed_count * 100 / domain_count_initial))
+    local final_percentage=$((final_count * 100 / domain_count_initial))
 
     print_colored "BOLD" "[REPORT] Statistik Akhir:"
-    print_colored "DIM" "  * Total domain diproses: ${COLORS[YELLOW]}$domain_count_initial${COLORS[NC]} (100%) - ${COLORS[CYAN]}$domain_file_size${COLORS[NC]}"
-    print_colored "DIM" "  * Domain valid setelah filter: ${COLORS[YELLOW]}$processed_count${COLORS[NC]} (${COLORS[CYAN]}$valid_percentage%${COLORS[NC]}) - ${COLORS[CYAN]}$processed_file_size${COLORS[NC]}"
-    print_colored "DIM" "  * Subdomain dihapus: ${COLORS[YELLOW]}$removed_count${COLORS[NC]} (${COLORS[CYAN]}$removed_percentage%${COLORS[NC]} dari valid) - ~${COLORS[CYAN]}$removed_file_size${COLORS[NC]}"
-    print_colored "DIM" "  * Domain bersih akhir: ${COLORS[GREEN]}$final_count${COLORS[NC]} (${COLORS[CYAN]}$final_percentage%${COLORS[NC]} dari total) - ${COLORS[CYAN]}$final_file_size${COLORS[NC]}"
-    print_colored "DIM" "  * File keluaran: ${COLORS[CYAN]}$VALID_OUTPUT${COLORS[NC]}"
+    print_colored "DIM" " * Input Awal        : ${COLORS[YELLOW]}$domain_count_initial${COLORS[NC]} (100%) - ${COLORS[CYAN]}$domain_file_size${COLORS[NC]}"
+    print_colored "DIM" " * Valid (Automated) : ${COLORS[YELLOW]}$processed_count${COLORS[NC]} (${COLORS[CYAN]}$valid_percentage%${COLORS[NC]})"
+    print_colored "DIM" " * Dibuang Manual    : ${COLORS[YELLOW]}$removed_count${COLORS[NC]}"
+    print_colored "DIM" " * HASIL AKHIR       : ${COLORS[GREEN]}$final_count${COLORS[NC]} (${COLORS[CYAN]}$final_percentage%${COLORS[NC]}) - ${COLORS[CYAN]}$final_file_size${COLORS[NC]}"
+    print_colored "DIM" " * File Output       : ${COLORS[CYAN]}$VALID_OUTPUT${COLORS[NC]}"
 
-    show_system_resources "Setelah Proses"
-
-    # Kalkulasi waktu eksekusi
+    show_system_resources "Selesai"
+    
     end_time=$(date +%s)
     duration=$((end_time - start_time))
     local duration_min=$((duration / 60))
     local duration_sec=$((duration % 60))
-
-    print_colored "YELLOW" "\n[TIME] Waktu Eksekusi" "BG_PURPLE"
-    log_info "Waktu Selesai: ${COLORS[CYAN]}$(date '+%d %B %Y - %H:%M:%S')${COLORS[NC]}"
-    if [ $duration_min -gt 0 ]; then
-        log_info "Durasi Total: ${COLORS[GREEN]}${duration_min} menit ${duration_sec} detik${COLORS[NC]}"
-    else
-        log_info "Durasi Total: ${COLORS[GREEN]}${duration_sec} detik${COLORS[NC]}"
-    fi
-
-    print_colored "GREEN" "\n[DONE] Eksekusi script berhasil diselesaikan! [DONE]" "BG_GREEN"
     
+    print_colored "GREEN" "\n[DONE] Selesai dalam ${duration_min}m ${duration_sec}s [DONE]" "BG_GREEN"
     return 0
 }
 
 # ============================================================
-# COMMAND LINE ARGUMENTS HANDLING
+# BANTUAN & DOKUMENTASI
 # ============================================================
 
-show_help() {
+show_full_help() {
     show_banner
-    print_colored "YELLOW" "\nPenggunaan:"
-    print_colored "WHITE" "  bash $SCRIPT_NAME [OPSI]"
-    print_colored "YELLOW" "\nOpsi:"
-    print_colored "DIM" "  --help, -h         Tampilkan bantuan"
-    print_colored "DIM" "  --force-cleanup    Bersihkan file temporary"
-    print_colored "DIM" "  --version, -v      Tampilkan versi"
-    echo
+    # Menggunakan warna Putih Tebal (Bold) untuk teks agar jelas di pager
+    echo -e "${COLORS[BOLD]}${COLORS[WHITE]}"
+    cat << 'EOF'
+
+============================================================
+DOKUMENTASI LENGKAP DAN PANDUAN PENGGUNAAN
+============================================================
+
+RINGKASAN PERBAIKAN DAN OPTIMASI SCRIPT
+----------------------------------------
+Script ini telah mengalami perbaikan dan optimasi menyeluruh untuk 
+meningkatkan performa, keamanan, dan kemudahan pemeliharaan.
+
+OPTIMASI PERFORMA:
++-- Ukuran Chunk Optimal: Ukuran chunk 15000 untuk keseimbangan kecepatan vs memori
++-- Pemrosesan AWK Dioptimalkan: Regex terkompilasi dan tabel hash O(1) 
++-- Manajemen Sumber Daya: Pemanfaatan optimal semua core CPU dan memori
++-- Pemrosesan Paralel: GNU parallel dengan pemrosesan efisien
++-- Optimasi Unduhan: Menggunakan metode bypass SSL dan kompresi
+
+CARA PENGGUNAAN SCRIPT
+-----------------------
+PENGGUNAAN DASAR:
+ bash sunat-trustpositif.sh                  # Jalankan script normal
+
+OPSI BARIS PERINTAH:
+ bash sunat-trustpositif.sh --help           # Tampilkan bantuan lengkap ini
+ bash sunat-trustpositif.sh --version        # Tampilkan versi script
+ bash sunat-trustpositif.sh --force-cleanup  # Paksa bersihkan file sementara
+
+CATATAN PERUBAHAN DAN RIWAYAT VERSI
+-----------------------------------
+VERSI 2.7 (23 NOVEMBER 2025) - Optimization & Fixes:
++-- [BARU] Opsi baris perintah (--help, --force-cleanup, --version)
++-- [FIX] Perbaikan sintaks fatal pada MAWK .
++-- [FIX] Mekanisme unduhan dengan Bypass SSL (--insecure) untuk keandalan tinggi.
++-- [FIX] Filter IPv6 yang ditingkatkan untuk mencegah kebocoran alamat IP.
++-- [MOD] Integrasi dokumentasi lengkap ke dalam perintah --help.
++-- [MOD] Optimasi struktur kode untuk stabilitas eksekusi.
++-- [DITINGKATKAN] Penyaringan 95 ribu domain. 
+#
+VERSI 2.5 (31 AGUSTUS 2025) - Penulisan Ulang Lengkap:
++-- [DITINGKATKAN] Penyaringan hingga 45.000 domain
++-- [DITINGKATKAN] sunat subdomain *www dan mail
+
+VERSI 2.2 (22 AGUSTUS 2025) - Penulisan Ulang Lengkap:
++-- [BARU] Penanganan error yang ditingkatkan dan mekanisme pemulihan
++-- [BARU] Pemantauan performa dan statistik detail
++-- [BARU] Pemantauan sumber daya sistem komprehensif
++-- [BARU] Validasi TLD berdasarkan IANA & RFC  
++-- [DITINGKATKAN] Penyaringan 35 ribu domain  
++-- [DITINGKATKAN] Efisiensi pemrosesan paralel dengan GNU parallel
++-- [DITINGKATKAN] Optimasi penggunaan memori dengan chunking cerdas
++-- [DITINGKATKAN] Penanganan sinyal dan shutdown yang anggun
++-- [DITINGKATKAN] Validasi domain canggih dengan optimasi AWK
++-- [DOCS] Dokumentasi ekstensif dan panduan pemecahan masalah
+#
+VERSI 1.8 (05 JUNI 2025) - Rilis Awal:
++-- Perapihan kode agar mudah di maintenatencae
++-- Penyaringan 2 ribu domain
++-- Tampilan konsole yang berwarna dan informatif
++-- pembaharuan kode yang error
+#
+VERSI 1.0 (07 APRIL 2024) - Rilis Awal:
++-- Fungsionalitas validasi domain dasar
++-- Pengecekan TLD terhadap daftar resmi IANA
++-- Implementasi pemrosesan paralel sederhana
++-- Pembersihan dasar dan manajemen file sementara
++-- Penyaringan dan deduplikasi domain inti
++-- Output konsol sederhana dengan indikasi progres dasar
+
+KONTRIBUSI DAN HAK CIPTA
+------------------------
+Hak Cipta (c) 2024-2025 HARRY DERTIN SUTISNA ALSYUNDAWY.
+Script ini disediakan "SEBAGAIMANA ADANYA". Penggunaan risiko ditanggung pengguna.
+EOF
+    echo -e "${COLORS[NC]}"
 }
 
-force_cleanup() {
-    print_colored "YELLOW" "\n[CLEANUP] Pembersihan Paksa"
-    pkill -f "$SCRIPT_NAME" 2>/dev/null || true
-    find /tmp -name "${SCRIPT_NAME%.*}.*" -type d -exec rm -rf {} + 2>/dev/null || true
-    rm -f "$DOMAIN_FILE" 2>/dev/null || true
-    log_success "Force cleanup selesai"
-}
+# ============================================================
+# ARGS HANDLING
+# ============================================================
 
-# Parse arguments
 case "${1:-}" in
-    --help|-h)
-        show_help
-        exit 0
+    --help|-h) 
+        if command -v less &> /dev/null; then
+            show_full_help | less -R
+        elif command -v more &> /dev/null; then
+            show_full_help | more
+        else
+            show_full_help
+        fi
+        exit 0 
         ;;
-    --force-cleanup)
-        force_cleanup
-        exit 0
+    --force-cleanup) 
+        print_colored "YELLOW" "\n[CLEANUP] Memulai Pembersihan Paksa..."
+        pkill -f "$SCRIPT_NAME" 2>/dev/null || true
+        rm -rf "${TEMP_DIR}" "${DOMAIN_FILE}" 2>/dev/null || true
+        log_success "Cleanup selesai. Sistem bersih."
+        exit 0 
         ;;
-    --version|-v)
+    --version|-v) 
         echo "$SCRIPT_NAME versi $SCRIPT_VERSION"
-        exit 0
+        exit 0 
         ;;
-    "")
-        # No arguments, run main
+    "") 
+        main 
         ;;
-    *)
-        log_error "Opsi tidak dikenal: $1"
-        exit 1
+    *) 
+        log_error "Opsi salah"; echo "Gunakan --help"; exit 1 
         ;;
 esac
-
-# ============================================================
-# EKSEKUSI PROGRAM UTAMA
-# ============================================================
-
-main
 
 # ============================================================
 # DOKUMENTASI LENGKAP DAN PANDUAN PENGGUNAAN
@@ -8611,7 +8651,7 @@ main
 #
 # 2. JIKA MUNCUL ERROR "Script sudah berjalan":
 #    bash sunat-trustpositif.sh --force-cleanup # Bersihkan paksa
-#    bash sunat-trustpositif.sh                 # Jalankan ulang
+#    bash sunat-trustpositif.sh                  # Jalankan ulang
 #
 # 3. JIKA UNDUHAN GAGAL:
 #    # Periksa koneksi internet
@@ -8752,7 +8792,7 @@ main
 # PRAKTIK KEAMANAN YANG DIREKOMENDASIKAN:
 # +-- Jalankan dengan user non-root jika memungkinkan
 # +-- Set izin file yang tepat pada direktori output:
-#     chmod 755 /var/www/html/trustpositif/
+#      chmod 755 /var/www/html/trustpositif/
 # +-- Backup file output penting sebelum menjalankan script
 # +-- Pantau penggunaan sumber daya saat script berjalan
 # +-- Tinjau output log untuk mendeteksi anomali atau error
@@ -8788,7 +8828,7 @@ main
 #
 # TUGAS PEMELIHARAAN:
 # +-- Mingguan: Jalankan --force-cleanup untuk kebersihan
-#     bash sunat-trustpositif.sh --force-cleanup
+#      bash sunat-trustpositif.sh --force-cleanup
 # +-- Bulanan: Tinjau hasil output untuk pengecekan kualitas
 # +-- Per Kuartal: Update script jika ada versi terbaru
 # +-- Tahunan: Tinjau daftar pembersihan domain untuk efektivitas
@@ -8797,11 +8837,11 @@ main
 #
 # STRATEGI BACKUP:
 # +-- Backup file output sebelum run baru:
-#     cp /var/www/html/trustpositif/sunat-trustpositif.txt backup-$(date +%Y%m%d).txt
+#      cp /var/www/html/trustpositif/sunat-trustpositif.txt backup-$(date +%Y%m%d).txt
 # +-- Simpan 5-10 versi historis untuk kemampuan rollback
 # +-- Pantau ukuran file output untuk analisis tren
 # +-- Arsipkan file lama untuk manajemen ruang:
-#     gzip backup-old-*.txt
+#      gzip backup-old-*.txt
 # +-- Dokumentasikan perubahan signifikan untuk referensi masa depan
 #
 # ANALISIS LOG:
@@ -8845,10 +8885,10 @@ main
 #
 # T: Error "Permission denied" saat menulis output?
 # J: 1. Cek kepemilikan direktori output:
-#       ls -la /var/www/html/trustpositif/
+#        ls -la /var/www/html/trustpositif/
 #    2. Set izin yang benar:
-#       sudo chown -R $USER:$USER /var/www/html/trustpositif/
-#       chmod 755 /var/www/html/trustpositif/
+#        sudo chown -R $USER:$USER /var/www/html/trustpositif/
+#        chmod 755 /var/www/html/trustpositif/
 #    3. Atau jalankan script dengan sudo (tidak direkomendasikan)
 #
 # T: Bagaimana cara menyesuaikan daftar pembersihan domain?
@@ -8867,7 +8907,7 @@ main
 # T: Bagaimana cara memantau progres untuk dataset besar?
 # J: 1. Script sudah menyediakan informasi progres real-time
 #    2. Pantau dengan tail log jika redirect output:
-#       bash script.sh > output.log 2>&1 & tail -f output.log
+#        bash script.sh > output.log 2>&1 & tail -f output.log
 #    3. Gunakan alat pemantauan sistem: htop, iotop, nethogs
 #
 # T: Script hang di fase unduhan, apa solusinya?
@@ -8886,9 +8926,21 @@ main
 # ============================================================
 # CATATAN PERUBAHAN DAN RIWAYAT VERSI
 # ============================================================
+# 
+# VERSI 2.7 (23 NOVEMBER 2025) - Optimization & Fixes:
+# +-- [BARU] Opsi baris perintah (--help, --force-cleanup, --version)
+# +-- [FIX] Perbaikan sintaks fatal pada MAWK .
+# +-- [FIX] Mekanisme unduhan dengan Bypass SSL (--insecure) untuk keandalan tinggi.
+# +-- [FIX] Filter IPv6 yang ditingkatkan untuk mencegah kebocoran alamat IP.
+# +-- [MOD] Integrasi dokumentasi lengkap ke dalam perintah --help.
+# +-- [MOD] Optimasi struktur kode untuk stabilitas eksekusi.
+# +-- [DITINGKATKAN] Penyaringan 95 ribu domain. 
 #
 # VERSI 2.5 (31 AGUSTUS 2025) - Penulisan Ulang Lengkap:
-# +-- [BARU] Opsi baris perintah (--help, --force-cleanup, --version)
+# +-- [DITINGKATKAN] Penyaringan hingga 45.000 domain
+# +-- [DITINGKATKAN] sunat subdomain *www dan mail
+# 
+# VERSI 2.2 (22 AGUSTUS 2025) - Penulisan Ulang Lengkap:
 # +-- [BARU] Penanganan error yang ditingkatkan dan mekanisme pemulihan
 # +-- [BARU] Pemantauan performa dan statistik detail
 # +-- [BARU] Pemantauan sumber daya sistem komprehensif

@@ -282,40 +282,65 @@ A: Tidak disarankan (single instance protection).
 
 # 📌 Catatan Perubahan dan Riwayat Versi
 
-## Versi 2.1 (31 Agustus 2025) — Penulisan Ulang Lengkap
-- **[BARU]** Opsi baris perintah (`--help`, `--force-cleanup`, `--version`)  
-- **[BARU]** Penanganan kesalahan yang ditingkatkan dan mekanisme pemulihan  
-- **[BARU]** Pemantauan performa dan statistik terperinci  
-- **[BARU]** Pemantauan sumber daya sistem secara komprehensif  
-- **[BARU]** Validasi TLD berdasarkan standar **IANA** & **RFC**  
-- **[DITINGKATKAN]** Penyaringan hingga **35.000 domain**  
-- **[DITINGKATKAN]** Efisiensi pemrosesan paralel menggunakan **GNU Parallel**  
-- **[DITINGKATKAN]** Optimasi penggunaan memori dengan metode *chunking* cerdas  
-- **[DITINGKATKAN]** Penanganan sinyal dan penghentian (*shutdown*) yang anggun  
+## 📝 Catatan Perubahan dan Riwayat Versi
+
+---
+
+### **VERSI 2.7 — 23 November 2025 — Optimization & Fixes**
+- **[BARU]** Opsi baris perintah (`--help`, `--force-cleanup`, `--version`)
+- **[FIX]** Perbaikan sintaks fatal pada MAWK
+- **[FIX]** Mekanisme unduhan dengan Bypass SSL (`--insecure`) untuk keandalan tinggi
+- **[FIX]** Filter IPv6 yang ditingkatkan untuk mencegah kebocoran alamat IP
+- **[MOD]** Integrasi dokumentasi lengkap ke dalam perintah `--help`
+- **[MOD]** Optimasi struktur kode untuk stabilitas eksekusi
+- **[DITINGKATKAN]** Penyaringan **95.000** domain
+
+---
+
+### **VERSI 2.5 — 31 Agustus 2025 — Penulisan Ulang Lengkap**
+- **[DITINGKATKAN]** Penyaringan hingga **45.000** domain  
+- **[DITINGKATKAN]** Penyunyatan subdomain `www` dan `mail`
+
+---
+
+### **VERSI 2.2 — 22 Agustus 2025 — Penulisan Ulang Lengkap**
+- **[BARU]** Penanganan error yang ditingkatkan dan mekanisme pemulihan  
+- **[BARU]** Pemantauan performa dan statistik detail  
+- **[BARU]** Pemantauan sumber daya sistem komprehensif  
+- **[BARU]** Validasi TLD berdasarkan **IANA & RFC**  
+- **[DITINGKATKAN]** Penyaringan **35.000** domain  
+- **[DITINGKATKAN]** Efisiensi pemrosesan paralel dengan **GNU parallel**  
+- **[DITINGKATKAN]** Optimasi penggunaan memori dengan **chunking cerdas**  
+- **[DITINGKATKAN]** Penanganan sinyal dan shutdown yang anggun  
 - **[DITINGKATKAN]** Validasi domain canggih dengan optimasi **AWK**  
-- **[DOCS]** Dokumentasi ekstensif dan panduan pemecahan masalah  
+- **[DOCS]** Dokumentasi ekstensif dan panduan pemecahan masalah
 
 ---
 
-## Versi 1.8 (05 Juni 2025)
-- Perapihan kode agar lebih mudah dipelihara (*maintainable*)  
-- Penyaringan hingga **2.000 domain**  
-- Tampilan konsol berwarna dan lebih informatif  
-- Perbaikan berbagai kesalahan kode  
+### **VERSI 1.8 — 05 Juni 2025 — Rilis Lanjutan**
+- Perapihan kode agar mudah di-maintenance  
+- Penyaringan **2.000** domain  
+- Tampilan konsol berwarna dan informatif  
+- Pembaruan kode yang error
 
 ---
 
-## Versi 1.0 (07 April 2024) — Rilis Awal
+### **VERSI 1.0 — 07 April 2024 — Rilis Awal**
 - Fungsionalitas validasi domain dasar  
 - Pengecekan TLD terhadap daftar resmi **IANA**  
 - Implementasi pemrosesan paralel sederhana  
-- Mekanisme pembersihan dasar dan manajemen file sementara  
-- Penyaringan serta deduplikasi domain inti  
-- Tampilan konsol sederhana dengan indikasi progres dasar  
-
-
+- Pembersihan dasar dan manajemen file sementara  
+- Penyaringan dan deduplikasi domain inti  
+- Output konsol sederhana dengan indikator progres dasar
 
 ---
+
+# 📜 Kontribusi dan Hak Cipta
+
+Hak Cipta © **2024–2025 HARRY DERTIN SUTISNA ALSYUNDAWY**  
+Script ini disediakan **"SEBAGAIMANA ADANYA"**. Penggunaan sepenuhnya menjadi risiko pengguna.
+
+
 
 ##  KONTRIBUSI DAN SUPPORT
 

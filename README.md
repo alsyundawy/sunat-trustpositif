@@ -15,13 +15,8 @@
 ## Stargazers over time
 
 
-<a href="https://www.star-history.com/#alsyundawy/sunat-trustpositif&Date">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=alsyundawy/sunat-trustpositif&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=alsyundawy/sunat-trustpositif&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=alsyundawy/sunat-trustpositif&type=Date" />
- </picture>
-</a>
+## Stargazers over time
+[![Stargazers over time](https://starchart.cc/alsyundawy/sunat-trustpositif.svg?variant=adaptive)](https://starchart.cc/alsyundawy/sunat-trustpositif)
 
 Validates domain lists against official TLDs.  Downloads, cleans, and processes domain data trustpositif. 
 

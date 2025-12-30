@@ -18,6 +18,10 @@
 
 Validates domain lists against official TLDs.  Downloads, cleans, and processes domain data trustpositif. 
 
+**If you find this project helpful and would like to support it, please consider donating via https://www.paypal.me/alsyundawy. Thank you for your support!**
+
+**Jika Anda merasa terbantu dan ingin mendukung proyek ini, pertimbangkan untuk berdonasi melalui https://www.paypal.me/alsyundawy. Terima kasih atas dukungannya!**
+
 -
 
 *Waktu Eksekusi*

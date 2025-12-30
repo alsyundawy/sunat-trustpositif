@@ -12,8 +12,6 @@
 [![GitHub Forks](https://img.shields.io/github/forks/alsyundawy/sunat-trustpositif?style=social)](https://github.com/alsyundawy/sunat-trustpositif/network/members)
 [![GitHub Contributors](https://img.shields.io/github/contributors/alsyundawy/sunat-trustpositif?style=social)](https://github.com/alsyundawy/sunat-trustpositif/graphs/contributors)
 
-## Stargazers over time
-
 
 ## Stargazers over time
 [![Stargazers over time](https://starchart.cc/alsyundawy/sunat-trustpositif.svg?variant=adaptive)](https://starchart.cc/alsyundawy/sunat-trustpositif)

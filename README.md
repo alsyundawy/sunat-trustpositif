@@ -41,46 +41,46 @@ Validates domain lists against official TLDs.  Downloads, cleans, and processes 
 ### =========================================================
 #  DOKUMENTASI LENGKAP DAN PANDUAN PENGGUNAAN
 ### =========================================================
-## ๐�“� RINGKASAN PERBAIKAN DAN OPTIMASI SCRIPT
+## 📌 RINGKASAN PERBAIKAN DAN OPTIMASI SCRIPT
 
 Script ini telah mengalami perbaikan dan optimasi menyeluruh untuk meningkatkan performa, keamanan, dan maintainability.
 
-### ๐��€ OPTIMASI PERFORMA
+### 🚀 OPTIMASI PERFORMA
 - **Chunk Size Dinamis**: Ukuran chunk dihitung berdasarkan memori tersedia  
 - **Pemrosesan AWK Dioptimalkan**: Pre-compiled regex dan hash table O(1)  
 - **Resource Management**: Pemanfaatan optimal semua core CPU dan memori  
 - **Parallel Processing**: GNU parallel dengan progress monitoring  
 - **Memory Optimization**: Adaptive resource allocation berdasarkan sistem  
 
-### ๐�”’ PENINGKATAN KEAMANAN & RELIABILITAS
+### 🔒 PENINGKATAN KEAMANAN & RELIABILITAS
 - **Dependency Checking**: Validasi otomatis semua tool yang diperlukan  
 - **Error Recovery**: Sistem retry dengan exponential backoff  
 - **Input Validation**: Validasi ketat untuk semua input dan file  
 - **Safe File Handling**: Penanganan file aman dengan proper locking  
 - **Process Management**: Deteksi dan cleanup process zombie/orphan  
 
-### ๐�งน PEMBERSIHAN & MANAJEMEN RESOURCE
+### 🧹 PEMBERSIHAN & MANAJEMEN RESOURCE
 - **Auto Cleanup**: Pembersihan otomatis semua file temporary  
 - **Trap Handlers**: Signal handling untuk cleanup saat interrupt  
 - **Memory Monitoring**: Monitor penggunaan memori real-time  
 - **Zero Trace**: Tidak meninggalkan jejak file setelah selesai  
 - **PID Management**: Deteksi dan cleanup PID file lama otomatis  
 
-### ๐�“� PENINGKATAN MONITORING & LOGGING
+### 📊 PENINGKATAN MONITORING & LOGGING
 - **Timestamped Logging**: Log dengan timestamp dan level yang jelas  
 - **System Resource Monitoring**: Monitor CPU, memory, dan disk usage  
 - **Progress Tracking**: Progress bar untuk operasi parallel  
 - **Performance Metrics**: Throughput dan statistik performa  
 - **Debug Mode**: Mode troubleshooting dengan logging detail  
 
-### ๐�“� DOKUMENTASI & MAINTAINABILITY
+### 📝 DOKUMENTASI & MAINTAINABILITY
 - **Comprehensive Comments**: Dokumentasi lengkap dalam Bahasa Indonesia  
 - **Modular Functions**: Fungsi terorganisir dengan separation of concerns  
 - **Error Messages**: Pesan error jelas dan actionable  
 - **Usage Examples**: Contoh penggunaan dan troubleshooting  
 - **Version Control**: Sistem versioning untuk tracking changes  
 
-### โ�• FITUR TAMBAHAN
+### ➕ FITUR TAMBAHAN
 - **Command Line Options**: Berbagai opsi untuk maintenance dan debug  
 - **Configuration Management**: Konfigurasi terpusat mudah diubah  
 - **Concurrent Safety**: Thread-safe operations untuk parallel processing  
@@ -89,14 +89,14 @@ Script ini telah mengalami perbaikan dan optimasi menyeluruh untuk meningkatkan 
 
 ---
 
-##  โ�ก CARA PENGGUNAAN SCRIPT
+##  ⚡ CARA PENGGUNAAN SCRIPT
 
-### ๐�”ง Penggunaan Dasar
+### 🔧 Penggunaan Dasar
 ```bash
 bash sunat-trustpositif.sh
 ```
 
-###  ๐�“� Opsi Command Line
+###  📌 Opsi Command Line
 ```bash
 bash sunat-trustpositif.sh --help           # Tampilkan bantuan lengkap
 bash sunat-trustpositif.sh --version        # Tampilkan versi script
@@ -134,7 +134,7 @@ bash sunat-trustpositif.sh --debug          # Mode debug untuk troubleshooting
 
 ---
 
-##  ๐�–ฅ๏ธ� INFORMASI SISTEM REQUIREMENTS
+##  🖥️ INFORMASI SISTEM REQUIREMENTS
 
 ### Minimum System Requirements
 - OS: Linux (Ubuntu/Debian/CentOS/RHEL)  
@@ -164,7 +164,7 @@ sudo yum install -y curl gawk parallel coreutils
 
 ---
 
-##  โ��๏ธ� KONFIGURASI PERFORMA DAN TUNING
+##  ⚙️ KONFIGURASI PERFORMA DAN TUNING
 
 ### Automatic Performance Tuning
 Script otomatis menyesuaikan konfigurasi berdasarkan:  
@@ -188,7 +188,7 @@ readonly OUTPUT_DIR="/path/to/dir"
 
 ---
 
-##  ๐�“� STRUKTUR OUTPUT DAN FILE HASIL
+##  📂 STRUKTUR OUTPUT DAN FILE HASIL
 
 ### Output Utama
 ```
@@ -212,7 +212,7 @@ readonly OUTPUT_DIR="/path/to/dir"
 
 ---
 
-##  ๐�”� KEAMANAN DAN BEST PRACTICES
+##  🔐 KEAMANAN DAN BEST PRACTICES
 
 ### Security Measures
 - Input sanitization  
@@ -237,14 +237,14 @@ chown user:group /var/www/html/trustpositif/
 
 ---
 
-##  ๐�“ก MONITORING DAN MAINTENANCE
+##  📡 MONITORING DAN MAINTENANCE
 
 ### Monitoring Real-time
 - CPU usage & load average  
 - Memory consumption  
 - Disk space usage  
 - Processing throughput  
-- Error rate & retry statistics  
+- Error rate & retry statistics    
 
 ### Log Analysis
 ```bash
@@ -283,9 +283,7 @@ A: Tidak disarankan (single instance protection).
 
 ---
 
-# ๐�“� Catatan Perubahan dan Riwayat Versi
-
-## ๐�“� Catatan Perubahan dan Riwayat Versi
+# 📌 Catatan Perubahan dan Riwayat Versi
 
 ---
 
@@ -302,7 +300,7 @@ A: Tidak disarankan (single instance protection).
 - **[DOC]** Dokumentasi lengkap dalam Bahasa Indonesia dengan contoh penggunaan praktis
 
 
-### **VERSI 2.7 โ€” 23 November 2025 โ€” Optimization & Fixes**
+### **VERSI 2.7 ( 23 November 2025 ) Optimization & Fixes**
 - **[BARU]** Opsi baris perintah (`--help`, `--force-cleanup`, `--version`)
 - **[FIX]** Perbaikan sintaks fatal pada MAWK
 - **[FIX]** Mekanisme unduhan dengan Bypass SSL (`--insecure`) untuk keandalan tinggi
@@ -313,13 +311,13 @@ A: Tidak disarankan (single instance protection).
 
 ---
 
-### **VERSI 2.5 โ€” 31 Agustus 2025 โ€” Penulisan Ulang Lengkap**
+### **VERSI 2.5 (  Agustus 2025 ) Penulisan Ulang Lengkap**
 - **[DITINGKATKAN]** Penyaringan hingga **45.000** domain  
 - **[DITINGKATKAN]** Penyunyatan subdomain `www` dan `mail`
 
 ---
 
-### **VERSI 2.2 โ€” 22 Agustus 2025 โ€” Penulisan Ulang Lengkap**
+### **VERSI 2.2 ( 22 Agustus 2025 ) Penulisan Ulang Lengkap**
 - **[BARU]** Penanganan error yang ditingkatkan dan mekanisme pemulihan  
 - **[BARU]** Pemantauan performa dan statistik detail  
 - **[BARU]** Pemantauan sumber daya sistem komprehensif  
@@ -333,7 +331,7 @@ A: Tidak disarankan (single instance protection).
 
 ---
 
-### **VERSI 1.8 โ€” 05 Juni 2025 โ€” Rilis Lanjutan**
+### **VERSI 1.8 ( 05 Juni 2025 ) Rilis Lanjutan**
 - Perapihan kode agar mudah di-maintenance  
 - Penyaringan **2.000** domain  
 - Tampilan konsol berwarna dan informatif  
@@ -341,7 +339,7 @@ A: Tidak disarankan (single instance protection).
 
 ---
 
-### **VERSI 1.0 โ€” 07 April 2024 โ€” Rilis Awal**
+### **VERSI 1.0 — 07 April 2024 — Rilis Awal**
 - Fungsionalitas validasi domain dasar  
 - Pengecekan TLD terhadap daftar resmi **IANA**  
 - Implementasi pemrosesan paralel sederhana  
@@ -351,9 +349,9 @@ A: Tidak disarankan (single instance protection).
 
 ---
 
-# ๐�“� Kontribusi dan Hak Cipta
+# 📜 Kontribusi dan Hak Cipta
 
-Hak Cipta ยฉ **2024โ€“2025 HARRY DERTIN SUTISNA ALSYUNDAWY**  
+Hak Cipta © **2024–2025 HARRY DERTIN SUTISNA ALSYUNDAWY**  
 Script ini disediakan **"SEBAGAIMANA ADANYA"**. Penggunaan sepenuhnya menjadi risiko pengguna.
 
 
@@ -379,7 +377,7 @@ Script ini disediakan **"SEBAGAIMANA ADANYA"**. Penggunaan sepenuhnya menjadi ri
 ##  COPYRIGHT DAN LICENSE
 
 ```
-Copyright (c) 2024-2025 
+Copyright (c) 2023-2026 
 Harry Dertin Sutisna Alsyundawy
 
 Permission is hereby granted, free of charge, to any person obtaining
@@ -392,6 +390,9 @@ _Lisensi: MIT License_
 
 
 *Perhatian, domain list hanya bisa digunakan untuk wilcard saja*
+
+
+![Alt](https://repobeats.axiom.co/api/embed/06cb45618374fd127021d7c32321a60acabd626e.svg "Repobeats analytics image")
 
 
 

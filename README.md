@@ -28,16 +28,16 @@ Validates domain lists against official TLDs.  Downloads, cleans, and processes 
 
 <img width="508" height="574" alt="image" src="https://github.com/user-attachments/assets/a0126f28-6dde-43da-ba14-d7c9a27de0df" />
 
--
+--
 
-*Waktu Eksekusi*
-*[INFO] Waktu Selesai: 02 January 20206 - 06:58:05*
+*Waktu Proses & Eksekusi*
+*[INFO] Waktu Selesai: 02 January 2026 - 06:58:05*
 *[INFO] Durasi Total: 26 detik*
 
 <img width="963" height="1030" alt="image" src="https://github.com/user-attachments/assets/795e12b3-3241-43b6-9313-8fde76e2fdba" />
 
 
--
+--
 
 ### =========================================================
 #  DOKUMENTASI LENGKAP DAN PANDUAN PENGGUNAAN

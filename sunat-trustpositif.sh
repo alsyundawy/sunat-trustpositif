@@ -7158,7 +7158,7 @@ DOMAINS_TO_CLEAN=(
  "ratutogelidr.com" "ratuvegas.biz" "ratuvegas.live" "ratuvegas.online" "ratuvegas.shop" "ratuvegas.store" "ratuvegasx.store" "rat.xxx" "raulalejandromartinez.com"
  "raunchycam.com" "raushanshayari.in" "ravanallc.com" "rave168.com" "rave556.org" "ravelmint.ru" "ravel-pink.ru" "ravelpink.ru" "ravenblack.xyz"
  "ravenbucht.ru" "raven-flux.ru" "ravenflux.ru" "ravenis.gay" "raventec.com" "ravestpropiedades.cl" "ravishukla.live" "ravm.tv" "ravnopravnost.lgbt"
- "rawarontek.shop" "raw.githubusercontent.com" "rawinmikcool.shop" "rawit128a.id" "rawit128b.com" "rawit128.live" "rawit128.vip" "rawit128x.live" "rawit128x.vip"
+ "rawarontek.shop" "rawinmikcool.shop" "rawit128a.id" "rawit128b.com" "rawit128.live" "rawit128.vip" "rawit128x.live" "rawit128x.vip"
  "rawitx128.live" "rawmarketinggroup.com" "rawonxpaki99.site" "rawonxpaki9.site" "rax.ru" "rayadunialot88.net" "rayajos.cloud" "rayajos.club" "rayaluckyslot99.net"
  "rayarksb.fun" "rayaslow.asia" "raycodmporn.bond" "raydium.mom" "raydiumpro-web.shop" "rayjump.com" "raylenne.com" "raymon24.com" "razbotasff.sbs"
  "razeniktop.shop" "razore100.fans" "razorsites.co" "razortcc.com" "rbcfininc.online" "rbcplatform77.com" "rbc.ru" "rbdsm.fr" "rbigroup.cloud"
@@ -9755,17 +9755,27 @@ process_chunk() {
         if (domain ~ /^([0-9a-fA-F]{0,4}:){1,7}[0-9a-fA-F]{0,4}$/) next
         
         # Hapus sampah umum
-        sub(/^[[:space:]]*(0\.0\.0\.0|127\.0\.0\.1|::1)[[:space:]]+/, "", domain)
-        sub(/^[[:digit:]]+(\.[[:digit:]]+){1,3}[[:space:]]+/, "", domain)
-        sub(/^[\|\*]+/, "", domain)
-        sub(/^www\./i, "", domain)
-        sub(/^mail\./i, "", domain)
-        sub(/^1\./i, "", domain)
-        sub(/^0\./i, "", domain)
-        sub(/[\/\^[:space:]].*$/, "", domain)
-        sub(/:[0-9]+$/, "", domain)
-        sub(/\.$/, "", domain)
-        gsub(/[^A-Za-z0-9\.\-]/, "", domain)
+        # sub(/^[[:space:]]*(0\.0\.0\.0|127\.0\.0\.1|::1)[[:space:]]+/, "", domain)
+        # sub(/^[[:digit:]]+(\.[[:digit:]]+){1,3}[[:space:]]+/, "", domain)
+        # sub(/^[\|\*]+/, "", domain)
+        # sub(/^www\./i, "", domain)
+        # sub(/^mail\./i, "", domain)
+        # sub(/^1\./i, "", domain)
+        # sub(/^0\./i, "", domain)
+        # sub(/[\/\^[:space:]].*$/, "", domain)
+        # sub(/:[0-9]+$/, "", domain)
+        # sub(/\.$/, "", domain)
+        # gsub(/[^A-Za-z0-9\.\-]/, "", domain)
+		
+		# Hapus sampah umum
+		sub(/^[[:space:]]*(0\.0\.0\.0|127\.0\.0\.1|::1|[[:digit:]]+(\.[[:digit:]]+){1,3})[[:space:]]+/, "", domain)
+		sub(/^[|*]+/, "", domain)
+		sub(/^((www|mail|rtp|test)[0-9]*\.)/i, "", domain)
+		sub(/^(0|1|00|01)\./, "", domain)
+		sub(/:[0-9]+$/, "", domain)
+		sub(/[\/^[:space:]].*$/, "", domain)
+		sub(/\.$/, "", domain)
+		gsub(/[^A-Za-z0-9.-]/, "", domain)		
         
         domain_l = tolower(domain)
         if (domain_l == "") next

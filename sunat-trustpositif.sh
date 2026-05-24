@@ -92,7 +92,7 @@ get_mem_mib() {
 
     # fallback host memory tanpa bergantung pada awk, karena AWK baru dipilih/diinstall saat check_dependencies.
     if [[ -z "$mem_mib" && -r /proc/meminfo ]]; then
-        while read -r key value unit; do
+        while read -r key value _unit; do
             if [[ "$key" == "MemTotal:" && "$value" =~ ^[0-9]+$ ]]; then
                 mem_mib=$(( value / 1024 ))
                 break
@@ -349,6 +349,7 @@ validate_awk_candidate() {
     local output=""
 
     command -v "$candidate" &> /dev/null || return 1
+    # shellcheck disable=SC2016
     output="$(printf 'A\n' | "$candidate" '{print tolower($0)}' 2>/dev/null || true)"
     [[ "$output" == "a" ]]
 }
@@ -411,13 +412,32 @@ ensure_awk_available() {
         return 1
     fi
 }
+ensure_parallel_available() {
+    if ! command -v parallel &> /dev/null; then
+        log_warning "Perintah 'parallel' tidak ditemukan di sistem."
+        print_colored "YELLOW" "Silakan install 'parallel' secara manual sesuai OS/Distro Anda jika instalasi otomatis gagal:"
+        print_colored "CYAN" " - Ubuntu/Debian : sudo apt-get install parallel"
+        print_colored "CYAN" " - RHEL/CentOS   : sudo yum install parallel"
+        print_colored "CYAN" " - Fedora        : sudo dnf install parallel"
+        print_colored "CYAN" " - Arch Linux    : sudo pacman -S parallel"
+        print_colored "CYAN" " - Alpine Linux  : sudo apk add parallel"
+        print_colored "CYAN" " - macOS (brew)  : brew install parallel"
+        echo ""
+        
+        install_missing_command "parallel" "parallel" "parallel" "parallel" || { 
+            log_error "Gagal menginstal 'parallel' secara otomatis. Harap install manual menggunakan perintah di atas."
+            exit 1
+        }
+    fi
+}
 
 check_dependencies() {
     # AWK diperlakukan khusus agar tidak hardcoded ke mawk/gawk.
     ensure_awk_available || exit 1
 
+    ensure_parallel_available
+
     install_missing_command "curl" "curl" "curl" "curl" || { log_error "Dependency hilang: curl"; exit 1; }
-    install_missing_command "parallel" "parallel" "parallel" "parallel" || { log_error "Dependency hilang: parallel"; exit 1; }
     install_missing_command "grep" "grep" "grep" "grep" || { log_error "Dependency hilang: grep"; exit 1; }
     install_missing_command "find" "findutils" "findutils" "findutils" || { log_error "Dependency hilang: find"; exit 1; }
     install_missing_command "sort" "coreutils" "coreutils" "coreutils" || { log_error "Dependency hilang: sort"; exit 1; }
@@ -486,6 +506,7 @@ normalize_tld_file() {
     local input="$1"
     local output="$2"
 
+    # shellcheck disable=SC2016
     "$AWK_CMD" '
         {
             gsub(/\r/, "")
@@ -10693,6 +10714,7 @@ force_cleanup() {
     log_success "Cleanup selesai. Sistem bersih."
 }
 
+# shellcheck disable=SC2154
 trap 'status=$?; cleanup "$status"; exit "$status"' EXIT
 trap 'cleanup 130; exit 130' INT
 trap 'cleanup 143; exit 143' TERM
@@ -10708,6 +10730,7 @@ process_chunk() {
     # - AWK engine tetap auto-fallback (mawk/gawk/awk), tetapi logika sanitasi dibuat setara v2.8.
     # - Tidak memakai seen[] agar tidak boros RAM; deduplikasi global tetap oleh sort -u.
     # - CUT_SUBDOMAINS=1 tetap tersedia sebagai mode opsional, tetapi default 0.
+    # shellcheck disable=SC2016
     "${AWK_CMD:?AWK_CMD belum diset}" -v tlds_file="$valid_tlds_file" -v cut_subdomains="${CUT_SUBDOMAINS:-0}" '
     function is_common_cc_sld(label) {
         return (label ~ /^(ac|ad|biz|co|com|edu|firm|gen|go|gov|info|mil|my|ne|net|nic|nom|or|org|rec|sch|store|web)$/)

@@ -1,4 +1,4 @@
-# SUNAT TRUSTPOSITIF
+# SUNAT TRUSTPOSITIF BY HARRY DS ALSYUNDAWY
 
 [![Latest Version](https://img.shields.io/github/v/release/alsyundawy/sunat-trustpositif)](https://github.com/alsyundawy/sunat-trustpositif/releases)
 [![Maintenance Status](https://img.shields.io/maintenance/yes/9999)](https://github.com/alsyundawy/sunat-trustpositif/)
@@ -15,7 +15,23 @@
 
 [![Stargazers over time](https://starchart.cc/alsyundawy/sunat-trustpositif.svg?variant=adaptive)](https://starchart.cc/alsyundawy/sunat-trustpositif)
 
-Validates domain lists against official TLDs. Downloads, cleans, and processes domain data trustpositif.
+**Sunat TrustPositif** adalah script Bash untuk mengunduh database domain TrustPositif/Komdigi, memangkas domain dan subdomain yang tidak diperlukan, menyaring entri tidak valid, membuang IPv4/IPv6, memvalidasi TLD resmi IANA, menghapus duplikat, dan menghasilkan file **plain text** yang siap digunakan sebagai database **DNS blacklist**, **RPZ**, blocklist resolver, atau sistem filtering berbasis DNS.
+
+Script ini dirancang agar daftar domain TrustPositif menjadi lebih bersih, ringan, valid, dan efektif untuk pemblokiran DNS. Mode paling efektif untuk deployment DNS adalah menggunakan blokir berbasis **wildcard domain**, sehingga domain utama dan seluruh subdomain turunannya dapat ikut terblokir melalui konfigurasi DNS/RPZ.
+
+## ✨ Fitur Utama
+
+- Mengunduh database domain TrustPositif/Komdigi secara otomatis.
+- Memangkas domain dan subdomain yang tidak diperlukan agar daftar lebih bersih.
+- Menyaring domain tidak valid, data rusak, karakter ilegal, dan entri kosong.
+- Membuang alamat IPv4 dan IPv6 agar output fokus hanya pada domain.
+- Memvalidasi TLD menggunakan daftar resmi IANA.
+- Menghapus duplikat agar hasil akhir lebih ringan dan efisien.
+- Menghasilkan output **plain text** satu domain per baris.
+- Siap digunakan sebagai **DNS blacklist**, **RPZ database**, resolver blocklist, atau feed filtering DNS.
+- Mendukung penggunaan paling efektif dengan pola **wildcard domain blocking** untuk memblokir domain utama beserta seluruh subdomain turunannya.
+
+
 
 ### Anda bebas untuk mengubah, mendistribusikan script ini untuk keperluan anda
 

@@ -349,6 +349,24 @@ A: Tidak disarankan (single instance protection).
 
 ---
 
+### **VERSI 2.9 — 24 Mei 2026 — Output-Compatible Optimization, AWK Fallback & Runtime Hardening**
+
+- **[PRINSIP]** v2.9 adalah optimasi internal dari v2.8; hasil default tetap dijaga kompatibel dengan pola produksi v2.8 agar jumlah baris, ukuran output, dan pola manual cleanup tidak berubah drastis.
+- **[COMPAT]** Default `CUT_SUBDOMAINS=0`; script tidak melakukan *parent-domain collapse* secara agresif. Mode agresif hanya aktif jika user menjalankan `CUT_SUBDOMAINS=1` secara eksplisit.
+- **[COMPAT]** Sanitasi prefix legacy tetap dipertahankan sesuai perilaku v2.8, terutama pemotongan prefix umum seperti `www.`, `mail.`, `1.`, dan `0.`.
+- **[COMPAT]** Manual cleanup legacy tetap memakai pola `sed + grep -v -f` seperti v2.8 supaya domain/subdomain turunan dari daftar manual tetap tersaring mengikuti hasil produksi sebelumnya.
+- **[COMPAT]** Formula performa default tetap mengikuti gaya v2.8: `NUM_CORES` dari `nproc` dengan batas aman 4–32 core dan `CHUNK_SIZE=20000+(NUM_CORES*1000)`.
+- **[OPTIMASI]** AWK engine dibuat konsisten melalui `AWK_CMD` dengan prioritas deteksi `mawk -> gawk -> awk`, serta dapat dioverride manual oleh user.
+- **[OPTIMASI]** Jika AWK belum tersedia, script mencoba instalasi otomatis sesuai package manager sistem: `apt/apt-get`, `dnf`, `yum`, `zypper`, atau `apk`.
+- **[OPTIMASI]** Semua proses normalisasi TLD, validasi domain, dan helper AWK memakai satu AWK engine yang sama sehingga tidak lagi bercampur antara `mawk`, `gawk`, dan `awk` di lingkungan Debian/Ubuntu/RHEL.
+- **[HARDENING]** Proses unduhan diperkuat dengan `curl -f`/`wget` fallback, retry, timeout, validasi file kosong, dan deteksi HTML/error page.
+- **[HARDENING]** Output final dibuat atomik melalui temporary output lalu `mv` ke target akhir agar file produksi tidak rusak/setengah jadi saat gagal.
+- **[HARDENING]** Trap `EXIT/INT/TERM` diperbaiki agar cleanup tetap berjalan dan exit code benar dipertahankan, termasuk `130` untuk Ctrl+C dan `143` untuk TERM.
+- **[HARDENING]** `--force-cleanup` dibuat lebih aman dan tidak lagi bergantung pada `pkill` brutal yang berisiko membunuh proses lain.
+- **[FIX]** Tampilan status RAM diperbaiki agar **Total RAM** dan **Tersedia** tidak kosong pada Debian/Ubuntu tertentu.
+- **[FIX]** Duplikasi assignment dan inkonsistensi kecil pada blok AWK dibersihkan tanpa mengubah hasil validasi domain default.
+- **[DOC]** Header, banner, `--help`, docnote, dan changelog diperbarui agar jelas bahwa v2.9 mengoptimalkan mesin proses, bukan mengganti format hasil produksi.
+
 ### **VERSI 2.8 — 26 Desember 2025 — Optimasi Komprehensif & Perbaikan ShellCheck**
 
 - **[FIX]** Semua peringatan **ShellCheck** diselesaikan (SC2155, SC2046, SC2086, SC2034)
@@ -362,7 +380,7 @@ A: Tidak disarankan (single instance protection).
 - **[FIX]** Perbaikan sintaks **MAWK** kritis untuk validasi domain **RFC-compliant**
 - **[DOC]** Dokumentasi lengkap dalam Bahasa Indonesia dengan contoh penggunaan praktis
 
-### **VERSI 2.7 ( 23 November 2025 ) Optimization & Fixes**
+### **VERSI 2.7 — 23 November 2025 — Optimization & Fixes**
 
 - **[BARU]** Opsi baris perintah (`--help`, `--force-cleanup`, `--version`)
 - **[FIX]** Perbaikan sintaks fatal pada MAWK
@@ -438,6 +456,20 @@ Script ini disediakan **"SEBAGAIMANA ADANYA"**. Penggunaan sepenuhnya menjadi ri
 - Baca dokumentasi ini
 - Gunakan `--debug`
 - Review system requirements
+
+---
+
+**Jika Anda merasa terbantu dan ingin mendukung proyek ini, pertimbangkan untuk berdonasi melalui <https://www.paypal.me/alsyundawy>. Terima kasih atas dukungannya!** ☕
+
+**Jika Anda merasa terbantu dan ingin mendukung proyek ini, pertimbangkan untuk berdonasi melalui QRIS. Terima kasih atas dukungannya!** ☕
+
+![image](https://github.com/user-attachments/assets/a0126f28-6dde-43da-ba14-d7c9a27de0df)
+
+**Anda bebas untuk mengubah, mendistribusikan script ini untuk keperluan anda** 📝
+
+**Jangan semangat tetap putus asa, tetaplah mengeluh meski gak ada yang pedulikan. Ketika yang lain bisa kenapa harus saya, ketika yang lain tidak bisa apalagi saya. Tetaplah hidup meski tidak berguna, maju tak gentar membela yang bayar !!!! Yoi, ya begitulah .....** 🤣
+
+### ✨ Anda Memang Luar Biasa | Harry DS Alsyundawy | Kaum Rebahan Garis Keras & Militan ✨
 
 ---
 

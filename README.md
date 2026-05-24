@@ -31,11 +31,12 @@ Validates domain lists against official TLDs. Downloads, cleans, and processes d
 
 #### Waktu Proses & Eksekusi
 
-*[INFO] Waktu Selesai: 02 January 2026 - 06:58:05*
+*[INFO] Waktu Mulai: 24 May 2026 - 19:54:13*
 
-*[INFO] Durasi Total: 26 detik*
+*[INFO] Durasi Total: 50 detik*
 
-![image](https://github.com/user-attachments/assets/795e12b3-3241-43b6-9313-8fde76e2fdba)
+<img width="710" height="906" alt="image" src="https://github.com/user-attachments/assets/ef89b456-0448-4c26-8f17-a5f0bfa6411f" />
+
 
 ---
 

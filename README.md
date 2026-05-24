@@ -369,6 +369,7 @@ A: Tidak disarankan (single instance protection).
 - **[FIX]** Tampilan status RAM diperbaiki agar **Total RAM** dan **Tersedia** tidak kosong pada Debian/Ubuntu tertentu.
 - **[FIX]** Duplikasi assignment dan inkonsistensi kecil pada blok AWK dibersihkan tanpa mengubah hasil validasi domain default.
 - **[DOC]** Header, banner, `--help`, docnote, dan changelog diperbarui agar jelas bahwa v2.9 mengoptimalkan mesin proses, bukan mengganti format hasil produksi.
+- **[DITINGKATKAN]** Penyaringan **91.000** domain
 
 ### **VERSI 2.8 — 26 Desember 2025 — Optimasi Komprehensif & Perbaikan ShellCheck**
 

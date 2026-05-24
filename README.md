@@ -11,25 +11,50 @@
 [![GitHub Forks](https://img.shields.io/github/forks/alsyundawy/sunat-trustpositif?style=social)](https://github.com/alsyundawy/sunat-trustpositif/network/members)
 [![GitHub Contributors](https://img.shields.io/github/contributors/alsyundawy/sunat-trustpositif?style=social)](https://github.com/alsyundawy/sunat-trustpositif/graphs/contributors)
 
+
+## 🔍 Apa Itu Sunat TrustPositif?
+
+**Sunat TrustPositif** adalah script Bash untuk mengolah database domain **TrustPositif/Komdigi** menjadi daftar domain bersih dalam format **plain text** yang siap digunakan sebagai **DNS blacklist**, **RPZ database**, resolver blocklist, atau sumber filtering DNS.
+
+Script ini dibuat untuk memangkas, membersihkan, memvalidasi, dan mengoptimalkan daftar domain TrustPositif agar hasil akhirnya lebih rapi, ringan, valid, tidak duplikat, dan efektif digunakan pada sistem DNS filtering seperti **BIND RPZ**, **Unbound**, **PowerDNS Recursor**, atau resolver DNS lain yang mendukung blocklist/domain policy.
+
+Database **TrustPositif/Komdigi** sendiri merupakan rujukan daftar blokir/penapisan domain dan URL yang digunakan dalam ekosistem pemblokiran konten di Indonesia. Sunat TrustPositif tidak menggantikan database tersebut, tetapi mengolahnya agar lebih siap pakai untuk kebutuhan teknis DNS resolver, DNS blacklist, dan RPZ.
+
+---
+
+## 🎯 Fungsi Utama
+
+Sunat TrustPositif berfungsi untuk:
+
+- Mengunduh daftar domain TrustPositif/Komdigi secara otomatis.
+- Membersihkan data mentah yang masih kotor, rusak, duplikat, atau tidak konsisten.
+- Membuang alamat **IPv4**, **IPv6**, baris kosong, komentar, karakter ilegal, dan format invalid.
+- Memvalidasi domain berdasarkan struktur domain yang benar dan daftar **TLD resmi IANA**.
+- Melakukan **sunat/pemangkasan prefix umum** seperti `www.`, `mail.`, `1.`, `0.`, dan prefix lain yang tidak diperlukan.
+- Menyaring domain yang tidak valid agar output hanya berisi domain yang layak dipakai.
+- Menghapus duplikat agar hasil akhir lebih ringan dan efisien.
+- Membuang domain tertentu dari daftar manual blacklist/cleanup internal.
+- Menghasilkan file **plain text** bersih, satu domain per baris, siap digunakan sebagai database DNS blacklist/RPZ.
+
+---
+
+## ⚙️ Alur Pemrosesan
+
+```text
+Download daftar domain TrustPositif/Komdigi
+→ bersihkan data kotor
+→ buang IPv4, IPv6, komentar, karakter ilegal, dan format invalid
+→ validasi struktur domain
+→ validasi TLD resmi IANA
+→ sunat/pangkas prefix umum seperti www/mail
+→ hapus duplikat
+→ buang domain manual blacklist/cleanup
+→ hasilkan file plain text domain bersih
+→ siap digunakan sebagai DNS blacklist/RPZ/blocklist
+
 ## Stargazers over time
 
 [![Stargazers over time](https://starchart.cc/alsyundawy/sunat-trustpositif.svg?variant=adaptive)](https://starchart.cc/alsyundawy/sunat-trustpositif)
-
-**Sunat TrustPositif** adalah script Bash untuk mengunduh database domain TrustPositif/Komdigi, memangkas domain dan subdomain yang tidak diperlukan, menyaring entri tidak valid, membuang IPv4/IPv6, memvalidasi TLD resmi IANA, menghapus duplikat, dan menghasilkan file **plain text** yang siap digunakan sebagai database **DNS blacklist**, **RPZ**, blocklist resolver, atau sistem filtering berbasis DNS.
-
-Script ini dirancang agar daftar domain TrustPositif menjadi lebih bersih, ringan, valid, dan efektif untuk pemblokiran DNS. Mode paling efektif untuk deployment DNS adalah menggunakan blokir berbasis **wildcard domain**, sehingga domain utama dan seluruh subdomain turunannya dapat ikut terblokir melalui konfigurasi DNS/RPZ.
-
-## ✨ Fitur Utama
-
-- Mengunduh database domain TrustPositif/Komdigi secara otomatis.
-- Memangkas domain dan subdomain yang tidak diperlukan agar daftar lebih bersih.
-- Menyaring domain tidak valid, data rusak, karakter ilegal, dan entri kosong.
-- Membuang alamat IPv4 dan IPv6 agar output fokus hanya pada domain.
-- Memvalidasi TLD menggunakan daftar resmi IANA.
-- Menghapus duplikat agar hasil akhir lebih ringan dan efisien.
-- Menghasilkan output **plain text** satu domain per baris.
-- Siap digunakan sebagai **DNS blacklist**, **RPZ database**, resolver blocklist, atau feed filtering DNS.
-- Mendukung penggunaan paling efektif dengan pola **wildcard domain blocking** untuk memblokir domain utama beserta seluruh subdomain turunannya.
 
 
 

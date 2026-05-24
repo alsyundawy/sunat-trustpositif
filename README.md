@@ -67,18 +67,6 @@ Download daftar domain TrustPositif/Komdigi
 
 ---
 
-### Anda bebas untuk mengubah, mendistribusikan script ini untuk keperluan anda
-
-**If you find this project helpful and would like to support it, please consider donating via <https://www.paypal.me/alsyundawy>. Thank you for your support!**
-
-**Jika Anda merasa terbantu dan ingin mendukung proyek ini, pertimbangkan untuk berdonasi melalui <https://www.paypal.me/alsyundawy>. Terima kasih atas dukungannya!**
-
-**Jika Anda merasa terbantu dan ingin mendukung proyek ini, pertimbangkan untuk berdonasi melalui QRIS. Terima kasih atas dukungannya!**
-
-![image](https://github.com/user-attachments/assets/a0126f28-6dde-43da-ba14-d7c9a27de0df)
-
----
-
 #### Waktu Proses & Eksekusi
 
 *[INFO] Waktu Mulai: 24 May 2026 - 19:54:13*
@@ -538,6 +526,8 @@ Script ini disediakan **"SEBAGAIMANA ADANYA"**. Penggunaan sepenuhnya menjadi ri
 **Jika Anda merasa terbantu dan ingin mendukung proyek ini, pertimbangkan untuk berdonasi melalui QRIS. Terima kasih atas dukungannya!** ☕
 
 ![image](https://github.com/user-attachments/assets/a0126f28-6dde-43da-ba14-d7c9a27de0df)
+
+---
 
 **Anda bebas untuk mengubah, mendistribusikan script ini untuk keperluan anda** 📝
 

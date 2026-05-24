@@ -228,6 +228,8 @@ Metode ini lebih efektif dibanding hanya memblokir satu hostname tertentu, karen
 
 #### Anda dapat mengunduh dan mengeksekusi skrip instalasi secara otomatis dengan menggunakan salah satu perintah di bawah ini (silakan pilih salah satu, `curl` atau `wget`).
 
+**Sebelum eksekusi script pastikan perintah `parallel` ada atapun terinstall (Wajib!)**
+
 **Menggunakan `curl` (Rekomendasi):** 📥
 
 ```bash

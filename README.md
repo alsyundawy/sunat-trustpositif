@@ -19,22 +19,22 @@
 
 **Sunat TrustPositif** adalah script Bash untuk mengolah database domain **TrustPositif/Komdigi** menjadi daftar domain bersih dalam format **plain text** yang siap digunakan sebagai **DNS blacklist**, **RPZ database**, resolver blocklist, atau sumber filtering DNS.
 
-Script ini dibuat untuk memangkas, membersihkan, memvalidasi, dan mengoptimalkan daftar domain TrustPositif agar hasil akhirnya lebih rapi, ringan, valid, tidak duplikat, dan efektif digunakan pada sistem DNS filtering seperti **BIND RPZ**, **Unbound**, **PowerDNS Recursor**, atau resolver DNS lain yang mendukung blocklist/domain policy.
+Script ini dirancang untuk mengambil daftar domain dari database TrustPositif, membersihkan data mentah yang masih kotor, menyaring domain tidak valid, membuang entri IP, memvalidasi TLD resmi IANA, memangkas prefix/subdomain umum, menghapus duplikat, serta menghasilkan file domain yang lebih ringan, valid, rapi, dan siap dipakai pada **sistem DNS filtering.**
 
-Database **TrustPositif/Komdigi** sendiri merupakan rujukan daftar blokir/penapisan domain dan URL yang digunakan dalam ekosistem pemblokiran konten di Indonesia. Sunat TrustPositif tidak menggantikan database tersebut, tetapi mengolahnya agar lebih siap pakai untuk kebutuhan teknis DNS resolver, DNS blacklist, dan RPZ.
+Database **TrustPositif/Komdigi** digunakan sebagai rujukan daftar blokir/penapisan domain dan URL dalam ekosistem pemblokiran konten di Indonesia. Sunat TrustPositif tidak menggantikan database tersebut, melainkan mengolahnya agar lebih optimal untuk kebutuhan teknis seperti **DNS resolver, DNS blacklist, RPZ, dan wildcard domain blocking**.
 
 ---
 
 ## 🎯 Fungsi Utama
 
-Sunat TrustPositif berfungsi untuk:
+**Sunat TrustPositif berfungsi untuk:**
 
 ```text
 - Mengunduh daftar domain TrustPositif/Komdigi secara otomatis.
 - Membersihkan data mentah yang masih kotor, rusak, duplikat, atau tidak konsisten.
 - Membuang alamat **IPv4**, **IPv6**, baris kosong, komentar, karakter ilegal, dan format invalid.
 - Memvalidasi domain berdasarkan struktur domain yang benar dan daftar **TLD resmi IANA**.
-- Melakukan **sunat/pemangkasan prefix umum** seperti `www.`, `mail.`, `1.`, `0.`, dan prefix lain yang tidak diperlukan.
+- Melakukan **sunat/pemangkasan prefix umum** seperti `www.`, `mail.`,`rtp.`, `play.`, `1.`, `0.`, dan prefix lain yang tidak diperlukan.
 - Menyaring domain yang tidak valid agar output hanya berisi domain yang layak dipakai.
 - Menghapus duplikat agar hasil akhir lebih ringan dan efisien.
 - Membuang domain tertentu dari daftar manual blacklist/cleanup internal.
@@ -51,7 +51,7 @@ Download daftar domain TrustPositif/Komdigi
 → buang IPv4, IPv6, komentar, karakter ilegal, dan format invalid
 → validasi struktur domain
 → validasi TLD resmi IANA
-→ sunat/pangkas prefix umum seperti www/mail
+→ sunat/pangkas prefix umum seperti www, mail, rtp , play dan lainnya
 → hapus duplikat
 → buang domain manual blacklist/cleanup
 → hasilkan file plain text domain bersih
@@ -64,6 +64,154 @@ Download daftar domain TrustPositif/Komdigi
 
 [![Stargazers over time](https://starchart.cc/alsyundawy/sunat-trustpositif.svg?variant=adaptive)](https://starchart.cc/alsyundawy/sunat-trustpositif)
 
+
+---
+
+---
+
+## 🧹 Apa Yang Dimaksud “Sunat” Domain?
+
+Dalam project ini, istilah **sunat** berarti memangkas bagian domain atau subdomain yang tidak diperlukan agar daftar domain menjadi lebih bersih, ringkas, valid, dan efektif untuk kebutuhan **DNS filtering**, **DNS blacklist**, maupun **RPZ**.
+
+Sunat domain dilakukan untuk mengurangi entri berulang, membuang format yang tidak layak pakai, menyederhanakan subdomain berlebihan, dan menghasilkan daftar domain yang lebih efisien ketika digunakan oleh DNS resolver.
+
+---
+
+### ✂️ Contoh Pemangkasan Prefix Umum
+
+Beberapa domain dari database TrustPositif/Komdigi dapat memiliki prefix umum yang sebenarnya tidak perlu disimpan sebagai entri terpisah.
+
+Contoh:
+
+```text
+www.example.com      → example.com
+mail.example.com     → example.com
+0.example.com        → example.com
+1.example.com        → example.com
+```
+
+Dengan pemangkasan ini, domain menjadi lebih sederhana dan tidak menyimpan variasi hostname yang berulang.
+
+---
+
+### 🌐 Penyederhanaan Subdomain Berlebihan
+
+Selain memangkas prefix umum seperti `www`, `rtp`, `play` dan `mail`, script juga dapat menyederhanakan domain yang memiliki terlalu banyak variasi subdomain.
+
+Apabila satu domain utama memiliki lebih dari **10 variasi subdomain**, maka subdomain tersebut dapat diringkas dengan mengambil **domain utama** sebagai target blokir.
+
+Contoh daftar subdomain:
+
+```text
+a.example.com
+b.example.com
+login.example.com
+cdn.example.com
+mail.example.com
+track.example.com
+api.example.com
+static.example.com
+img.example.com
+video.example.com
+promo.example.com
+```
+
+Dapat disederhanakan menjadi:
+
+```text
+example.com
+```
+
+Tujuannya adalah agar pemblokiran menjadi lebih efektif, karena satu domain utama dapat mewakili banyak subdomain turunannya.
+
+---
+
+### 🎯 Tujuan Sunat Domain
+
+Sunat domain bertujuan untuk:
+
+- Mengurangi entri yang tidak perlu.
+- Memperkecil ukuran file output.
+- Mengurangi duplikasi pola domain dan subdomain.
+- Menyaring domain yang rusak, invalid, atau tidak layak pakai.
+- Menghilangkan variasi hostname yang tidak perlu.
+- Menyederhanakan subdomain berlebihan menjadi domain utama.
+- Membuat hasil akhir lebih ringan untuk diproses DNS resolver.
+- Menyiapkan daftar domain agar lebih efektif digunakan sebagai **DNS blacklist** atau **RPZ database**.
+- Mendukung strategi pemblokiran berbasis **wildcard domain**, sehingga domain utama dan seluruh subdomain turunannya dapat diblokir lebih efektif.
+
+---
+
+## 📄 Format Output
+
+Output utama dari **Sunat TrustPositif** adalah file **plain text** berisi daftar domain bersih.
+
+Contoh output:
+
+```text
+example.com
+domainlain.net
+situsblokir.id
+sample-domain.org
+```
+
+Setiap baris berisi satu domain yang sudah diproses dan siap digunakan untuk kebutuhan DNS filtering.
+
+---
+
+### ✅ Karakteristik Output
+
+Output yang dihasilkan memiliki karakteristik berikut:
+
+- Satu domain per baris.
+- Tidak berisi alamat **IPv4**.
+- Tidak berisi alamat **IPv6**.
+- Tidak berisi komentar atau metadata yang tidak diperlukan.
+- Tidak berisi domain dengan **TLD invalid**.
+- Tidak berisi format domain rusak.
+- Tidak berisi entri duplikat.
+- Lebih ringkas karena prefix umum dapat dipangkas.
+- Lebih efisien karena subdomain berlebihan dapat disederhanakan menjadi domain utama.
+- Siap digunakan sebagai sumber **DNS blacklist**, **RPZ database**, resolver blocklist, atau feed filtering DNS.
+
+---
+
+## 🛡️ Penggunaan Paling Efektif: Wildcard Domain Blocking
+
+Penggunaan paling efektif dari hasil **Sunat TrustPositif** adalah dengan metode **wildcard domain blocking** pada DNS/RPZ.
+
+Dengan wildcard blocking, satu domain utama dapat digunakan untuk memblokir domain tersebut beserta seluruh subdomain turunannya.
+
+Contoh:
+
+```text
+example.com
+*.example.com
+```
+
+Artinya:
+
+```text
+example.com              diblokir
+www.example.com          diblokir
+mail.example.com         diblokir
+login.example.com        diblokir
+cdn.login.example.com    diblokir
+```
+
+Metode ini lebih efektif dibanding hanya memblokir satu hostname tertentu, karena banyak situs menggunakan banyak subdomain untuk halaman login, CDN, tracking, mirror, redirect, API, media asset, atau domain turunan lainnya.
+
+---
+
+## 🚀 Ringkasan Singkat
+
+**Sunat TrustPositif** mengolah database domain **TrustPositif/Komdigi** menjadi file **plain text DNS blacklist/RPZ** dengan cara mengunduh data, membersihkan entri kotor, membuang IP dan format invalid, memvalidasi TLD resmi IANA, memangkas prefix umum seperti `www`, `rtp`, `play` dan `mail`, menyederhanakan subdomain berlebihan menjadi domain utama apabila jumlah variasinya lebih dari **10 subdomain**, menghapus duplikat, lalu menghasilkan daftar domain bersih yang siap digunakan untuk pemblokiran DNS berbasis wildcard domain.
+
+---
+
+## 🇬🇧 Short English Description
+
+**Sunat TrustPositif** is a Bash script that processes the **TrustPositif/Komdigi** domain database into a clean **plain-text DNS blacklist/RPZ-ready blocklist** by downloading the source list, cleaning dirty records, removing IPv4/IPv6 addresses and invalid formats, validating official IANA TLDs, trimming common prefixes such as `www` and `mail`, simplifying excessive subdomain variations into the main domain when a domain has more than **10 subdomain variants**, deduplicating entries, and producing a clean domain list ready for wildcard-based DNS blocking.
 
 ---
 

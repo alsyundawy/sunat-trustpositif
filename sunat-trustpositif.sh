@@ -35,15 +35,48 @@ KOMINFO_URL="https://trustpositif.komdigi.go.id/assets/db/domains_isp"
 DOMAIN_FILE="domains_isp"
 OUTPUT_DIR="/var/www/html/trustpositif"
 VALID_OUTPUT="${OUTPUT_DIR}/sunat-trustpositif.txt"
-# Konfigurasi performa - deteksi otomatis berdasarkan sumber daya sistem
-NUM_CORES=$(nproc)
+
+# =============================================
+# Konfigurasi Performa - 2 Juta Domain (Validasi + RPZ)
+# =============================================
+
+TOTAL_CORES=$(nproc)
+TOTAL_MEM_GB=$(free -g | awk '/^Mem:/ {print $2}')
+
+# Gunakan 50-60% CPU untuk network-heavy task
+NUM_CORES=$(( TOTAL_CORES * 60 / 100 ))
+
+# Batas minimum dan maksimum yang lebih realistis
 if [[ $NUM_CORES -lt 4 ]]; then
     NUM_CORES=4
-elif [[ $NUM_CORES -gt 32 ]]; then
-    NUM_CORES=32
+elif [[ $NUM_CORES -gt 24 ]]; then
+    NUM_CORES=24          # Lebih aman daripada 32 untuk DNS
 fi
-CHUNK_SIZE=$((20000 + (NUM_CORES * 1000)))
+
+# Sesuaikan CHUNK_SIZE berdasarkan jumlah core
+if [[ $NUM_CORES -ge 16 ]]; then
+    CHUNK_SIZE=30000
+elif [[ $NUM_CORES -ge 8 ]]; then
+    CHUNK_SIZE=25000
+else
+    CHUNK_SIZE=15000
+fi
+
+# Safety check memory
+if [[ $TOTAL_MEM_GB -lt 8 ]]; then
+    CHUNK_SIZE=$((CHUNK_SIZE / 2))
+    echo "Memory rendah, mengurangi chunk size"
+fi
+
 TEMP_DIR=$(mktemp -d -t "${SCRIPT_NAME%.*}.XXXXXX")
+
+echo "=== Konfigurasi Otomatis ==="
+echo "Total Core     : $TOTAL_CORES"
+echo "Digunakan Core : $NUM_CORES"
+echo "Chunk Size     : $CHUNK_SIZE"
+echo "Temp Dir       : $TEMP_DIR"
+echo "============================="
+
 # ============================================================
 # FUNGSI UTILITAS DAN LOGGING (ORIGINAL STYLE)
 # ============================================================

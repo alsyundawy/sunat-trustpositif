@@ -40,6 +40,22 @@ Validates domain lists against official TLDs. Downloads, cleans, and processes d
 
 ---
 
+*Anda dapat mengunduh dan mengeksekusi skrip instalasi secara otomatis dengan menggunakan salah satu perintah di bawah ini (silakan pilih salah satu, `curl` atau `wget`).*
+
+**Menggunakan `curl` (Rekomendasi):** 📥
+
+```bash
+curl -fsSL https://github.com/alsyundawy/sunat-trustpositif/raw/refs/heads/main/sunat-trustpositif.sh | bash
+```
+
+**Menggunakan `wget` (Alternative):** 📥
+
+```bash
+wget -qO- https://github.com/alsyundawy/sunat-trustpositif/raw/refs/heads/main/sunat-trustpositif.sh | bash
+```
+
+---
+
 ## DOKUMENTASI LENGKAP DAN PANDUAN PENGGUNAAN
 
 ### 📌 RINGKASAN PERBAIKAN DAN OPTIMASI SCRIPT

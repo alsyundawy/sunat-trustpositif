@@ -40,7 +40,7 @@ Validates domain lists against official TLDs. Downloads, cleans, and processes d
 
 ---
 
-*Anda dapat mengunduh dan mengeksekusi skrip instalasi secara otomatis dengan menggunakan salah satu perintah di bawah ini (silakan pilih salah satu, `curl` atau `wget`).*
+#### Anda dapat mengunduh dan mengeksekusi skrip instalasi secara otomatis dengan menggunakan salah satu perintah di bawah ini (silakan pilih salah satu, `curl` atau `wget`).
 
 **Menggunakan `curl` (Rekomendasi):** 📥
 

@@ -1,7 +1,5 @@
 # SUNAT TRUSTPOSITIF BY HARRY DS ALSYUNDAWY
 
-
-
 [![Latest Version](https://img.shields.io/github/v/release/alsyundawy/sunat-trustpositif)](https://github.com/alsyundawy/sunat-trustpositif/releases)
 [![Maintenance Status](https://img.shields.io/maintenance/yes/9999)](https://github.com/alsyundawy/sunat-trustpositif/)
 [![License](https://img.shields.io/github/license/alsyundawy/sunat-trustpositif)](https://github.com/alsyundawy/sunat-trustpositif/blob/master/LICENSE)
@@ -13,9 +11,7 @@
 [![GitHub Forks](https://img.shields.io/github/forks/alsyundawy/sunat-trustpositif?style=social)](https://github.com/alsyundawy/sunat-trustpositif/network/members)
 [![GitHub Contributors](https://img.shields.io/github/contributors/alsyundawy/sunat-trustpositif?style=social)](https://github.com/alsyundawy/sunat-trustpositif/graphs/contributors)
 
-
-
-# 🔍 Apa Itu Sunat TrustPositif?
+## 🔍 Apa Itu Sunat TrustPositif?
 
 **Sunat TrustPositif** adalah script Bash untuk mengolah database domain **TrustPositif/Komdigi** menjadi daftar domain bersih dalam format **plain text** yang siap digunakan sebagai **DNS blacklist**, **RPZ database**, resolver blocklist, atau sumber filtering DNS.
 
@@ -63,9 +59,6 @@ Download daftar domain TrustPositif/Komdigi
 ## Stargazers over time
 
 [![Stargazers over time](https://starchart.cc/alsyundawy/sunat-trustpositif.svg?variant=adaptive)](https://starchart.cc/alsyundawy/sunat-trustpositif)
-
-
----
 
 ---
 
@@ -215,18 +208,17 @@ Metode ini lebih efektif dibanding hanya memblokir satu hostname tertentu, karen
 
 ---
 
-#### Waktu Proses & Eksekusi
+### Waktu Proses & Eksekusi
 
 *[INFO] Waktu Mulai: 24 May 2026 - 19:54:13*
 
 *[INFO] Durasi Total: 50 detik*
 
-<img width="710" height="906" alt="image" src="https://github.com/user-attachments/assets/ef89b456-0448-4c26-8f17-a5f0bfa6411f" />
-
+![image](https://github.com/user-attachments/assets/ef89b456-0448-4c26-8f17-a5f0bfa6411f)
 
 ---
 
-#### Anda dapat mengunduh dan mengeksekusi skrip instalasi secara otomatis dengan menggunakan salah satu perintah di bawah ini (silakan pilih salah satu, `curl` atau `wget`).
+Anda dapat mengunduh dan mengeksekusi skrip instalasi secara otomatis dengan menggunakan salah satu perintah di bawah ini (silakan pilih salah satu, `curl` atau `wget`).
 
 **Sebelum eksekusi script pastikan perintah `parallel` ada atapun terinstall (Wajib!)**
 
@@ -698,7 +690,7 @@ Script ini disediakan **"SEBAGAIMANA ADANYA"**. Penggunaan sepenuhnya menjadi ri
 > Yoi...  
 > **Ya begitulah hidup: kadang absurd, kadang lapar, kadang pura-pura tegar.** 🤣
 
-###✨ANDA MEMANG LUAR BIASA | HARRY DS ALSYUNDAWY | KAUM REBAHAN GARIS KERAS & MILITAN✨
+### ✨ANDA MEMANG LUAR BIASA | HARRY DS ALSYUNDAWY | KAUM REBAHAN GARIS KERAS & MILITAN✨
 
 ---
 

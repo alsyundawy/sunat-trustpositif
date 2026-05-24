@@ -181,16 +181,16 @@ TEMP_DIR="$(mktemp -d -t "${SCRIPT_BASENAME}.XXXXXX")" || {
 }
 
 show_runtime_config() {
-    echo "=== Konfigurasi Otomatis ==="
-    echo "Total Core       : $TOTAL_CORES"
-    echo "Digunakan Core   : $NUM_CORES"
-    echo "Total RAM Efektif: ${TOTAL_MEM_MIB} MiB (${TOTAL_MEM_GB} GiB)"
-    echo "Chunk Size       : $CHUNK_SIZE"
-    echo "Sort Buffer      : $SORT_BUFFER"
-    echo "Cut Subdomain    : $CUT_SUBDOMAINS (default 0 = kompatibel v2.8)"
-    echo "AWK Engine       : ${AWK_CMD:-belum dicek}"
-    echo "Temp Dir         : $TEMP_DIR"
-    echo "============================="
+    echo -e "${COLORS[CYAN]}=== Konfigurasi Otomatis ===${COLORS[NC]}"
+    echo -e "${COLORS[YELLOW]}Total Core       : ${COLORS[GREEN]}$TOTAL_CORES${COLORS[NC]}"
+    echo -e "${COLORS[YELLOW]}Digunakan Core   : ${COLORS[GREEN]}$NUM_CORES${COLORS[NC]}"
+    echo -e "${COLORS[YELLOW]}Total RAM Efektif: ${COLORS[GREEN]}${TOTAL_MEM_MIB} MiB (${TOTAL_MEM_GB} GiB)${COLORS[NC]}"
+    echo -e "${COLORS[YELLOW]}Chunk Size       : ${COLORS[GREEN]}$CHUNK_SIZE${COLORS[NC]}"
+    echo -e "${COLORS[YELLOW]}Sort Buffer      : ${COLORS[GREEN]}$SORT_BUFFER${COLORS[NC]}"
+    echo -e "${COLORS[YELLOW]}Cut Subdomain    : ${COLORS[GREEN]}$CUT_SUBDOMAINS ${COLORS[DIM]}(default 0 = kompatibel v2.8)${COLORS[NC]}"
+    echo -e "${COLORS[YELLOW]}AWK Engine       : ${COLORS[GREEN]}${AWK_CMD:-belum dicek}${COLORS[NC]}"
+    echo -e "${COLORS[YELLOW]}Temp Dir         : ${COLORS[GREEN]}$TEMP_DIR${COLORS[NC]}"
+    echo -e "${COLORS[CYAN]}=============================${COLORS[NC]}"
 }
 
 # ============================================================

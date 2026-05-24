@@ -1,5 +1,7 @@
 # SUNAT TRUSTPOSITIF BY HARRY DS ALSYUNDAWY
 
+---
+
 [![Latest Version](https://img.shields.io/github/v/release/alsyundawy/sunat-trustpositif)](https://github.com/alsyundawy/sunat-trustpositif/releases)
 [![Maintenance Status](https://img.shields.io/maintenance/yes/9999)](https://github.com/alsyundawy/sunat-trustpositif/)
 [![License](https://img.shields.io/github/license/alsyundawy/sunat-trustpositif)](https://github.com/alsyundawy/sunat-trustpositif/blob/master/LICENSE)
@@ -11,6 +13,7 @@
 [![GitHub Forks](https://img.shields.io/github/forks/alsyundawy/sunat-trustpositif?style=social)](https://github.com/alsyundawy/sunat-trustpositif/network/members)
 [![GitHub Contributors](https://img.shields.io/github/contributors/alsyundawy/sunat-trustpositif?style=social)](https://github.com/alsyundawy/sunat-trustpositif/graphs/contributors)
 
+---
 
 ## 🔍 Apa Itu Sunat TrustPositif?
 
@@ -26,6 +29,7 @@ Database **TrustPositif/Komdigi** sendiri merupakan rujukan daftar blokir/penapi
 
 Sunat TrustPositif berfungsi untuk:
 
+```text
 - Mengunduh daftar domain TrustPositif/Komdigi secara otomatis.
 - Membersihkan data mentah yang masih kotor, rusak, duplikat, atau tidak konsisten.
 - Membuang alamat **IPv4**, **IPv6**, baris kosong, komentar, karakter ilegal, dan format invalid.
@@ -35,6 +39,7 @@ Sunat TrustPositif berfungsi untuk:
 - Menghapus duplikat agar hasil akhir lebih ringan dan efisien.
 - Membuang domain tertentu dari daftar manual blacklist/cleanup internal.
 - Menghasilkan file **plain text** bersih, satu domain per baris, siap digunakan sebagai database DNS blacklist/RPZ.
+```
 
 ---
 
@@ -51,12 +56,16 @@ Download daftar domain TrustPositif/Komdigi
 → buang domain manual blacklist/cleanup
 → hasilkan file plain text domain bersih
 → siap digunakan sebagai DNS blacklist/RPZ/blocklist
+```
+
+---
 
 ## Stargazers over time
 
 [![Stargazers over time](https://starchart.cc/alsyundawy/sunat-trustpositif.svg?variant=adaptive)](https://starchart.cc/alsyundawy/sunat-trustpositif)
 
 
+---
 
 ### Anda bebas untuk mengubah, mendistribusikan script ini untuk keperluan anda
 

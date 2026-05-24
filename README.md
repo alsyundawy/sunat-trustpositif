@@ -1,6 +1,6 @@
 # SUNAT TRUSTPOSITIF BY HARRY DS ALSYUNDAWY
 
----
+
 
 [![Latest Version](https://img.shields.io/github/v/release/alsyundawy/sunat-trustpositif)](https://github.com/alsyundawy/sunat-trustpositif/releases)
 [![Maintenance Status](https://img.shields.io/maintenance/yes/9999)](https://github.com/alsyundawy/sunat-trustpositif/)
@@ -13,9 +13,9 @@
 [![GitHub Forks](https://img.shields.io/github/forks/alsyundawy/sunat-trustpositif?style=social)](https://github.com/alsyundawy/sunat-trustpositif/network/members)
 [![GitHub Contributors](https://img.shields.io/github/contributors/alsyundawy/sunat-trustpositif?style=social)](https://github.com/alsyundawy/sunat-trustpositif/graphs/contributors)
 
----
 
-## 🔍 Apa Itu Sunat TrustPositif?
+
+# 🔍 Apa Itu Sunat TrustPositif?
 
 **Sunat TrustPositif** adalah script Bash untuk mengolah database domain **TrustPositif/Komdigi** menjadi daftar domain bersih dalam format **plain text** yang siap digunakan sebagai **DNS blacklist**, **RPZ database**, resolver blocklist, atau sumber filtering DNS.
 

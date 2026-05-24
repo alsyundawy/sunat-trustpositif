@@ -437,6 +437,8 @@ A: Tidak disarankan (single instance protection).
 - **[DOC]** Header, banner, `--help`, docnote, dan changelog diperbarui agar jelas bahwa v2.9 mengoptimalkan mesin proses, bukan mengganti format hasil produksi.
 - **[DITINGKATKAN]** Penyaringan **91.000** domain
 
+---
+
 ### **VERSI 2.8 — 26 Desember 2025 — Optimasi Komprehensif & Perbaikan ShellCheck**
 
 - **[FIX]** Semua peringatan **ShellCheck** diselesaikan (SC2155, SC2046, SC2086, SC2034)
@@ -449,6 +451,8 @@ A: Tidak disarankan (single instance protection).
 - **[SECURITY]** Validasi input dan sanitasi data diperketat untuk mencegah data invalid
 - **[FIX]** Perbaikan sintaks **MAWK** kritis untuk validasi domain **RFC-compliant**
 - **[DOC]** Dokumentasi lengkap dalam Bahasa Indonesia dengan contoh penggunaan praktis
+
+---
 
 ### **VERSI 2.7 — 23 November 2025 — Optimization & Fixes**
 
@@ -537,9 +541,24 @@ Script ini disediakan **"SEBAGAIMANA ADANYA"**. Penggunaan sepenuhnya menjadi ri
 
 **Anda bebas untuk mengubah, mendistribusikan script ini untuk keperluan anda** 📝
 
-**Jangan semangat tetap putus asa, tetaplah mengeluh meski gak ada yang pedulikan. Ketika yang lain bisa kenapa harus saya, ketika yang lain tidak bisa apalagi saya. Tetaplah hidup meski tidak berguna, maju tak gentar membela yang bayar !!!! Yoi, ya begitulah .....** 🤣
+> **Jangan semangat, tetaplah putus asa.**  
+> Tetap mengeluh, walau tak ada yang merasa.  
+>
+> Ketika yang lain bisa,  
+> **kenapa harus saya?**  
+> Ketika yang lain tidak bisa,  
+> **apalagi saya.**  
+>
+> Tetaplah hidup, meski kontribusi tak seberapa.  
+> Tetaplah hadir, walau cuma jadi beban suasana.  
+>
+> **Maju tak gentar, membela yang bayar.**  
+> Kalau gratisan, nanti dulu saudara.  
+>
+> Yoi...  
+> **Ya begitulah hidup: kadang absurd, kadang lapar, kadang pura-pura tegar.** 🤣
 
-### ✨ Anda Memang Luar Biasa | Harry DS Alsyundawy | Kaum Rebahan Garis Keras & Militan ✨
+###✨ANDA MEMANG LUAR BIASA | HARRY DS ALSYUNDAWY | KAUM REBAHAN GARIS KERAS & MILITAN✨
 
 ---
 

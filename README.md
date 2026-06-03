@@ -11,7 +11,30 @@
 [![GitHub Forks](https://img.shields.io/github/forks/alsyundawy/sunat-trustpositif?style=social)](https://github.com/alsyundawy/sunat-trustpositif/network/members)
 [![GitHub Contributors](https://img.shields.io/github/contributors/alsyundawy/sunat-trustpositif?style=social)](https://github.com/alsyundawy/sunat-trustpositif/graphs/contributors)
 
-## 🔍 Apa Itu Sunat TrustPositif?
+
+## 🔖 Release Terbaru
+
+### **Versi 3.0 — 03 Juni 2026**
+
+Release **v3.0** mempertahankan engine validasi dan karakter output dari v2.9, tetapi memperbarui sumber input domain menjadi **multi-source** melalui array `TRUSTPOSITIF_URLS`. Dengan perubahan ini, script tidak hanya bergantung pada satu URL `KOMINFO_URL`, tetapi dapat mengunduh beberapa sumber domain aktif, menggabungkannya, memvalidasi isinya, melakukan deduplikasi, lalu menghasilkan output final dengan proses yang sama.
+
+Fokus v3.0:
+
+- Tetap memakai **versi 3.0** untuk release stabil ini.
+- Menambahkan dukungan **multi-source domain blacklist**.
+- Menjaga `KOMINFO_URL` untuk kompatibilitas script/cron lama.
+- Mengubah nama file raw input menjadi `domain_blacklist`.
+- Menambahkan `PATH` eksplisit agar lebih aman untuk cron/systemd.
+- Mempertahankan `set -euo pipefail`, `IFS`, `LC_ALL=C`, dan `LANG=C` untuk konsistensi runtime.
+- Memperbaiki warning ShellCheck **SC2034** dan **SC2015** tanpa mematikan warning secara paksa.
+- Mempertahankan pola output default agar tidak merusak alur produksi yang sudah berjalan.
+
+---
+
+
+
+
+ 🔍 Apa Itu Sunat TrustPositif?
 
 **Sunat TrustPositif** adalah script Bash untuk mengolah database domain **TrustPositif/Komdigi** menjadi daftar domain bersih dalam format **plain text** yang siap digunakan sebagai **DNS blacklist**, **RPZ database**, resolver blocklist, atau sumber filtering DNS.
 
@@ -42,7 +65,8 @@ Database **TrustPositif/Komdigi** digunakan sebagai rujukan daftar blokir/penapi
 ## ⚙️ Alur Pemrosesan
 
 ```text
-Download daftar domain TrustPositif/Komdigi
+Download daftar domain TrustPositif/Komdigi dan sumber tambahan v3.0
+→ gabungkan semua sumber aktif ke file raw gabungan
 → bersihkan data kotor
 → buang IPv4, IPv6, komentar, karakter ilegal, dan format invalid
 → validasi struktur domain
@@ -53,6 +77,13 @@ Download daftar domain TrustPositif/Komdigi
 → hasilkan file plain text domain bersih
 → siap digunakan sebagai DNS blacklist/RPZ/blocklist
 ```
+
+Catatan penting:
+
+- `KOMINFO_URL` tidak dihapus karena masih berguna untuk kompatibilitas lama dan override manual.
+- Jika ingin memakai mirror Alsyundawy sebagai input utama, aktifkan baris `OPTIONAL SUNAT VERSION` dengan mengganti nilai `KOMINFO_URL`.
+- Jika ingin memblokir DoH/DoT, aktifkan baris `doh-onlydomains.txt` secara manual.
+- Semua sumber tetap diproses melalui validasi domain, filter IPv4/IPv6, validasi TLD IANA, dan deduplikasi final.
 
 ---
 
@@ -297,6 +328,8 @@ Script ini telah mengalami perbaikan dan optimasi menyeluruh untuk meningkatkan 
 - **Concurrent Safety**: Thread-safe operations untuk parallel processing
 - **Resource Optimization**: Adaptive resource allocation
 - **Status Monitoring**: Real-time monitoring status script
+- **Multi-Source Input v3.0**: Penggabungan beberapa sumber domain melalui `TRUSTPOSITIF_URLS`
+- **Cron-Friendly Environment v3.0**: `PATH`, locale, dan strict mode dibuat eksplisit untuk server/cron
 
 ---
 
@@ -412,6 +445,18 @@ Script otomatis menyesuaikan konfigurasi berdasarkan:
 readonly CHUNK_SIZE=15000
 readonly NUM_CORES=$(nproc)
 readonly OUTPUT_DIR="/path/to/dir"
+```
+
+Untuk v3.0, override yang lebih aman dilakukan dari environment saat menjalankan script:
+
+```bash
+NUM_CORES=8 CHUNK_SIZE=28000 SORT_BUFFER=50% bash sunat-trustpositif.sh
+```
+
+Mode collapse subdomain agresif tetap opsional:
+
+```bash
+CUT_SUBDOMAINS=1 bash sunat-trustpositif.sh
 ```
 
 ### Performance Benchmarks
@@ -542,7 +587,25 @@ A: Tidak disarankan (single instance protection).
 
 ---
 
+
 ## 📌 Catatan Perubahan dan Riwayat Versi
+
+---
+
+
+### **VERSI 3.0 — 03 Juni 2026 — Multi-Source Domain Input, Cron-Friendly Runtime & ShellCheck Cleanup**
+
+- **[BARU]** Menambahkan `TRUSTPOSITIF_URLS` sebagai array sumber domain aktif agar script dapat menggabungkan TrustPositif/Komdigi, StevenBlack, Hagezi, dan daftar tambahan Alsyundawy.
+- **[COMPAT]** `KOMINFO_URL` tetap dipertahankan sebagai variabel utama agar konfigurasi lama, cron lama, dan override manual tidak rusak.
+- **[BARU]** Menambahkan opsi komentar `OPTIONAL SUNAT VERSION` untuk memakai mirror `tlds-valid-domains_v2.txt` bila diperlukan.
+- **[BARU]** Menambahkan opsi komentar untuk mengaktifkan daftar DoH/DoT dari Hagezi bila administrator ingin memblokir hostname DNS over HTTPS/DNS over TLS.
+- **[MOD]** Mengubah nama file raw input menjadi `domain_blacklist` agar lebih sesuai dengan fungsi multi-source blacklist.
+- **[HARDENING]** Menambahkan `clear`, `PATH` eksplisit, strict mode `set -euo pipefail`, `IFS`, `LC_ALL=C`, dan `LANG=C` pada bagian awal script agar lebih stabil di shell manual, cron, dan lingkungan server minimal.
+- **[FIX]** Memperbaiki warning ShellCheck **SC2034** dengan memakai `KOMINFO_URL` langsung di dalam array `TRUSTPOSITIF_URLS`, bukan mematikan warning.
+- **[FIX]** Memperbaiki warning ShellCheck **SC2015** dengan mengganti pola `A && B || true` menjadi blok `if` yang lebih aman dan eksplisit.
+- **[HARDENING]** Tiap sumber domain diunduh dan divalidasi agar file kosong atau HTML/error page tidak masuk ke pipeline validasi domain.
+- **[COMPAT]** Engine validasi domain, validasi TLD IANA, filter IPv4/IPv6, deduplikasi, cleanup manual, dan output final tetap mengikuti alur v2.9 agar tidak merusak produksi yang sudah berjalan.
+- **[DOC]** README, docnote, komentar, tutorial singkat, dan changelog diperbarui khusus untuk release v3.0.
 
 ---
 

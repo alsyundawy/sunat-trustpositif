@@ -14,13 +14,12 @@
 
 ## 🔖 Release Terbaru
 
-### **Versi 3.0 — 03 Juni 2026**
+### **Sunat TrustPositif Versi 3.0 — 03 Juni 2026**
 
-Release **v3.0** mempertahankan engine validasi dan karakter output dari v2.9, tetapi memperbarui sumber input domain menjadi **multi-source** melalui array `TRUSTPOSITIF_URLS`. Dengan perubahan ini, script tidak hanya bergantung pada satu URL `KOMINFO_URL`, tetapi dapat mengunduh beberapa sumber domain aktif, menggabungkannya, memvalidasi isinya, melakukan deduplikasi, lalu menghasilkan output final dengan proses yang sama.
+Sunat TrustPositif Release **v3.0** mempertahankan engine validasi dan karakter output dari v2.9, tetapi memperbarui sumber input domain menjadi **multi-source** melalui array `TRUSTPOSITIF_URLS`. Dengan perubahan ini, script tidak hanya bergantung pada satu URL `KOMINFO_URL`, tetapi dapat mengunduh beberapa sumber domain aktif, menggabungkannya, memvalidasi isinya, melakukan deduplikasi, lalu menghasilkan output final dengan proses yang sama.
 
-Fokus v3.0:
+**Sunat TrustPositif v3.0:**
 
-- Tetap memakai **versi 3.0** untuk release stabil ini.
 - Menambahkan dukungan **multi-source domain blacklist**.
 - Menjaga `KOMINFO_URL` untuk kompatibilitas script/cron lama.
 - Mengubah nama file raw input menjadi `domain_blacklist`.
@@ -28,6 +27,11 @@ Fokus v3.0:
 - Mempertahankan `set -euo pipefail`, `IFS`, `LC_ALL=C`, dan `LANG=C` untuk konsistensi runtime.
 - Memperbaiki warning ShellCheck **SC2034** dan **SC2015** tanpa mematikan warning secara paksa.
 - Mempertahankan pola output default agar tidak merusak alur produksi yang sudah berjalan.
+  
+**Semua release bisa diunduh di:**
+```text
+https://github.com/alsyundawy/sunat-trustpositif/releases
+```  
 
 ---
 

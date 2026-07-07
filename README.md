@@ -594,8 +594,23 @@ A: Tidak disarankan (single instance protection).
 
 ## 📌 Catatan Perubahan dan Riwayat Versi
 
+
 ---
 
+### **VERSI 3.1 — 07 Juli 2026 — Hardening, Bug Fix & ShellCheck Pass**
+
+- **[HARDENING]** Menambahkan `-E` pada `set -Eeuo pipefail` sehingga `ERR` trap diwariskan ke fungsi, command substitution, dan subshell untuk penanganan error yang lebih konsisten.
+- **[FIX]** Memperbaiki deklarasi `DOWNLOAD_RETRY_DELAY` dengan memisahkannya ke baris tersendiri sehingga tidak lagi terpengaruh oleh kesalahan quoting atau parsing shell.
+- **[FIX]** Mengoptimalkan `validate_source_url` dengan mengganti `grep -E` menjadi regex bawaan Bash menggunakan `[[ ... =~ ... ]]`, sehingga mengurangi proses fork, meningkatkan performa, dan lebih aman.
+- **[FIX]** Memperbaiki `show_system_resources` dengan mengganti array split yang memicu ShellCheck **SC2206** menjadi metode `read` loop yang aman terhadap whitespace.
+- **[FIX]** Memperbaiki fungsi `set_awk_command` dengan mengganti pola `A && B || C` yang memicu ShellCheck **SC2015** menjadi blok `if/else` yang lebih eksplisit dan dapat diprediksi.
+- **[FIX]** Menyesuaikan pola pada `force_cleanup` agar konsisten dengan format nama sementara (`mktemp`) berbasis `SCRIPT_BASENAME`, sehingga proses pembersihan lebih akurat.
+- **[FIX]** Memperbaiki mekanisme cleanup manual dengan mengganti implementasi `sed` menjadi `awk`, sehingga karakter khusus seperti `.` dan `-` di-escape dengan benar pada seluruh pola domain.
+- **[FIX]** Menambahkan karakter newline (`\n`) pada `print_colored` sehingga output tidak lagi menyatu ketika dialihkan ke file log atau melalui proses redirect.
+- **[DOC]** Memperbarui `SCRIPT_VERSION`, `Last Modified`, `DOCNOTE`, dokumentasi internal, serta CHANGELOG agar sesuai dengan rilis **v3.1 (07 Juli 2026)**.
+- **[COMPAT]** Seluruh perilaku default, format output, pipeline validasi domain, kompatibilitas cron, dan konfigurasi tetap identik dengan **v3.0**, sehingga pembaruan dapat diterapkan tanpa mengubah konfigurasi produksi yang sudah ada.
+
+---
 
 ### **VERSI 3.0 — 03 Juni 2026 — Multi-Source Domain Input, Cron-Friendly Runtime & ShellCheck Cleanup**
 

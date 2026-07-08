@@ -11,34 +11,34 @@
 [![GitHub Forks](https://img.shields.io/github/forks/alsyundawy/sunat-trustpositif?style=social)](https://github.com/alsyundawy/sunat-trustpositif/network/members)
 [![GitHub Contributors](https://img.shields.io/github/contributors/alsyundawy/sunat-trustpositif?style=social)](https://github.com/alsyundawy/sunat-trustpositif/graphs/contributors)
 
-
 ## 🔖 Release Terbaru
 
-### **Sunat TrustPositif Versi 3.0 — 03 Juni 2026**
+### **Sunat TrustPositif Versi 3.1 — 07 Juli 2026**
 
-Sunat TrustPositif Release **v3.0** mempertahankan engine validasi dan karakter output dari v2.9, tetapi memperbarui sumber input domain menjadi **multi-source** melalui array `TRUSTPOSITIF_URLS`. Dengan perubahan ini, script tidak hanya bergantung pada satu URL `KOMINFO_URL`, tetapi dapat mengunduh beberapa sumber domain aktif, menggabungkannya, memvalidasi isinya, melakukan deduplikasi, lalu menghasilkan output final dengan proses yang sama.
+Sunat TrustPositif Release **v3.1** adalah rilis **hardening dan perbaikan bug** dari v3.0. Versi ini tidak mengubah pipeline validasi domain, format output, atau sumber domain yang digunakan — seluruh perilaku produksi tetap identik dengan v3.0. Fokus utama v3.1 adalah memperkuat keandalan skrip melalui perbaikan ShellCheck dan penyempurnaan kode internal.
 
-**Sunat TrustPositif v3.0:**
+**Sunat TrustPositif v3.1:**
 
-- Menambahkan dukungan **multi-source domain blacklist**.
-- Menjaga `KOMINFO_URL` untuk kompatibilitas script/cron lama.
-- Mengubah nama file raw input menjadi `domain_blacklist`.
-- Menambahkan `PATH` eksplisit agar lebih aman untuk cron/systemd.
-- Mempertahankan `set -euo pipefail`, `IFS`, `LC_ALL=C`, dan `LANG=C` untuk konsistensi runtime.
-- Memperbaiki warning ShellCheck **SC2034** dan **SC2015** tanpa mematikan warning secara paksa.
-- Mempertahankan pola output default agar tidak merusak alur produksi yang sudah berjalan.
-  
+- Menambahkan flag `-E` pada `set -Eeuo pipefail` agar `ERR trap` diwariskan ke fungsi, command substitution, dan subshell.
+- Memperbaiki deklarasi `DOWNLOAD_RETRY_DELAY` ke baris terpisah untuk menghindari bug quoting.
+- Mengganti `grep -E` pada `validate_source_url` dengan regex bawaan Bash `[[ =~ ]]` — lebih cepat, tanpa fork proses.
+- Memperbaiki `show_system_resources` dengan `read` loop yang aman terhadap ShellCheck **SC2206**.
+- Mengganti pola `A && B || C` pada `set_awk_command` dengan `if/else` eksplisit (fix **SC2015**).
+- Menyesuaikan glob pattern pada `force_cleanup` agar konsisten dengan format `mktemp`.
+- Mengganti `sed` dengan `awk` pada cleanup manual untuk escape karakter `.` dan `-` yang benar.
+- Menambahkan `APT_UPDATED=0` guard agar `apt-get update` hanya berjalan sekali per sesi.
+- Mengubah format deklarasi warna dari `\033[` ke `$'\e['` (ANSI C quoting, lebih portabel).
+- Mengganti `echo -e` dengan `printf '%s\n'` secara konsisten di seluruh fungsi output.
+
 **Semua release bisa diunduh di:**
+
 ```text
 https://github.com/alsyundawy/sunat-trustpositif/releases
-```  
+```
 
 ---
 
-
-
-
- 🔍 Apa Itu Sunat TrustPositif?
+## 🔍 Apa Itu Sunat TrustPositif?
 
 **Sunat TrustPositif** adalah script Bash untuk mengolah database domain **TrustPositif/Komdigi** menjadi daftar domain bersih dalam format **plain text** yang siap digunakan sebagai **DNS blacklist**, **RPZ database**, resolver blocklist, atau sumber filtering DNS.
 
@@ -591,9 +591,7 @@ A: Tidak disarankan (single instance protection).
 
 ---
 
-
 ## 📌 Catatan Perubahan dan Riwayat Versi
-
 
 ---
 
@@ -722,7 +720,7 @@ A: Tidak disarankan (single instance protection).
 
 ## 📜 Kontribusi dan Hak Cipta
 
-Hak Cipta © **2024–2025 HARRY DERTIN SUTISNA ALSYUNDAWY**
+Hak Cipta © **2024–2026 HARRY DERTIN SUTISNA ALSYUNDAWY**
 Script ini disediakan **"SEBAGAIMANA ADANYA"**. Penggunaan sepenuhnya menjadi risiko pengguna.
 
 ## KONTRIBUSI DAN SUPPORT

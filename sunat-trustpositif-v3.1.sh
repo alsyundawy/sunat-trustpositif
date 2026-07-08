@@ -15233,15 +15233,28 @@ CARA PENGGUNAAN:
   NUM_CORES=8 CHUNK_SIZE=28000 bash sunat-trustpositif.sh
 
 CHANGELOG:
-  v3.1 (07 JULI 2026) - Hardening & Bug Fix:
-    - set -Eeuo pipefail (flag -E untuk ERR trap inheritance)
-    - Fix DOWNLOAD_RETRY_DELAY quoting bug
-    - validate_source_url: Bash native regex, no fork
-    - show_system_resources: read loop aman (fix SC2206)
-    - set_awk_command: if/else eksplisit (fix SC2015)
-    - force_cleanup: glob pattern konsisten
-    - Pattern cleanup: awk escape '.'/'-' yang benar
-    - print_colored: tambah newline pada printf
+  v3.1 (07 JULI 2026) - Hardening, Bug Fix & ShellCheck Pass:
+    - [FIX]   set -Eeuo pipefail: flag -E agar ERR trap mewarisi ke fungsi/subshell
+    - [FIX]   DOWNLOAD_RETRY_DELAY dideklarasikan baris terpisah (quoting bug fix)
+    - [FIX]   validate_source_url: grep -E diganti regex Bash native [[ =~ ]] (no fork)
+    - [FIX]   show_system_resources: array split SC2206 diganti read loop aman
+    - [FIX]   set_awk_command: pola A && B || C (SC2015) diganti if/else eksplisit
+    - [FIX]   force_cleanup: glob pattern disesuaikan dengan SCRIPT_BASENAME mktemp
+    - [FIX]   Pattern cleanup manual: sed diganti awk (escape '.' dan '-' benar)
+    - [FIX]   print_colored: \n pada printf agar output tidak menyatu saat redirect
+    - [BARU]  APT_UPDATED=0 guard: apt-get update hanya dijalankan sekali per sesi
+    - [IMPV]  Deklarasi warna: \033[ diganti $'\e[' (ANSI C quoting, lebih bersih)
+    - [IMPV]  echo -e diganti printf '%s\n' secara konsisten di seluruh fungsi output
+    - [COMPAT] Semua perilaku default, output, dan pipeline tetap identik dengan v3.0
+
+  v3.0 (03 JUNI 2026) - Multi-Source Input & Environment Stabilization:
+    - [BARU]  TRUSTPOSITIF_URLS: multi-source Komdigi, StevenBlack, Hagezi, Alsyundawy
+    - [COMPAT] KOMINFO_URL dipertahankan sebagai elemen pertama TRUSTPOSITIF_URLS
+    - [ENV]   PATH eksplisit, LC_ALL=C, LANG=C, clear aman untuk cron/non-interaktif
+    - [DATA]  DOMAIN_FILE diubah ke domain_blacklist (multi-source pipeline)
+    - [HARDENING] Validasi URL, payload, HTML/error page detection per sumber
+    - [LINT]  SC2034 dan SC2015 diperbaiki tanpa mematikan warning
+    - [COMPAT] Core AWK, TLD IANA, sort -u, manual cleanup, CUT_SUBDOMAINS=0 dijaga
 
 HAK CIPTA:
   (c) 2024-2026 HARRY DERTIN SUTISNA ALSYUNDAWY

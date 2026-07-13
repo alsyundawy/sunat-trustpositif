@@ -13,22 +13,28 @@
 
 ## 🔖 Release Terbaru
 
-### **Sunat TrustPositif Versi 3.1 — 07 Juli 2026**
+### **Sunat TrustPositif Versi 3.1 — 13 Juli 2026**
 
 Sunat TrustPositif Release **v3.1** adalah rilis **hardening dan perbaikan bug** dari v3.0. Versi ini tidak mengubah pipeline validasi domain, format output, atau sumber domain yang digunakan — seluruh perilaku produksi tetap identik dengan v3.0. Fokus utama v3.1 adalah memperkuat keandalan skrip melalui perbaikan ShellCheck dan penyempurnaan kode internal.
 
 **Sunat TrustPositif v3.1:**
 
-- Menambahkan flag `-E` pada `set -Eeuo pipefail` agar `ERR trap` diwariskan ke fungsi, command substitution, dan subshell.
-- Memperbaiki deklarasi `DOWNLOAD_RETRY_DELAY` ke baris terpisah untuk menghindari bug quoting.
-- Mengganti `grep -E` pada `validate_source_url` dengan regex bawaan Bash `[[ =~ ]]` — lebih cepat, tanpa fork proses.
-- Memperbaiki `show_system_resources` dengan `read` loop yang aman terhadap ShellCheck **SC2206**.
-- Mengganti pola `A && B || C` pada `set_awk_command` dengan `if/else` eksplisit (fix **SC2015**).
-- Menyesuaikan glob pattern pada `force_cleanup` agar konsisten dengan format `mktemp`.
-- Mengganti `sed` dengan `awk` pada cleanup manual untuk escape karakter `.` dan `-` yang benar.
-- Menambahkan `APT_UPDATED=0` guard agar `apt-get update` hanya berjalan sekali per sesi.
-- Mengubah format deklarasi warna dari `\033[` ke `$'\e['` (ANSI C quoting, lebih portabel).
-- Mengganti `echo -e` dengan `printf '%s\n'` secara konsisten di seluruh fungsi output.
+- **[BARU]** Wget Primary: Menggunakan wget sebagai engine unduhan utama (fallback ke curl)
+- **[BARU]** User-Agent: Browser-like header pada wget & curl agar terhindar dari block Cloudflare HTTP 520
+- **[BARU]** Bypass SSL: Pengaturan default verifikasi SSL dilewati/bypass (CURL_INSECURE=1), dengan dokumentasi manual untuk di-enable
+- **[FIX]** OUTPUT_DIR: Menggunakan fallback default variable expansion agar foldernya bisa di-override via env variable untuk testing
+- **[FIX]** set -Eeuo pipefail: flag -E agar ERR trap mewarisi ke fungsi/subshell
+- **[FIX]** DOWNLOAD_RETRY_DELAY dideklarasikan baris terpisah (quoting bug fix)
+- **[FIX]** validate_source_url: grep -E diganti regex Bash native `[[ =~ ]]` (no fork)
+- **[FIX]** show_system_resources: array split SC2206 diganti read loop aman
+- **[FIX]** set_awk_command: pola A && B || C (SC2015) diganti if/else eksplisit
+- **[FIX]** force_cleanup: glob pattern disesuaikan dengan SCRIPT_BASENAME mktemp
+- **[FIX]** Pattern cleanup manual: sed diganti awk (escape '.' dan '-' benar)
+- **[FIX]** print_colored: \n pada printf agar output tidak menyatu saat redirect
+- **[BARU]** APT_UPDATED=0 guard: apt-get update hanya dijalankan sekali per sesi
+- **[IMPV]** Deklarasi warna: `\033[` diganti `$'\e['` (ANSI C quoting, lebih bersih)
+- **[IMPV]** echo -e diganti printf '%s\n' secara konsisten di seluruh fungsi output
+- **[COMPAT]** Semua perilaku default, output, dan pipeline tetap identik dengan v3.0
 
 **Semua release bisa diunduh di:**
 
@@ -595,18 +601,24 @@ A: Tidak disarankan (single instance protection).
 
 ---
 
-### **VERSI 3.1 — 07 Juli 2026 — Hardening, Bug Fix & ShellCheck Pass**
+### **VERSI 3.1 — 13 Juli 2026 — Hardening, Bug Fix, Wget/Curl Opt, Bypass SSL & ShellCheck Pass**
 
-- **[HARDENING]** Menambahkan `-E` pada `set -Eeuo pipefail` sehingga `ERR` trap diwariskan ke fungsi, command substitution, dan subshell untuk penanganan error yang lebih konsisten.
-- **[FIX]** Memperbaiki deklarasi `DOWNLOAD_RETRY_DELAY` dengan memisahkannya ke baris tersendiri sehingga tidak lagi terpengaruh oleh kesalahan quoting atau parsing shell.
-- **[FIX]** Mengoptimalkan `validate_source_url` dengan mengganti `grep -E` menjadi regex bawaan Bash menggunakan `[[ ... =~ ... ]]`, sehingga mengurangi proses fork, meningkatkan performa, dan lebih aman.
-- **[FIX]** Memperbaiki `show_system_resources` dengan mengganti array split yang memicu ShellCheck **SC2206** menjadi metode `read` loop yang aman terhadap whitespace.
-- **[FIX]** Memperbaiki fungsi `set_awk_command` dengan mengganti pola `A && B || C` yang memicu ShellCheck **SC2015** menjadi blok `if/else` yang lebih eksplisit dan dapat diprediksi.
-- **[FIX]** Menyesuaikan pola pada `force_cleanup` agar konsisten dengan format nama sementara (`mktemp`) berbasis `SCRIPT_BASENAME`, sehingga proses pembersihan lebih akurat.
-- **[FIX]** Memperbaiki mekanisme cleanup manual dengan mengganti implementasi `sed` menjadi `awk`, sehingga karakter khusus seperti `.` dan `-` di-escape dengan benar pada seluruh pola domain.
-- **[FIX]** Menambahkan karakter newline (`\n`) pada `print_colored` sehingga output tidak lagi menyatu ketika dialihkan ke file log atau melalui proses redirect.
-- **[DOC]** Memperbarui `SCRIPT_VERSION`, `Last Modified`, `DOCNOTE`, dokumentasi internal, serta CHANGELOG agar sesuai dengan rilis **v3.1 (07 Juli 2026)**.
-- **[COMPAT]** Seluruh perilaku default, format output, pipeline validasi domain, kompatibilitas cron, dan konfigurasi tetap identik dengan **v3.0**, sehingga pembaruan dapat diterapkan tanpa mengubah konfigurasi produksi yang sudah ada.
+- **[BARU]** Wget Primary: Menggunakan wget sebagai engine unduhan utama (fallback ke curl)
+- **[BARU]** User-Agent: Browser-like header pada wget & curl agar terhindar dari block Cloudflare HTTP 520
+- **[BARU]** Bypass SSL: Pengaturan default verifikasi SSL dilewati/bypass (CURL_INSECURE=1), dengan dokumentasi manual untuk di-enable
+- **[FIX]** OUTPUT_DIR: Menggunakan fallback default variable expansion agar foldernya bisa di-override via env variable untuk testing
+- **[FIX]** set -Eeuo pipefail: flag -E agar ERR trap mewarisi ke fungsi/subshell
+- **[FIX]** DOWNLOAD_RETRY_DELAY dideklarasikan baris terpisah (quoting bug fix)
+- **[FIX]** validate_source_url: grep -E diganti regex Bash native `[[ =~ ]]` (no fork)
+- **[FIX]** show_system_resources: array split SC2206 diganti read loop aman
+- **[FIX]** set_awk_command: pola A && B || C (SC2015) diganti if/else eksplisit
+- **[FIX]** force_cleanup: glob pattern disesuaikan dengan SCRIPT_BASENAME mktemp
+- **[FIX]** Pattern cleanup manual: sed diganti awk (escape '.' dan '-' benar)
+- **[FIX]** print_colored: \n pada printf agar output tidak menyatu saat redirect
+- **[BARU]** APT_UPDATED=0 guard: apt-get update hanya dijalankan sekali per sesi
+- **[IMPV]** Deklarasi warna: `\033[` diganti `$'\e['` (ANSI C quoting, lebih bersih)
+- **[IMPV]** echo -e diganti printf '%s\n' secara konsisten di seluruh fungsi output
+- **[COMPAT]** Semua perilaku default, output, dan pipeline tetap identik dengan v3.0
 
 ---
 

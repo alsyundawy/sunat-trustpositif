@@ -14,6 +14,25 @@
 
 ## 🔖 Release Terbaru
 
+### **Sunat TrustPositif Versi 3.2 — 25 Juli 2026**
+
+Sunat TrustPositif Release **v3.2** adalah rilis **enterprise hardening, validasi multi-level, dan optimasi performa ekstrem**. Versi ini membawa peningkatan signifikan pada pengolahan domain, pemotongan subdomain opsional, keamanan eksekusi, serta optimasi memori dan AWK lookup.
+
+**Sunat TrustPositif v3.2:**
+
+- **[BARU]** `sunat-trustpositif-v3.2.sh`: Rilis file skrip utama v3.2 Enterprise Edition.
+- **[BARU]** Multi-Engine AWK: Auto-detect MAWK, GAWK, Nawk, dan AWK standar dengan verifikasi sintaks opsional `-v` sebelum eksekusi.
+- **[BARU]** Pemotongan Subdomain Opsional (`CUT_SUBDOMAINS=1`): Fitur pemotongan subdomain cerdas yang memperhitungkan CC-SLD (seperti `.co.id`, `.com.au`, `.co.uk`).
+- **[BARU]** Fast Hash Lookup (AWK): Fase pembersihan manual 100% menggunakan hash table AWK `FNR == NR` untuk performa instan tanpa bottleneck Subshell Loop.
+- **[BARU]** Handling Punycode IDN: Dukungan penuh untuk domain internasional IDN/Punycode (`xn--*`).
+- **[FIX]** Split Suffix (`-a 4`): Mencegah kegagalan `split: too many files` saat memproses dataset sangat besar (jutaan domain).
+- **[FIX]** Duplikasi Handlers: Penghapusan duplikasi fungsi `cleanup()` dan registrasi `trap` di posisi paling awal setelah inisialisasi direktori sementara.
+- **[FIX]** Awk & POSIX Portabilitas: Perbaikan parsing `du -h` menggunakan `awk '{print $1}'` yang lebih aman lintas sistem operasi (Linux/macOS/BSD).
+- **[FIX]** Proteksi Truncation: Ditambahkan `validate_nonempty_file` guard sebelum operasi penimpaan atomic file (`mv -f`).
+- **[FIX]** 100% ShellCheck Compliance: Lulus pengujian ShellCheck tanpa peringatan atau kesalahan sintaks.
+
+---
+
 ### **Sunat TrustPositif Versi 3.1 — 13 Juli 2026**
 
 Sunat TrustPositif Release **v3.1** adalah rilis **hardening dan perbaikan bug** dari v3.0. Versi ini tidak mengubah pipeline validasi domain, format output, atau sumber domain yang digunakan — seluruh perilaku produksi tetap identik dengan v3.0. Fokus utama v3.1 adalah memperkuat keandalan skrip melalui perbaikan ShellCheck dan penyempurnaan kode internal.
@@ -599,6 +618,21 @@ A: Tidak disarankan (single instance protection).
 ---
 
 ## 📌 Catatan Perubahan dan Riwayat Versi
+
+---
+
+### **VERSI 3.2 — 25 Juli 2026 — Enterprise Hardening, Subdomain Cut & Performance Optimization**
+
+- **[BARU]** `sunat-trustpositif-v3.2.sh`: Rilis skrip utama v3.2 Enterprise Edition.
+- **[BARU]** Multi-Engine AWK: Auto-detect MAWK, GAWK, Nawk, dan AWK standar dengan verifikasi sintaks opsional (`-v`) sebelum eksekusi.
+- **[BARU]** Pemotongan Subdomain Opsional (`CUT_SUBDOMAINS=1`): Fitur pemotongan subdomain cerdas yang memperhitungkan CC-SLD (seperti `.co.id`, `.com.au`, `.co.uk`).
+- **[BARU]** Fast Hash Lookup (AWK): Pembersihan manual 100% menggunakan hash table AWK `FNR == NR` untuk pemrosesan instan tanpa bottleneck subshell loop.
+- **[BARU]** Handling Punycode IDN: Dukungan penuh untuk domain internasional IDN/Punycode (`xn--*`).
+- **[FIX]** Split Suffix (`-a 4`): Mencegah kegagalan `split: too many files` saat memproses dataset sangat besar (jutaan domain).
+- **[FIX]** Early Signal Trap: Memindahkan registrasi `cleanup()` dan `trap` handler ke awal eksekusi pasca pembuatan temp dir.
+- **[FIX]** Proteksi Truncation: Ditambahkan `validate_nonempty_file` guard sebelum operasi penimpaan atomic file (`mv -f`).
+- **[FIX]** POSIX `du` Output: Parsing `du -h` menggunakan `awk '{print $1}'` yang portabel lintas OS (Linux/macOS/BSD).
+- **[LINT]** 100% ShellCheck Compliance: Lulus pengujian ShellCheck tanpa warning atau error.
 
 ---
 

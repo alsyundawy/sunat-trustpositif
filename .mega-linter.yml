@@ -1,0 +1,9 @@
+# MegaLinter Configuration File
+# https://megalinter.io
+
+ACTION_ZIZMOR_UNSECURED_ENV_VARIABLES:
+  - GITHUB_TOKEN
+
+SPELL_LYCHEE_FILTER_REGEX_EXCLUDE:
+  - https://github.com/alsyundawy/sunat-trustpositif/stargazers
+  - https://starchart.cc/alsyundawy/sunat-trustpositif.*

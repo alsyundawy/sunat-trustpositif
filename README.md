@@ -610,7 +610,15 @@ A: Periksa log error, source download, permissions.
 A: Jalankan `--status`, gunakan `--force-cleanup`, cek `/var/log/syslog`.
 
 **Q: Custom domain cleanup list?**
-A: Edit `DOMAINS_TO_CLEAN` di script.
+A: Edit variabel `DOMAINS_TO_CLEAN` di dalam script `sunat-trustpositif*.sh`.
+
+**Q: Daftar domain untuk `DOMAINS_TO_CLEAN` diambil dari mana?**
+A: List `DOMAINS_TO_CLEAN` pada script `sunat-trustpositif*.sh` bisa diambil langsung dari file `DOMAINS_TO_CLEAN.txt` atau `DOMAINS_TO_CLEAN_Large.txt` yang sudah tersedia di repository. Kedua file ini sudah teruji dan selalu diperbarui (up-to-date) sehingga daftar domain yang dibuang (cleanup) tetap akurat dan relevan.
+
+- `DOMAINS_TO_CLEAN.txt` — daftar domain cleanup standar (cukup untuk kebutuhan umum).
+- `DOMAINS_TO_CLEAN_Large.txt` — daftar domain cleanup versi besar/ekstensif (untuk penyaringan lebih agresif).
+
+Cara pakai: salin isi salah satu file tersebut ke dalam variabel `DOMAINS_TO_CLEAN` di script, atau sesuaikan script agar membaca langsung dari file tersebut.
 
 **Q: Multiple instances?**
 A: Tidak disarankan (single instance protection).

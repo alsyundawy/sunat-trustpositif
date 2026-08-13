@@ -598,30 +598,37 @@ bash sunat-trustpositif.sh --debug 2>&1 | tee debug.log
 
 ---
 
-## FAQ DAN TROUBLESHOOTING LANJUTAN
+## 📋 FAQ & TROUBLESHOOTING LANJUTAN
 
-**Q: Script lambat?**
-A: Cek koneksi, CPU/memory (`htop`), run `--debug`.
+Berikut adalah kumpulan pertanyaan yang sering diajukan beserta solusinya.
 
-**Q: Output kosong?**
-A: Periksa log error, source download, permissions.
+| Pertanyaan | Jawaban / Solusi |
+| --- | --- |
+| **Script berjalan lambat?** | Periksa koneksi internet, penggunaan CPU/memory (`htop`), lalu jalankan dengan mode `--debug` untuk melihat detail proses. |
+| **Output hasil kosong?** | Periksa log error, pastikan source download berhasil diunduh, dan cek permission folder output. |
+| **Script crash / berhenti tiba-tiba?** | Jalankan `--status`, lakukan `--force-cleanup`, lalu cek `/var/log/syslog` untuk menemukan penyebabnya. |
+| **Multiple instances?** | Tidak disarankan karena script memiliki proteksi *single instance*. |
 
-**Q: Script crash?**
-A: Jalankan `--status`, gunakan `--force-cleanup`, cek `/var/log/syslog`.
+### 🧹 Daftar Domain `DOMAINS_TO_CLEAN`
 
-**Q: Custom domain cleanup list?**
-A: Edit variabel `DOMAINS_TO_CLEAN` di dalam script `sunat-trustpositif*.sh`.
+List `DOMAINS_TO_CLEAN` pada script `sunat-trustpositif*.sh` **dapat diambil langsung** dari file berikut yang sudah tersedia di repository:
 
-**Q: Daftar domain untuk `DOMAINS_TO_CLEAN` diambil dari mana?**
-A: List `DOMAINS_TO_CLEAN` pada script `sunat-trustpositif*.sh` bisa diambil langsung dari file `DOMAINS_TO_CLEAN.txt` atau `DOMAINS_TO_CLEAN_Large.txt` yang sudah tersedia di repository. Kedua file ini sudah teruji dan selalu diperbarui (up-to-date) sehingga daftar domain yang dibuang (cleanup) tetap akurat dan relevan.
+| File | Keterangan |
+| --- | --- |
+| `DOMAINS_TO_CLEAN.txt` | Daftar domain cleanup **standar** — cukup untuk kebutuhan umum. |
+| `DOMAINS_TO_CLEAN_Large.txt` | Daftar domain cleanup versi **besar/ekstensif** — untuk penyaringan lebih agresif. |
 
-- `DOMAINS_TO_CLEAN.txt` — daftar domain cleanup standar (cukup untuk kebutuhan umum).
-- `DOMAINS_TO_CLEAN_Large.txt` — daftar domain cleanup versi besar/ekstensif (untuk penyaringan lebih agresif).
+> ✅ Kedua file ini **sudah teruji** dan **selalu diperbarui (up-to-date)**, sehingga daftar domain yang dibuang (*cleanup*) tetap akurat dan relevan.
 
-Cara pakai: salin isi salah satu file tersebut ke dalam variabel `DOMAINS_TO_CLEAN` di script, atau sesuaikan script agar membaca langsung dari file tersebut.
+**Cara penggunaan:**
 
-**Q: Multiple instances?**
-A: Tidak disarankan (single instance protection).
+1. Salin isi salah satu file di atas ke dalam variabel `DOMAINS_TO_CLEAN` di dalam script, **atau**
+2. Sesuaikan script agar membaca langsung dari file `DOMAINS_TO_CLEAN.txt` / `DOMAINS_TO_CLEAN_Large.txt`.
+
+```bash
+# Contoh: membaca langsung dari file external
+mapfile -t DOMAINS_TO_CLEAN < "DOMAINS_TO_CLEAN.txt"
+```
 
 ---
 

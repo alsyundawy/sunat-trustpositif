@@ -14,6 +14,22 @@
 
 ## 🔖 Release Terbaru
 
+### **Sunat TrustPositif Versi 3.3 — 18 AGUSTUS 2026**
+
+Sunat TrustPositif Release **v3.3** adalah rilis **perbaikan keamanan, pencegahan kehilangan data, dan portabilitas macOS/BSD** dari v3.2. Versi ini melindungi file `DOMAIN_FILE` agar tidak dihapus/ditimpa saat sudah ada (mis. `SKIP_DOWNLOAD=1` atau file disediakan manual), menghapus mekanisme `kill` proses yang berbahaya di `force_cleanup`, serta menyelaraskan portabilitas `sort` dan konsistensi `DOWNLOAD_RETRY_DELAY` lintas platform.
+
+**Sunat TrustPositif v3.3:**
+
+- **[BARU]** `sunat-trustpositif-v3.3.sh`: Rilis skrip utama v3.3.
+- **[SEC]** Perlindungan `DOMAIN_FILE`: Deteksi `DOMAIN_FILE_PRECREATED` — file domain yang sudah ada tidak lagi dihapus/ditimpa, mencegah kehilangan data saat `SKIP_DOWNLOAD=1` atau file disediakan manual.
+- **[SEC]** Penghapusan kill proses di `force_cleanup`: `pgrep`/`kill` terhadap proses se-nama script dihapus; penghapusan file hanya berlaku untuk file yang bukan pre-created (`${DOMAIN_FILE:?}`).
+- **[PORT]** Portabilitas `sort`: `TMPDIR="${TEMP_DIR}"` agar temporary sort konsisten di macOS/BSD, bukan hanya GNU `-T`.
+- **[FIX]** Konsistensi `DOWNLOAD_RETRY_DELAY`: Fallback `:-2` dihapus agar nilai retry delay seragam di seluruh engine download.
+- **[CLEAN]** Pembersihan state: `export CLEANUP_RUNNING=1` menjadi lokal; menghilangkan ekspor yang tidak perlu.
+- **[LINT]** ShellCheck Compliance: Directive file-level `disable=SC2250,SC2310,SC2311,SC2312` agar lulus trunk/linter (`enable=all`).
+
+---
+
 ### **Sunat TrustPositif Versi 3.2 — 25 Juli 2026**
 
 Sunat TrustPositif Release **v3.2** adalah rilis **enterprise hardening, validasi multi-level, dan optimasi performa ekstrem**. Versi ini membawa peningkatan signifikan pada pengolahan domain, pemotongan subdomain opsional, keamanan eksekusi, serta optimasi memori dan AWK lookup.
@@ -611,19 +627,19 @@ Berikut adalah kumpulan pertanyaan yang sering diajukan beserta solusinya.
 
 ### 🧹 Daftar Domain `DOMAINS_TO_CLEAN`
 
-List `DOMAINS_TO_CLEAN` pada script `sunat-trustpositif*.sh` **dapat diambil langsung** dari file berikut yang sudah tersedia di repository:
+List `DOMAINS_TO_CLEAN` pada script `sunat-trustpositif*.sh` **dapat dilihat atau di-copy-paste langsung** dari file berikut yang sudah tersedia di repository:
 
 | File | Keterangan |
 | --- | --- |
 | `DOMAINS_TO_CLEAN.txt` | Daftar domain cleanup **standar** — cukup untuk kebutuhan umum. |
-| `DOMAINS_TO_CLEAN_Large.txt` | Daftar domain cleanup versi **besar/ekstensif** — untuk penyaringan lebih agresif. |
+| `DOMAINS_TO_CLEAN_LARGE.txt` | Daftar domain cleanup versi **besar/ekstensif** — untuk penyaringan lebih agresif. |
 
 > ✅ Kedua file ini **sudah teruji** dan **selalu diperbarui (up-to-date)**, sehingga daftar domain yang dibuang (*cleanup*) tetap akurat dan relevan.
 
 **Cara penggunaan:**
 
 1. Salin isi salah satu file di atas ke dalam variabel `DOMAINS_TO_CLEAN` di dalam script, **atau**
-2. Sesuaikan script agar membaca langsung dari file `DOMAINS_TO_CLEAN.txt` / `DOMAINS_TO_CLEAN_Large.txt`.
+2. Sesuaikan script agar membaca langsung dari file `DOMAINS_TO_CLEAN.txt` / `DOMAINS_TO_CLEAN_LARGE.txt`.
 
 ```bash
 # Contoh: membaca langsung dari file external

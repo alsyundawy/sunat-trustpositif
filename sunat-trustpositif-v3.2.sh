@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2250,SC2310,SC2311,SC2312
 # ============================================================
 # Script Name  : sunat-trustpositif.sh
 # Description  : Validasi dan penggabungan multi-source daftar domain
